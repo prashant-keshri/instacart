@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FreshKart – My Orders</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* Minimal page-specific styles */
+    .page-header {
+      margin: 20px 0;
+    }
+    .page-header h1 {
+      font-size: 28px;
+    }
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .order-card {
+      background: var(--surface);
+      border-radius: 20px;
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+    }
+    .order-status {
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .btn-view {
+      background: var(--orange-primary);
+      color: white;
+    }
+    .btn-cancel {
+      background: var(--red-primary);
+      color: white;
+    }
+    .order-total {
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div>
+      <div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="container">
+      <div class="logo-row">
+        <div class="logo"><h1>Fresh<span>Kart</span></h1><p style="font-size:10px;">Grocery Delivery</p></div>
+        <div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span id="mobileCartCount">0</span></div>
+      </div>
+      <div class="search-location">
+        <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search products..."></div>
+        <div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect"><option>📍 Delhi 110001</option><option>📍 Mumbai 400001</option><option>📍 Bangalore 560001</option></select></div>
+      </div>
+      <div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button></div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container" id="ordersContainer"></main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="orders.html" class="nav-item active"><i class="fas fa-shopping-bag"></i><span>Orders</span></a>
+    <a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a>
+    <a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a>
+    <a href="#" class="nav-item" id="bottomCartBtn">
+      <div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span>
+    </a>
+  </nav>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div>
+    <div class="cart-items" id="cartItemsList"></div>
+    <div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="common.js"></script>
+  <script>
+    // ==================== DATA ====================
+    let allProductsData = null;
+    let orders = [];
+    let currentPage = 1;
+    const itemsPerPage = 8;
+    let allSuggestedProducts = [];
+    
+    // Categories for explore section
+    const exploreCategories = [
+      { name: "Fruits", icon: "🍎", cat: "fruits" },
+      { name: "Vegetables", icon: "🥬", cat: "vegetables" },
+      { name: "Beverages", icon: "🥤", cat: "beverages" },
+      { name: "Cakes", icon: "🎂", cat: "cakes" },
+      { name: "Ice Cream", icon: "🍦", cat: "icecream" },
+      { name: "Snacks", icon: "🍿", cat: "snacks" },
+      { name: "Meals", icon: "🍛", cat: "meals" },
+      { name: "Meats", icon: "🍗", cat: "meats" }
+    ];
+    
+    // Load products from JSON
+    async function loadProductsData() {
+      try {
+        const response = await fetch('product.json');
+        const data = await response.json();
+        allProductsData = data.products;
+        allSuggestedProducts = [...allProductsData];
+        return true;
+      } catch (error) {
+        allSuggestedProducts = [
+          { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200" },
+          { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200" },
+          { id: 4, name: "Orange Juice", price: 99, oldPrice: 120, discountPercent: 17, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=200" }
+        ];
+        return false;
+      }
+    }
+    
+    // Load orders
+    function loadOrders() {
+      const savedOrders = localStorage.getItem('userOrders');
+      if (savedOrders) {
+        orders = JSON.parse(savedOrders);
+      } else {
+        orders = [
+          { id: "FRK-2024-001", date: "2024-03-15", status: "delivered", subtotal: 568, deliveryFee: 0, platformFee: 9, discount: 82, total: 495, 
+            items: [{ productId: 1, name: "Organic Apples", price: 120, oldPrice: 150, quantity: 2, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200" }, 
+                    { productId: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, quantity: 3, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200" }], 
+            address: "Rahul Sharma, +91 98765 43210\n123, Green Park, New Delhi - 110001" },
+          { id: "FRK-2024-002", date: "2024-03-10", status: "shipped", subtotal: 249, deliveryFee: 40, platformFee: 9, discount: 50, total: 248, 
+            items: [{ productId: 4, name: "Orange Juice", price: 99, oldPrice: 120, quantity: 2, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=200" }], 
+            address: "Rahul Sharma, +91 98765 43210\n456, Cyber City, Gurgaon - 122002" },
+          { id: "FRK-2024-003", date: "2024-03-05", status: "processing", subtotal: 899, deliveryFee: 0, platformFee: 9, discount: 180, total: 728, 
+            items: [{ productId: 3, name: "Carrot (Farm)", price: 35, oldPrice: 45, quantity: 4, image: "https://images.unsplash.com/photo-1447175008436-054170c2e979?w=200" }], 
+            address: "Rahul Sharma, +91 98765 43210\n123, Green Park, New Delhi - 110001" }
+        ];
+      }
+    }
+    
+    // Save orders to localStorage
+    function saveOrders() {
+      localStorage.setItem('userOrders', JSON.stringify(orders));
+    }
+    
+    // Render single order card
+    function renderOrderCard(order) {
+      const isCancellable = order.status !== 'delivered' && order.status !== 'cancelled';
+      const canEdit = canEditOrder(order.status);
+      const statusClass = `status-${order.status}`;
+      
+      return `
+        <div class="order-card">
+          <div class="order-header" onclick="toggleOrderDetails('${order.id}')">
+            <div class="order-header-left">
+              <div class="order-id">Order: <strong>${order.id}</strong></div>
+              <div class="order-date"><i class="fas fa-calendar-alt"></i> ${order.date}</div>
+              <div class="order-status ${statusClass}">${order.status.toUpperCase()}</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <div class="order-total"><strong>₹${order.total}</strong></div>
+              <div class="expand-icon"><i class="fas fa-chevron-down"></i></div>
+            </div>
+          </div>
+          <div class="order-items" id="order-items-${order.id}">
+            <!-- Order Items -->
+            <div class="order-items-grid">
+              ${order.items.map(item => `
+                <div class="order-item-product" onclick="viewProduct(${item.productId})">
+                  <div class="order-item-left">
+                    <img class="order-item-img" src="${item.image}" onerror="this.src='https://placehold.co/60'">
+                    <div class="order-item-details">
+                      <div class="order-item-name">${item.name}</div>
+                      <div class="order-item-qty">Quantity: ${item.quantity}</div>
+                    </div>
+                  </div>
+                  <div class="order-item-price">
+                    ₹${item.price * item.quantity}
+                    <div class="order-item-subtotal">₹${item.price} × ${item.quantity}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            
+            <!-- Timeline -->
+            ${renderOrderTimeline(order.status)}
+            
+            <!-- Updates -->
+            ${renderOrderUpdates(order.status, order.date)}
+            
+            <!-- Price Breakdown -->
+            ${renderOrderPriceBreakdown(order)}
+            
+            <!-- Delivery Address -->
+            <div class="delivery-address">
+              <h4><i class="fas fa-map-marker-alt"></i> Delivery Address</h4>
+              <p style="white-space: pre-line;">${order.address}</p>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="order-action-buttons">
+              ${canEdit ? `<button class="btn-edit-address" onclick="event.stopPropagation();showEditAddressModal('${order.id}', \`${order.address.replace(/`/g, '\\`')}\`, (newAddress) => { updateOrderAddress('${order.id}', newAddress); })"><i class="fas fa-edit"></i> Edit Address</button>` : ''}
+              ${isCancellable ? `<button class="btn-cancel" onclick="event.stopPropagation();showCancelModal('${order.id}', '${order.status}', (reason) => { cancelOrder('${order.id}', reason); })">Cancel Order</button>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    
+    // Cancel order with reason
+    function cancelOrder(orderId, reason) {
+      const order = orders.find(o => o.id === orderId);
+      if (order && order.status !== 'delivered') {
+        order.status = 'cancelled';
+        saveOrders();
+        renderOrdersPage();
+        alert(`Order ${orderId} has been cancelled.${reason ? '\nReason: ' + reason : ''}`);
+      }
+    }
+    
+    // Update order address
+    function updateOrderAddress(orderId, newAddress) {
+      const order = orders.find(o => o.id === orderId);
+      if (order && canEditOrder(order.status)) {
+        order.address = newAddress;
+        saveOrders();
+        renderOrdersPage();
+        alert('Delivery address updated successfully!');
+      } else {
+        alert('Cannot edit address. Order has already been shipped or delivered.');
+      }
+    }
+    
+    // Toggle order details
+    function toggleOrderDetails(orderId) {
+      const itemsDiv = document.getElementById(`order-items-${orderId}`);
+      const header = itemsDiv?.previousElementSibling;
+      if (itemsDiv) {
+        itemsDiv.classList.toggle('expanded');
+        if (header) header.classList.toggle('expanded');
+      }
+    }
+    
+    // Render explore categories
+    function renderExploreCategories() {
+      return `
+        <div class="explore-categories-section">
+          <div class="section-header">
+            <h2><i class="fas fa-th-large"></i> Explore More Categories</h2>
+          </div>
+          <div class="explore-categories-grid">
+            ${exploreCategories.map(c => `
+              <a href="categories.html?cat=${c.cat}" class="cat-link">
+                <div class="cat-icon">${c.icon}</div>
+                <span>${c.name}</span>
+              </a>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+    
+    // Render suggested products
+    function renderSuggestedProducts() {
+      const paginated = allSuggestedProducts.slice(0, currentPage * itemsPerPage);
+      
+      return `
+        <div class="section-header">
+          <h2><i class="fas fa-star"></i> You May Also Like</h2>
+        </div>
+        <div class="products-grid" id="suggestedProductsGrid">
+          ${paginated.map(p => renderProductCard(p)).join('')}
+        </div>
+        ${paginated.length < allSuggestedProducts.length ? `
+          <button class="show-more-btn" id="showMoreSuggested">Show More →</button>
+        ` : ''}
+      `;
+    }
+    
+    // Main render function
+    function renderOrdersPage() {
+      const container = document.getElementById('ordersContainer');
+      
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-shopping-bag"></i>
+            <h3>No Orders Yet</h3>
+            <p>Looks like you haven't placed any orders yet.</p>
+            <button onclick="location.href='index.html'">Start Shopping</button>
+          </div>
+          ${renderExploreCategories()}
+          ${renderSuggestedProducts()}
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="page-header">
+            <h1><i class="fas fa-shopping-bag"></i> My Orders</h1>
+            <p>Track, manage, and reorder your purchases</p>
+          </div>
+          <div class="orders-list">
+            ${orders.map(order => renderOrderCard(order)).join('')}
+          </div>
+          ${renderExploreCategories()}
+          ${renderSuggestedProducts()}
+        `;
+      }
+      
+      // Bind show more button
+      const showMoreBtn = document.getElementById('showMoreSuggested');
+      if (showMoreBtn) {
+        showMoreBtn.addEventListener('click', () => {
+          currentPage++;
+          const newProducts = allSuggestedProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+          const grid = document.getElementById('suggestedProductsGrid');
+          if (grid) {
+            grid.innerHTML += newProducts.map(p => renderProductCard(p)).join('');
+          }
+          if (currentPage * itemsPerPage >= allSuggestedProducts.length) {
+            showMoreBtn.style.display = 'none';
+          }
+        });
+      }
+    }
+    
+    // View product
+    function viewProduct(productId) {
+      window.location.href = `description.html?id=${productId}`;
+    }
+    
+    // Initialize page
+    async function initPage() {
+      showOrdersSkeleton();
+      await loadProductsData();
+      loadOrders();
+      
+      initDarkMode();
+      initLocationSelector();
+      initBackToTop();
+      bindCartEvents();
+      initGlobalSearch(allSuggestedProducts);
+      updateCartUI();
+      
+      document.getElementById('darkModeToggle')?.addEventListener('click', toggleDarkMode);
+      renderOrdersPage();
+    }
+    
+    // Make functions global
+    window.toggleOrderDetails = toggleOrderDetails;
+    window.cancelOrder = cancelOrder;
+    window.updateOrderAddress = updateOrderAddress;
+    window.viewProduct = viewProduct;
+    window.showCancelModal = showCancelModal;
+    window.showEditAddressModal = showEditAddressModal;
+    window.closeCancelModal = closeCancelModal;
+    window.closeEditAddressModal = closeEditAddressModal;
+    
+    initPage();
+  </script>
+</body>
+</html>

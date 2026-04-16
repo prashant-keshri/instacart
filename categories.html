@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FreshKart – Categories</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* Page-specific styles */
+    .filter-capsules {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+      justify-content: center;
+    }
+    .filter-capsule {
+      padding: 8px 20px;
+      border-radius: 40px;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .filter-capsule.active {
+      background: var(--orange-primary);
+      color: white;
+      border-color: var(--orange-primary);
+    }
+    .category-cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .category-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--surface);
+      border-radius: 16px;
+      cursor: pointer;
+      border: 1px solid var(--border-light);
+      min-width: 80px;
+    }
+    .category-card.active {
+      border-color: var(--orange-primary);
+      background: var(--bg-primary);
+    }
+    .category-card-icon { font-size: 32px; margin-bottom: 6px; }
+    .category-card span { font-size: 11px; font-weight: 500; }
+    .load-more-btn {
+      display: block; margin: 30px auto; background: var(--blue-primary);
+      color: white; border: none; padding: 10px 28px; border-radius: 40px;
+      font-weight: 600; cursor: pointer;
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+  
+  <!-- Top Bar -->
+  <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
+
+  <!-- Header -->
+  <header class="main-header"><div class="container"><div class="logo-row"><div class="logo"><h1>Fresh<span>Kart</span></h1><p style="font-size:10px;">Grocery Delivery</p></div><div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span id="mobileCartCount">0</span></div></div><div class="search-location"><div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search products..."></div><div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect"><option>📍 Delhi 110001</option><option>📍 Mumbai 400001</option><option>📍 Bangalore 560001</option></select></div></div><div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button></div></div></header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <div class="filter-capsules" id="filterCapsules"></div>
+    <div class="category-cards-grid" id="categoryCardsGrid"></div>
+    <div class="section-header"><h2 id="categoryTitle"><i class="fas fa-tag"></i> All Products</h2></div>
+    <div class="products-grid" id="categoryProductsGrid"></div>
+    <button class="load-more-btn" id="loadMoreCatBtn" style="display: none;">Load More →</button>
+    
+    <!-- Subscription Section -->
+    <div class="daily-subscription"><div class="container"><div class="subscription-header"><h3><i class="fas fa-calendar-check"></i> 🚀 Subscription Plans</h3><span style="font-size:14px;">Save up to 25% everyday</span></div><div class="subscription-plans" id="subscriptionPlansList"></div><div class="subscription-footer-link" style="text-align:center; margin-top:16px;"><a href="subscription.html" style="color:var(--orange-primary);">📦 View All Subscription Plans →</a></div></div></div>
+    
+    <!-- Deal Zone -->
+    <div class="section-header"><h2><i class="fas fa-fire"></i> 🔥 Deal Zone - 30%+ OFF</h2></div>
+    <div class="products-grid" id="dealZoneGrid"></div>
+    <button class="load-more-btn" id="loadMoreDealBtn" style="display: none;">Load More Deals →</button>
+    
+    <!-- You May Also Like -->
+    <div class="section-header"><h2><i class="fas fa-star"></i> You May Also Like</h2></div>
+    <div class="products-grid" id="youMayAlsoLikeGrid"></div>
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav"><a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a><a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a href="categories.html" class="nav-item active"><i class="fas fa-th-large"></i><span>Category</span></a><a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a><a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a></nav>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div><div class="cart-items" id="cartItemsList"></div><div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div></div>
+  <div class="overlay" id="overlay"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="common.js"></script>
+  <script>
+    let products = [
+      { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200", category: "fruits", isFeatured: true },
+      { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200", category: "fruits" },
+      { id: 3, name: "Carrot (Farm)", price: 35, oldPrice: 45, discountPercent: 22, image: "https://images.unsplash.com/photo-1447175008436-054170c2e979?w=200", category: "vegetables" },
+      { id: 4, name: "Orange Juice", price: 99, oldPrice: 120, discountPercent: 17, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=200", category: "beverages" },
+      { id: 5, name: "Broccoli", price: 55, oldPrice: 70, discountPercent: 21, image: "https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=200", category: "vegetables" },
+      { id: 6, name: "Coconut Water", price: 89, oldPrice: 110, discountPercent: 19, image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=200", category: "beverages" },
+      { id: 7, name: "Chocolate Cake", price: 399, oldPrice: 499, discountPercent: 20, image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200", category: "cakes" },
+      { id: 8, name: "Vanilla IceCream", price: 149, oldPrice: 199, discountPercent: 25, image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200", category: "icecream" },
+      { id: 9, name: "Paneer Masala", price: 249, oldPrice: 299, discountPercent: 16, image: "https://images.unsplash.com/photo-1631452180519-c96fe4bdf330?w=200", category: "meals" },
+      { id: 10, name: "Spicy Chicken", price: 299, oldPrice: 349, discountPercent: 14, image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=200", category: "meats" }
+    ];
+    let allProducts = [...products];
+    for (let i = 11; i <= 45; i++) allProducts.push({ ...products[i % products.length], id: i, name: `${products[i % products.length].name} ${i}`, discountPercent: 15 + Math.floor(Math.random() * 35) });
+    products = allProducts;
+    window.allProducts = products;
+    
+    let currentCategory = "all";
+    let catPage = 1;
+    let dealPage = 1;
+    const itemsPerPage = 12;
+    const categoriesList = [
+      { name: "All", icon: "fa-th-large", cat: "all", emoji: "📦" },
+      { name: "Fruits", icon: "fa-apple", cat: "fruits", emoji: "🍎" },
+      { name: "Vegetables", icon: "fa-carrot", cat: "vegetables", emoji: "🥬" },
+      { name: "Beverages", icon: "fa-mug-saucer", cat: "beverages", emoji: "🥤" },
+      { name: "Cakes", icon: "fa-cake-candles", cat: "cakes", emoji: "🎂" },
+      { name: "Ice Cream", icon: "fa-ice-cream", cat: "icecream", emoji: "🍦" }
+    ];
+    
+    function getFilteredProducts() { return currentCategory === "all" ? products : products.filter(p => p.category === currentCategory); }
+    function renderCategoryProducts() {
+      const filtered = getFilteredProducts();
+      const paginated = filtered.slice(0, catPage * itemsPerPage);
+      document.getElementById('categoryProductsGrid').innerHTML = paginated.map(p => renderProductCard(p)).join('');
+      document.getElementById('loadMoreCatBtn').style.display = paginated.length >= filtered.length ? 'none' : 'block';
+      document.getElementById('categoryTitle').innerHTML = `<i class="fas fa-tag"></i> ${currentCategory === 'all' ? 'All Products' : currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)} (${filtered.length} items)`;
+    }
+    function renderDealZone() {
+      const highDiscount = products.filter(p => p.discountPercent >= 30).slice(0, dealPage * itemsPerPage);
+      document.getElementById('dealZoneGrid').innerHTML = highDiscount.map(p => renderProductCard(p)).join('');
+      document.getElementById('loadMoreDealBtn').style.display = highDiscount.length >= products.filter(p => p.discountPercent >= 30).length ? 'none' : 'block';
+    }
+    function renderYouMayAlsoLike() {
+      document.getElementById('youMayAlsoLikeGrid').innerHTML = [...products].sort(() => 0.5 - Math.random()).slice(0, 8).map(p => renderProductCard(p)).join('');
+    }
+    function renderFilterCapsules() {
+      document.getElementById('filterCapsules').innerHTML = categoriesList.map(cat => `<button class="filter-capsule ${currentCategory === cat.cat ? 'active' : ''}" data-cat="${cat.cat}" onclick="filterByCategory('${cat.cat}')"><i class="fas ${cat.icon}"></i> ${cat.name}</button>`).join('');
+    }
+    function renderCategoryCards() {
+      document.getElementById('categoryCardsGrid').innerHTML = categoriesList.map(cat => `<div class="category-card ${currentCategory === cat.cat ? 'active' : ''}" onclick="filterByCategory('${cat.cat}')"><div class="category-card-icon">${cat.emoji}</div><span>${cat.name}</span></div>`).join('');
+    }
+    function renderSubscriptionPlans() {
+      document.getElementById('subscriptionPlansList').innerHTML = `<div class="plan"><h4>Basic Saver</h4><p>₹999/month</p><button class="sub-plan-btn">Subscribe</button></div><div class="plan"><h4>Family Pack</h4><p>₹1999/month</p><button class="sub-plan-btn">Subscribe</button></div><div class="plan"><h4>Premium+</h4><p>₹2999/month</p><button class="sub-plan-btn">Subscribe</button></div>`;
+      document.querySelectorAll('.sub-plan-btn').forEach(btn => btn.addEventListener('click', () => alert('Subscription plan selected!')));
+    }
+    function filterByCategory(cat) { currentCategory = cat; catPage = 1; renderFilterCapsules(); renderCategoryCards(); renderCategoryProducts(); }
+    
+    function refreshProductGrids() { renderCategoryProducts(); renderDealZone(); renderYouMayAlsoLike(); }
+    
+    function initPage() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const catFromUrl = urlParams.get('cat');
+      if (catFromUrl && categoriesList.some(c => c.cat === catFromUrl)) currentCategory = catFromUrl;
+      renderFilterCapsules(); renderCategoryCards(); renderCategoryProducts(); renderDealZone(); renderYouMayAlsoLike(); renderSubscriptionPlans();
+      initCommon(products, () => {});
+      document.getElementById('loadMoreCatBtn').onclick = () => { catPage++; renderCategoryProducts(); };
+      document.getElementById('loadMoreDealBtn').onclick = () => { dealPage++; renderDealZone(); };
+    }
+    
+    window.filterByCategory = filterByCategory;
+    window.refreshProductGrids = refreshProductGrids;
+    initPage();
+  </script>
+</body>
+</html>

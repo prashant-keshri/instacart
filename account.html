@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FreshKart – My Account</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .account-container { display: grid; grid-template-columns: 280px 1fr; gap: 30px; margin: 30px 0; }
+    @media (max-width: 900px) { .account-container { grid-template-columns: 1fr; gap: 20px; } }
+    .account-sidebar { background: var(--surface); border-radius: 24px; padding: 20px; border: 1px solid var(--border-light); height: fit-content; position: sticky; top: 100px; }
+    @media (max-width: 900px) { .account-sidebar { position: static; } }
+    .profile-summary { text-align: center; padding-bottom: 20px; border-bottom: 1px solid var(--border-light); margin-bottom: 20px; }
+    .profile-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, var(--orange-primary), var(--green-primary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 36px; color: white; }
+    .profile-name { font-size: 18px; font-weight: 700; }
+    .profile-email { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+    .sidebar-menu { list-style: none; }
+    .sidebar-menu li { margin-bottom: 8px; }
+    .sidebar-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 16px; text-decoration: none; color: var(--text-secondary); transition: all 0.2s; font-size: 14px; }
+    .sidebar-menu a:hover { background: var(--bg-primary); }
+    .sidebar-menu a.active { background: var(--orange-primary); color: white; }
+    .account-main { background: var(--surface); border-radius: 24px; padding: 30px; border: 1px solid var(--border-light); }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px; }
+    .stat-card { background: var(--bg-primary); border-radius: 20px; padding: 20px; text-align: center; cursor: pointer; border: 1px solid var(--border-light); }
+    .stat-icon { font-size: 32px; color: var(--orange-primary); margin-bottom: 10px; }
+    .stat-value { font-size: 28px; font-weight: 800; }
+    .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 5px; }
+    .address-card { background: var(--bg-primary); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
+    .address-default { border: 2px solid var(--green-primary); }
+    .add-address-btn { background: var(--orange-primary); color: white; border: none; padding: 12px 20px; border-radius: 40px; cursor: pointer; width: 100%; margin-top: 20px; font-weight: 600; }
+    .save-btn { background: var(--green-primary); color: white; border: none; padding: 12px; border-radius: 40px; font-weight: 600; cursor: pointer; margin-top: 10px; width: 100%; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+    .form-group input, .form-group select { padding: 12px 16px; border-radius: 40px; border: 1px solid var(--border-light); background: var(--bg-primary); color: var(--text-primary); }
+  </style>
+</head>
+<body data-theme="light">
+  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+
+  <!-- Top Bar -->
+  <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
+
+  <!-- Header -->
+  <header class="main-header"><div class="container"><div class="logo-row"><div class="logo"><h1>Fresh<span>Kart</span></h1><p style="font-size:10px;">Grocery Delivery</p></div><div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span id="mobileCartCount">0</span></div></div><div class="search-location"><div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search products..."></div><div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect"><option>📍 Delhi 110001</option><option>📍 Mumbai 400001</option><option>📍 Bangalore 560001</option></select></div></div><div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button></div></div></header>
+
+  <!-- Main Content -->
+  <main class="container"><div class="account-container"><aside class="account-sidebar"><div class="profile-summary"><div class="profile-avatar"><i class="fas fa-user"></i></div><div class="profile-name" id="userName">Rahul Sharma</div><div class="profile-email" id="userEmail">rahul@example.com</div></div><ul class="sidebar-menu"><li><a href="#" class="active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li><li><a href="#" data-tab="orders"><i class="fas fa-shopping-bag"></i> My Orders</a></li><li><a href="#" data-tab="wishlist"><i class="fas fa-heart"></i> Wishlist</a></li><li><a href="#" data-tab="addresses"><i class="fas fa-map-marker-alt"></i> Addresses</a></li><li><a href="#" data-tab="settings"><i class="fas fa-user-cog"></i> Settings</a></li></ul></aside><div class="account-main" id="accountMain"></div></div></main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav"><a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a><a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a><a href="account.html" class="nav-item active"><i class="fas fa-user"></i><span>Account</span></a><a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a></nav>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div><div class="cart-items" id="cartItemsList"></div><div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div></div>
+  <div class="overlay" id="overlay"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="common.js"></script>
+  <script>
+    let orders = JSON.parse(localStorage.getItem('userOrders')) || [{ id: "ORD-001", date: "2024-03-15", total: 568, status: "delivered", items: 3 }];
+    let addresses = JSON.parse(localStorage.getItem('addresses')) || [{ id: 1, name: "Home", address: "123, Green Park, New Delhi", isDefault: true }];
+    let userData = JSON.parse(localStorage.getItem('userData')) || { name: "Rahul Sharma", email: "rahul@example.com", phone: "+91 98765 43210" };
+    let products = [{ id: 1, name: "Organic Apples", price: 120, oldPrice: 150, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200" }];
+    window.allProducts = products;
+    
+    function renderDashboard() { let totalSpent = orders.reduce((s, o) => s + o.total, 0); document.getElementById('accountMain').innerHTML = `<div class="section-title"><i class="fas fa-chart-line"></i> Dashboard</div><div class="stats-grid"><div class="stat-card" onclick="switchTab('orders')"><div class="stat-icon"><i class="fas fa-shopping-bag"></i></div><div class="stat-value">${orders.length}</div><div class="stat-label">Orders</div></div><div class="stat-card" onclick="switchTab('orders')"><div class="stat-icon"><i class="fas fa-rupee-sign"></i></div><div class="stat-value">₹${totalSpent}</div><div class="stat-label">Spent</div></div><div class="stat-card" onclick="switchTab('wishlist')"><div class="stat-icon"><i class="fas fa-heart"></i></div><div class="stat-value">${wishlist.length}</div><div class="stat-label">Wishlist</div></div><div class="stat-card" onclick="openCart()"><div class="stat-icon"><i class="fas fa-cart-shopping"></i></div><div class="stat-value">${cart.reduce((s,i)=>s+i.qty,0)}</div><div class="stat-label">Cart</div></div></div><div class="section-title"><i class="fas fa-clock"></i> Recent Orders</div>${orders.slice(0, 3).map(o => `<div class="order-item" style="background:var(--bg-primary);border-radius:16px;padding:16px;margin-bottom:10px;"><div><strong>${o.id}</strong><br>${o.date}</div><div>₹${o.total}</div><div class="order-status status-${o.status}">${o.status}</div></div>`).join('')}</div>`;
+    }
+    function renderOrders() { document.getElementById('accountMain').innerHTML = `<div class="section-title"><i class="fas fa-shopping-bag"></i> My Orders</div>${orders.map(o => `<div class="order-item" style="background:var(--bg-primary);border-radius:16px;padding:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div><strong>${o.id}</strong><br>${o.date}</div><div>₹${o.total}</div><div class="order-status status-${o.status}">${o.status}</div><button onclick="window.location.href='orders.html'" style="background:var(--orange-primary);border:none;padding:6px 16px;border-radius:30px;color:white;">View</button></div>`).join('')}</div>`; }
+    function renderWishlist() { let wishlistProducts = products.filter(p => wishlist.includes(p.id)); document.getElementById('accountMain').innerHTML = `<div class="section-title"><i class="fas fa-heart"></i> Wishlist (${wishlistProducts.length})</div><div class="products-grid">${wishlistProducts.map(p => renderProductCard(p)).join('')}</div>`; }
+    function renderAddresses() { document.getElementById('accountMain').innerHTML = `<div class="section-title"><i class="fas fa-map-marker-alt"></i> Addresses</div>${addresses.map(a => `<div class="address-card ${a.isDefault ? 'address-default' : ''}"><div><strong>${a.name}</strong> ${a.isDefault ? '(Default)' : ''}<p>${a.address}</p></div><div><button onclick="setDefault(${a.id})" style="background:transparent;border:1px solid var(--border-light);padding:4px 12px;border-radius:30px;">Set Default</button><button onclick="deleteAddress(${a.id})" style="background:var(--red-primary);color:white;border:none;padding:4px 12px;border-radius:30px;margin-left:8px;">Delete</button></div></div>`).join('')}<button class="add-address-btn" onclick="addAddress()">+ Add New Address</button></div>`; }
+    function renderSettings() { document.getElementById('accountMain').innerHTML = `<div class="section-title"><i class="fas fa-user-cog"></i> Settings</div><form id="settingsForm"><div class="form-group"><label>Name</label><input type="text" id="name" value="${userData.name}"></div><div class="form-group"><label>Email</label><input type="email" id="email" value="${userData.email}"></div><div class="form-group"><label>Phone</label><input type="tel" id="phone" value="${userData.phone}"></div><button type="submit" class="save-btn">Save Changes</button></form><div style="margin-top:30px;padding:20px;background:var(--bg-primary);border-radius:16px;"><h4>Logout</h4><button onclick="logout()" style="background:var(--red-primary);color:white;border:none;padding:10px 20px;border-radius:40px;margin-top:10px;">Logout</button></div></div>`; document.getElementById('settingsForm').onsubmit = (e) => { e.preventDefault(); userData.name = document.getElementById('name').value; userData.email = document.getElementById('email').value; userData.phone = document.getElementById('phone').value; localStorage.setItem('userData', JSON.stringify(userData)); document.getElementById('userName').innerText = userData.name; document.getElementById('userEmail').innerText = userData.email; alert('Saved!'); }; }
+    function switchTab(tab) { document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active')); document.querySelector(`.sidebar-menu a[data-tab="${tab}"]`).classList.add('active'); if (tab === 'dashboard') renderDashboard(); else if (tab === 'orders') renderOrders(); else if (tab === 'wishlist') renderWishlist(); else if (tab === 'addresses') renderAddresses(); else if (tab === 'settings') renderSettings(); }
+    function setDefault(id) { addresses = addresses.map(a => ({ ...a, isDefault: a.id === id })); localStorage.setItem('addresses', JSON.stringify(addresses)); renderAddresses(); }
+    function deleteAddress(id) { addresses = addresses.filter(a => a.id !== id); if (addresses.length && !addresses.some(a => a.isDefault)) addresses[0].isDefault = true; localStorage.setItem('addresses', JSON.stringify(addresses)); renderAddresses(); }
+    function addAddress() { let newId = Date.now(); addresses.push({ id: newId, name: "New Address", address: "Enter your address", isDefault: false }); localStorage.setItem('addresses', JSON.stringify(addresses)); renderAddresses(); }
+    function logout() { if (confirm('Logout?')) { localStorage.clear(); window.location.href = 'index.html'; } }
+    function refreshProductGrids() { if (document.querySelector('.sidebar-menu a.active')?.dataset.tab === 'wishlist') renderWishlist(); }
+    function initPage() { initCommon(products, () => { renderDashboard(); document.querySelectorAll('.sidebar-menu a').forEach(a => a.addEventListener('click', (e) => { e.preventDefault(); switchTab(a.dataset.tab); })); }); }
+    window.switchTab = switchTab; window.setDefault = setDefault; window.deleteAddress = deleteAddress; window.addAddress = addAddress; window.logout = logout; window.refreshProductGrids = refreshProductGrids;
+    initPage();
+  </script>
+</body>
+</html>
