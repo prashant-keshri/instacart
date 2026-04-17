@@ -9,993 +9,188 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="common.css">
   <style>
-    /* Page-specific styles only */
-    .offer-tabs {
-      display: flex;
-      gap: 8px;
-    }
-    .tab-btn {
-      padding: 5px 14px;
-      border-radius: 40px;
-      border: 1px solid var(--border-light);
-      background: var(--surface);
-      cursor: pointer;
-      font-size: 13px;
-    }
-    .tab-btn.active {
-      background: var(--green-primary);
-      color: white;
-    }
-    .load-more {
-      margin: 20px auto;
-      display: block;
-      background: var(--blue-primary);
-      color: white;
-      border: none;
-      padding: 8px 24px;
-      border-radius: 40px;
-      cursor: pointer;
-    }
+    .offer-tabs { display: flex; gap: 8px; }
+    .tab-btn { padding: 5px 14px; border-radius: 40px; border: 1px solid var(--border-light); background: var(--surface); cursor: pointer; font-size: 13px; }
+    .tab-btn.active { background: var(--green-primary); color: white; }
   </style>
 </head>
-<body data-theme="light">
-  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+<body data-theme="dark">
+  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-sun"></i></button>
 
   <!-- Top Bar -->
-  <div class="top-bar">
-    <div class="container">
-      <div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div>
-      <div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div>
-    </div>
-  </div>
+  <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
 
   <!-- Header -->
-  <header class="main-header">
-    <div class="container">
-      <div class="logo-row">
-        <div class="logo"><h1>Fresh<span>Kart</span></h1><p style="font-size:10px;">Grocery Delivery</p></div>
-        <div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span id="mobileCartCount">0</span></div>
-      </div>
-      <div class="search-location">
-        <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search fruits, veggies, juices..."></div>
-        <div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect"><option>📍 Delhi 110001</option><option>📍 Mumbai 400001</option><option>📍 Bangalore 560001</option><option>📍 Chennai 600001</option><option>📍 Kolkata 700001</option></select></div>
-      </div>
-      <div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button></div>
-    </div>
-  </header>
+  <header class="main-header"><div class="container"><div class="logo-row"><div class="logo"><h1>Fresh<span>Kart</span></h1><p style="font-size:10px;">Grocery Delivery</p></div><div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span id="mobileCartCount">0</span></div></div><div class="search-location"><div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search fruits, veggies, juices..."></div><div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect"><option>📍 Delhi 110001</option><option>📍 Mumbai 400001</option><option>📍 Bangalore 560001</option><option>📍 Chennai 600001</option><option>📍 Kolkata 700001</option></select></div></div><div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button></div></div></header>
 
   <!-- Hero Slider -->
-  <section class="hero-section">
-    <div class="swiper heroSwiper">
-      <div class="swiper-wrapper" id="heroSlider"></div>
-      <div class="swiper-pagination"></div>
-      <div class="swiper-button-next"></div>
-      <div class="swiper-button-prev"></div>
-    </div>
-  </section>
+  <section class="hero-section"><div class="swiper heroSwiper"><div class="swiper-wrapper" id="heroSlider"></div><div class="swiper-pagination"></div><div class="swiper-button-next"></div><div class="swiper-button-prev"></div></div></section>
 
   <!-- Quick Categories -->
-  <section class="quick-categories">
-    <div class="container">
-      <div class="category-links" id="quickCatLinks"></div>
-    </div>
-  </section>
+  <section class="quick-categories"><div class="container"><div class="category-links" id="quickCatLinks"></div></div></section>
 
   <!-- Recently Viewed -->
-  <section style="margin:0 16px 20px;">
-    <div class="section-header"><h2><i class="fas fa-history"></i> Recently Viewed</h2></div>
-    <div class="swiper recentlySwiper">
-      <div class="swiper-wrapper" id="recentlyViewed"></div>
-    </div>
-  </section>
+  <section style="margin:0 16px 20px;"><div class="section-header"><h2><i class="fas fa-history"></i> Recently Viewed</h2></div><div class="swiper recentlySwiper"><div class="swiper-wrapper" id="recentlyViewed"></div></div></section>
 
   <!-- Festival Banner -->
-  <section>
-    <div class="container">
-      <div class="festival-banner">
-        <div class="festival-content">
-          <span class="festival-tag">🎉 DIWALI MEGA SALE 🎉</span>
-          <h2>Up to 60% Off</h2>
-          <div class="countdown" id="countdown">
-            <div class="time-box"><span id="days">00</span>d</div>
-            <div class="time-box"><span id="hours">00</span>h</div>
-            <div class="time-box"><span id="minutes">00</span>m</div>
-            <div class="time-box"><span id="seconds">00</span>s</div>
-          </div>
-          <button class="shop-festive">Shop Now →</button>
-        </div>
-      </div>
-    </div>
-  </section>
+  <section><div class="container"><div class="festival-banner"><div class="festival-content"><span class="festival-tag">🎉 DIWALI MEGA SALE 🎉</span><h2>Up to 60% Off</h2><div class="countdown" id="countdown"><div class="time-box"><span id="days">00</span>d</div><div class="time-box"><span id="hours">00</span>h</div><div class="time-box"><span id="minutes">00</span>m</div><div class="time-box"><span id="seconds">00</span>s</div></div><button class="shop-festive">Shop Now →</button></div></div></div></section>
 
   <!-- Premium Picks -->
-  <section class="our-offerings">
-    <div class="container">
-      <div class="section-header">
-        <h2><i class="fas fa-leaf"></i> Premium Picks</h2>
-        <div class="offer-tabs">
-          <button class="tab-btn active" data-tab="featured">Featured</button>
-          <button class="tab-btn" data-tab="best-selling">Best Selling</button>
-          <button class="tab-btn" data-tab="new-arrivals">New Arrivals</button>
-        </div>
-      </div>
-      <div class="products-grid" id="offeringsGrid"></div>
-      <button class="load-more" id="loadMoreBtn">Load More →</button>
-    </div>
-  </section>
+  <section class="our-offerings"><div class="container"><div class="section-header"><h2><i class="fas fa-leaf"></i> Premium Picks</h2><div class="offer-tabs"><button class="tab-btn active" data-tab="featured">Featured</button><button class="tab-btn" data-tab="best-selling">Best Selling</button><button class="tab-btn" data-tab="new-arrivals">New Arrivals</button></div></div><div class="products-grid" id="offeringsGrid"></div><button class="show-more-btn" id="loadMoreBtn">Show More →</button></div></section>
 
   <!-- Daily Subscription -->
-  <section class="daily-subscription">
-    <div class="container">
-      <div class="subscription-header">
-        <h3><i class="fas fa-calendar-check"></i> Daily Subscription</h3>
-        <button class="expand-btn" id="expandSubscriptionBtn"><span>Explore plans</span> <i class="fas fa-arrow-down"></i></button>
-      </div>
-      <div id="subscriptionMinimized">
-        <div class="swiper subscriptionSwiper">
-          <div class="swiper-wrapper" id="subscriptionItems"></div>
-        </div>
-        <div class="swipe-hint"><i class="fas fa-chevron-left"></i> <a href="subscription.html">Swipe to see more essentials → visit full page</a> <i class="fas fa-chevron-right"></i></div>
-      </div>
-      <div id="subscriptionExpanded" style="display:none;">
-        <div class="subscription-plans">
-          <div class="plan"><h4>Basic Saver</h4><p>₹999/month</p><button class="sub-plan-btn">Subscribe</button></div>
-          <div class="plan"><h4>Family Pack</h4><p>₹1999/month</p><button class="sub-plan-btn">Subscribe</button></div>
-          <div class="plan"><h4>Premium+</h4><p>₹2999/month</p><button class="sub-plan-btn">Subscribe</button></div>
-        </div>
-        <div style="text-align:center; margin-top:16px;"><a href="subscription.html" style="color:var(--orange-primary);">📦 Manage full subscription →</a></div>
-      </div>
-    </div>
-  </section>
+  <section class="daily-subscription"><div class="container"><div class="subscription-header"><h3><i class="fas fa-calendar-check"></i> Daily Subscription</h3><button class="expand-btn" id="expandSubscriptionBtn"><span>Explore plans</span> <i class="fas fa-arrow-down"></i></button></div><div id="subscriptionMinimized"><div class="swiper subscriptionSwiper"><div class="swiper-wrapper" id="subscriptionItems"></div></div><div class="swipe-hint"><i class="fas fa-chevron-left"></i> <a href="subscription.html">Swipe to see more essentials → visit full page</a> <i class="fas fa-chevron-right"></i></div></div><div id="subscriptionExpanded" style="display:none;"><div class="subscription-plans"><div class="plan"><h4>Basic Saver</h4><p>₹999/month</p><button class="sub-plan-btn">Subscribe</button></div><div class="plan"><h4>Family Pack</h4><p>₹1999/month</p><button class="sub-plan-btn">Subscribe</button></div><div class="plan"><h4>Premium+</h4><p>₹2999/month</p><button class="sub-plan-btn">Subscribe</button></div></div><div style="text-align:center; margin-top:16px;"><a href="subscription.html" style="color:var(--orange-primary);">📦 Manage full subscription →</a></div></div></div></section>
 
   <!-- Customer Reviews -->
-  <section class="customer-feedback">
-    <div class="container">
-      <div class="section-header"><h2><i class="fas fa-star"></i> Customer Love</h2></div>
-      <div class="reviews-grid" id="reviewsGrid"></div>
-    </div>
-  </section>
+  <section class="customer-feedback"><div class="container"><div class="section-header"><h2><i class="fas fa-star"></i> Customer Love</h2></div><div class="reviews-grid" id="reviewsGrid"></div></div></section>
 
   <!-- Back to Top -->
   <div class="back-to-top-wrapper container"><button class="back-to-top" id="backToTopBtn"><i class="fas fa-arrow-up"></i> Back to Top</button></div>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-col"><h4>ABOUT</h4><a href="#">Contact Us</a><a href="#">About Us</a><a href="#">Careers</a></div>
-        <div class="footer-col"><h4>POLICY</h4><a href="#">Return Policy</a><a href="#">Terms</a><a href="#">Privacy</a></div>
-        <div class="footer-col"><h4>HELP</h4><a href="#">FAQs</a><a href="#">Shipping</a><a href="#">Cancellation</a></div>
-        <div class="footer-col"><h4>SOCIAL</h4><a href="#">Instagram</a><a href="#">Facebook</a><a href="#">Twitter</a></div>
-      </div>
-      <div class="payment-icons">
-        <i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i><i class="fab fa-cc-amex"></i>
-        <i class="fab fa-cc-paypal"></i><i class="fab fa-google-pay"></i><i class="fas fa-mobile-alt"></i><i class="fab fa-amazon-pay"></i>
-      </div>
-      <div class="footer-bottom"><span>© 2025 FreshKart — India's trusted grocery partner</span><span><i class="fas fa-shield-alt"></i> Secure payments</span></div>
-    </div>
-  </footer>
+  <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-col"><h4>ABOUT</h4><a href="#">Contact Us</a><a href="#">About Us</a><a href="#">Careers</a></div><div class="footer-col"><h4>POLICY</h4><a href="#">Return Policy</a><a href="#">Terms</a><a href="#">Privacy</a></div><div class="footer-col"><h4>HELP</h4><a href="#">FAQs</a><a href="#">Shipping</a><a href="#">Cancellation</a></div><div class="footer-col"><h4>SOCIAL</h4><a href="#">Instagram</a><a href="#">Facebook</a><a href="#">Twitter</a></div></div><div class="payment-icons"><i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i><i class="fab fa-cc-amex"></i><i class="fab fa-cc-paypal"></i><i class="fab fa-google-pay"></i><i class="fas fa-mobile-alt"></i><i class="fab fa-amazon-pay"></i></div><div class="footer-bottom"><span>© 2025 FreshKart — India's trusted grocery partner</span><span><i class="fas fa-shield-alt"></i> Secure payments</span></div></div></footer>
 
   <!-- Bottom Nav -->
-  <nav class="bottom-nav">
-    <a href="index.html" class="nav-item active"><i class="fas fa-home"></i><span>Home</span></a>
-    <a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a>
-    <a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a>
-    <a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a>
-    <a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a>
-  </nav>
+  <nav class="bottom-nav"><a href="index.html" class="nav-item active"><i class="fas fa-home"></i><span>Home</span></a><a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a><a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a><a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a></nav>
 
   <!-- Cart Sidebar -->
-  <div class="cart-sidebar" id="cartSidebar">
-    <div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div>
-    <div class="cart-items" id="cartItemsList"></div>
-    <div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div>
-  </div>
+  <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div><div class="cart-items" id="cartItemsList"></div><div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div></div>
   <div class="overlay" id="overlay"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="common.js"></script>
   <script>
-   /* // ==================== PAGE-SPECIFIC PRODUCT DATA ====================
-    const pageProducts = [
-      { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200", isFeatured: true, isBestSelling: true, isNewArrival: false, category: "fruits" },
-      { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200", isFeatured: true, isBestSelling: true, isNewArrival: false, category: "fruits" },
-      { id: 3, name: "Carrot (Farm)", price: 35, oldPrice: 45, discountPercent: 22, image: "https://images.unsplash.com/photo-1447175008436-054170c2e979?w=200", isFeatured: false, isBestSelling: true, isNewArrival: false, category: "vegetables" },
-      { id: 4, name: "Orange Juice", price: 99, oldPrice: 120, discountPercent: 17, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=200", isFeatured: true, isBestSelling: false, isNewArrival: true, category: "beverages" },
-      { id: 5, name: "Broccoli", price: 55, oldPrice: 70, discountPercent: 21, image: "https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=200", isFeatured: false, isBestSelling: true, isNewArrival: false, category: "vegetables" },
-      { id: 6, name: "Coconut Water", price: 89, oldPrice: 110, discountPercent: 19, image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=200", isFeatured: true, isBestSelling: false, isNewArrival: false, category: "beverages" },
-      { id: 7, name: "Chocolate Cake", price: 399, oldPrice: 499, discountPercent: 20, image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200", isFeatured: true, isBestSelling: true, isNewArrival: false, category: "cakes" },
-      { id: 8, name: "Vanilla IceCream", price: 149, oldPrice: 199, discountPercent: 25, image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200", isFeatured: false, isBestSelling: false, isNewArrival: true, category: "icecream" },
-      { id: 9, name: "Paneer Masala", price: 249, oldPrice: 299, discountPercent: 16, image: "https://images.unsplash.com/photo-1631452180519-c96fe4bdf330?w=200", isFeatured: true, isBestSelling: false, isNewArrival: false, category: "meals" },
-      { id: 10, name: "Spicy Chicken", price: 299, oldPrice: 349, discountPercent: 14, image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=200", isFeatured: false, isBestSelling: true, isNewArrival: false, category: "meats" },
-      { id: 11, name: "Fresh Mangoes", price: 199, oldPrice: 280, discountPercent: 29, image: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=200", isFeatured: true, isBestSelling: false, isNewArrival: true, category: "fruits" },
-      { id: 12, name: "Organic Tomato", price: 40, oldPrice: 60, discountPercent: 33, image: "https://images.unsplash.com/photo-1546470427-1c6c87c6d6e9?w=200", isFeatured: false, isBestSelling: true, isNewArrival: false, category: "vegetables" }
-    ];
+    // ==================== PAGE-SPECIFIC DATA ====================
+    let allProductsData = [];
+    let pageRecentlyViewed = [];
+    let showMoreManager = null;
     
-    // Generate more products for infinite scroll
-    let allPageProducts = [...pageProducts];
-    for (let i = 13; i <= 50; i++) {
-      let baseProduct = pageProducts[i % pageProducts.length];
-      allPageProducts.push({ 
-        ...baseProduct, 
-        id: i, 
-        name: `${baseProduct.name} ${i}`,
-        discountPercent: 15 + Math.floor(Math.random() * 30)
-      });
+    // ==================== LOAD PRODUCTS ====================
+    async function loadProductsFromJSON() {
+      try {
+        const response = await fetch('product.json');
+        const data = await response.json();
+        allProductsData = data.products.map(p => ({
+          id: p.id, name: p.name, price: p.price, oldPrice: p.oldPrice,
+          discountPercent: p.discountPercent || Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100),
+          image: p.image, isFeatured: p.isFeatured || false, isBestSelling: p.isBestSelling || false,
+          isNewArrival: p.isNewArrival || false, category: p.category
+        }));
+        window.allProducts = allProductsData;
+        return true;
+      } catch(e) {
+        console.log('Using fallback products');
+        allProductsData = [
+          { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200", isFeatured: true, isBestSelling: true },
+          { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200", isFeatured: true, isBestSelling: true }
+        ];
+        window.allProducts = allProductsData;
+        return false;
+      }
     }
-    const products = allPageProducts;
-    window.allProducts = products;
     
-    // ==================== PAGE-SPECIFIC VARIABLES ====================
-    let pageRecentlyViewed = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
-    let currentPage = 1;
-    const itemsPerPage = 12;
+    // ==================== RECENTLY VIEWED ====================
+    function loadRecentlyViewed() {
+      try { pageRecentlyViewed = JSON.parse(localStorage.getItem('freshkart_recently')) || []; } catch(e) { pageRecentlyViewed = []; }
+    }
     
-    // ==================== RECENTLY VIEWED FUNCTION ====================
     function updateRecentlyViewed() {
       const container = document.getElementById('recentlyViewed');
-      if (container && pageRecentlyViewed.length > 0) {
-        container.innerHTML = pageRecentlyViewed.map(p => `
-          <div class="swiper-slide">
-            <div onclick="viewProduct(${p.id})" style="text-align:center;">
-              <div style="width:65px;height:65px;border-radius:50%;overflow:hidden;margin:0 auto;">
-                <img src="${p.image}" style="width:100%;height:100%;object-fit:cover;">
-              </div>
-              <div style="font-size:11px;margin-top:6px;">${p.name}<br>₹${p.price}</div>
-            </div>
-          </div>
-        `).join('');
+      if (container) {
+        if (pageRecentlyViewed.length > 0) {
+          container.innerHTML = pageRecentlyViewed.slice(0, 30).map(p => `
+            <div class="swiper-slide"><div onclick="viewProduct(${p.id})" style="text-align:center;"><div style="width:65px;height:65px;border-radius:50%;overflow:hidden;margin:0 auto;"><img src="${p.image}" style="width:100%;height:100%;object-fit:cover;"></div><div style="font-size:11px;margin-top:6px;">${p.name}<br>₹${p.price}</div></div></div>
+          `).join('');
+        } else {
+          container.innerHTML = '<div class="swiper-slide" style="text-align:center;padding:20px;">No recently viewed items</div>';
+        }
         if (window.recentlySwiper) window.recentlySwiper.update();
       }
     }
     
-    // ==================== DISPLAY OFFERINGS (PREMIUM PICKS) ====================
-    function displayOfferings() {
+    // ==================== PRODUCT FILTERING ====================
+    function getFilteredProducts() {
       let active = document.querySelector('.tab-btn.active')?.dataset.tab || 'featured';
-      let filtered = [];
-      
-      if (active === 'featured') {
-        filtered = products.filter(p => p.isFeatured === true);
-      } else if (active === 'best-selling') {
-        filtered = products.filter(p => p.isBestSelling === true);
-      } else if (active === 'new-arrivals') {
-        filtered = products.filter(p => p.isNewArrival === true);
-      }
-      
-      let paginated = filtered.slice(0, currentPage * itemsPerPage);
-      const grid = document.getElementById('offeringsGrid');
-      
-      if (grid) {
-        grid.innerHTML = paginated.map(p => renderProductCard(p)).join('');
-      }
-      
-      const loadMoreBtn = document.getElementById('loadMoreBtn');
-      if (loadMoreBtn) {
-        loadMoreBtn.style.display = paginated.length >= filtered.length ? 'none' : 'block';
-      }
+      return allProductsData.filter(p => active === 'featured' ? p.isFeatured : active === 'best-selling' ? p.isBestSelling : p.isNewArrival);
     }
     
-    // ==================== REFRESH PRODUCT GRIDS (For wishlist sync) ====================
-    function refreshProductGrids() {
-      displayOfferings();
-      updateRecentlyViewed();
+    function refreshOnTabChange() {
+      if (showMoreManager) showMoreManager.refresh();
     }
     
-    // ==================== VIEW PRODUCT ====================
     function viewProduct(productId) {
-      let p = products.find(p => p.id === productId);
+      let p = allProductsData.find(p => p.id === productId);
       if (p) {
         let filtered = pageRecentlyViewed.filter(r => r.id !== productId);
         filtered.unshift(p);
-        pageRecentlyViewed = filtered.slice(0, 10);
-        localStorage.setItem('recentlyViewed', JSON.stringify(pageRecentlyViewed));
+        pageRecentlyViewed = filtered.slice(0, 30);
+        localStorage.setItem('freshkart_recently', JSON.stringify(pageRecentlyViewed));
       }
       window.location.href = `description.html?id=${productId}`;
     }
     
-    // ==================== ADD TO CART ====================
     function addToCart(product) {
       let existing = cart.find(i => i.id === product.id);
-      if (existing) {
-        if (existing.qty + 1 > 20) { alert("Max 20 allowed"); return; }
-        existing.qty++;
-      } else {
-        cart.push({ ...product, qty: 1 });
-      }
+      if (existing) { existing.qty++; } else { cart.push({ ...product, qty: 1 }); }
+      saveCart();
       updateCartUI();
       alert(`${product.name} added to cart!`);
     }
     
-    // ==================== INITIALIZE HERO SLIDER ====================
-    function initHeroSlider() {
-      const slides = [
-        { title: "Fresh Groceries", sub: "40% off first order", bg: "linear-gradient(135deg,#2e7d32,#f97316)" },
-        { title: "Farm Fresh Veggies", sub: "Direct from farmers", bg: "linear-gradient(135deg,#1e3c72,#2a5298)" },
-        { title: "Organic Fruits Sale", sub: "30% off", bg: "linear-gradient(135deg,#d4145a,#3a1c71)" }
-      ];
-      const slider = document.getElementById('heroSlider');
-      if (slider) {
-        slider.innerHTML = slides.map(s => `
-          <div class="swiper-slide hero-slide" style="background:${s.bg}">
-            <div class="hero-content">
-              <h2>${s.title}</h2>
-              <p>${s.sub}</p>
-              <button class="order-now" onclick="alert('Explore offers!')">Order Now →</button>
-            </div>
-          </div>
-        `).join('');
-        new Swiper('.heroSwiper', {
-          loop: true,
-          autoplay: { delay: 3500 },
-          pagination: { el: '.swiper-pagination' },
-          navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
-        });
-      }
-    }
-    
-    // ==================== INITIALIZE QUICK CATEGORIES ====================
-    function initQuickCategories() {
-      const categories = [
-        { name: "Fruits", icon: "🍎", cat: "fruits" },
-        { name: "Vegetables", icon: "🥬", cat: "vegetables" },
-        { name: "Beverages", icon: "🥤", cat: "beverages" },
-        { name: "Cakes", icon: "🎂", cat: "cakes" },
-        { name: "Ice Cream", icon: "🍦", cat: "icecream" },
-        { name: "Snacks", icon: "🍿", cat: "snacks" }
-      ];
-      const container = document.getElementById('quickCatLinks');
-      if (container) {
-        container.innerHTML = categories.map(c => `
-          <a href="categories.html?cat=${c.cat}" class="cat-link">
-            <div class="cat-icon">${c.icon}</div>
-            <span>${c.name}</span>
-          </a>
-        `).join('');
-      }
-    }
-    
-    // ==================== INITIALIZE SUBSCRIPTION ITEMS ====================
-    function initSubscriptionItems() {
-      const items = [
-        { img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=100", name: "Milk" },
-        { img: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=100", name: "Bread" },
-        { img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=100", name: "Eggs" },
-        { img: "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=100", name: "Fruits" },
-        { img: "https://images.unsplash.com/photo-1597362875127-2c6e5a8bf6f4?w=100", name: "Juice" }
-      ];
-      const wrap = document.getElementById('subscriptionItems');
-      if (wrap) {
-        wrap.innerHTML = items.map(i => `
-          <div class="swiper-slide sub-item" onclick="window.location.href='subscription.html'">
-            <img src="${i.img}"><div>${i.name}</div><small>daily</small>
-          </div>
-        `).join('');
-        new Swiper('.subscriptionSwiper', {
-          slidesPerView: 2.5,
-          spaceBetween: 14,
-          breakpoints: { 640: { slidesPerView: 3.5 }, 1024: { slidesPerView: 5 } }
-        });
-      }
-    }
-    
-    // ==================== INITIALIZE CUSTOMER REVIEWS ====================
-    function initCustomerReviews() {
-      const reviews = [
-        { name: "Priya Sharma", avatar: "P", rating: 5, text: "FreshKart is a game changer! Daily delivery is super reliable." },
-        { name: "Rahul Verma", avatar: "R", rating: 5, text: "Best grocery app, love the dark mode and smooth cart." },
-        { name: "Neha Gupta", avatar: "N", rating: 4, text: "Great discounts and fresh produce. Highly recommended!" }
-      ];
-      const grid = document.getElementById('reviewsGrid');
-      if (grid) {
-        grid.innerHTML = reviews.map(r => `
-          <div class="review-card">
-            <div class="review-header">
-              <div class="review-avatar">${r.avatar}</div>
-              <div>
-                <strong>${r.name}</strong>
-                <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
-              </div>
-            </div>
-            <div class="review-text">“${r.text}”</div>
-          </div>
-        `).join('');
-      }
-    }
-    
-    // ==================== INITIALIZE COUNTDOWN TIMER ====================
-    function initCountdownTimer() {
-      const target = new Date();
-      target.setDate(target.getDate() + 5);
-      setInterval(() => {
-        const diff = target - new Date();
-        if (diff <= 0) return;
-        const days = document.getElementById('days');
-        const hours = document.getElementById('hours');
-        const minutes = document.getElementById('minutes');
-        const seconds = document.getElementById('seconds');
-        if (days) days.innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
-        if (hours) hours.innerText = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, '0');
-        if (minutes) minutes.innerText = String(Math.floor((diff / 60000) % 60)).padStart(2, '0');
-        if (seconds) seconds.innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
-      }, 1000);
-    }
-    
-    // ==================== INITIALIZE SUBSCRIPTION EXPAND ====================
-    function initSubscriptionExpand() {
-      const expandBtn = document.getElementById('expandSubscriptionBtn');
-      const minDiv = document.getElementById('subscriptionMinimized');
-      const expDiv = document.getElementById('subscriptionExpanded');
-      if (expandBtn && minDiv && expDiv) {
-        expandBtn.addEventListener('click', () => {
-          if (minDiv.style.display !== 'none') {
-            minDiv.style.display = 'none';
-            expDiv.style.display = 'block';
-            expandBtn.innerHTML = '<span>Collapse</span> <i class="fas fa-arrow-up"></i>';
-          } else {
-            minDiv.style.display = 'block';
-            expDiv.style.display = 'none';
-            expandBtn.innerHTML = '<span>Explore plans</span> <i class="fas fa-arrow-down"></i>';
-          }
-        });
-      }
-    }
-    
-    // ==================== BIND CART EVENTS ====================
-    function bindCartEvents() {
-      const cartBtn = document.getElementById('cartBtn');
-      const bottomCartBtn = document.getElementById('bottomCartBtn');
-      const mobileCartIcon = document.getElementById('mobileCartIcon');
-      const closeCartBtn = document.getElementById('closeCartBtn');
-      const overlay = document.getElementById('overlay');
-      const checkoutBtn = document.getElementById('checkoutBtn');
-      
-      if (cartBtn) cartBtn.addEventListener('click', openCart);
-      if (bottomCartBtn) bottomCartBtn.addEventListener('click', (e) => { e.preventDefault(); openCart(); });
-      if (mobileCartIcon) mobileCartIcon.addEventListener('click', openCart);
-      if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
-      if (overlay) overlay.addEventListener('click', closeCart);
-      if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
-          if (cart.length) {
-            alert(`✅ Order placed successfully! Total ₹${cart.reduce((s, i) => s + i.price * i.qty, 0)}`);
-            cart = [];
-            updateCartUI();
-            closeCart();
-          } else {
-            alert('Cart empty');
-          }
-        });
-      }
-    }
-    
-    // ==================== INITIALIZE SEARCH ====================
-    function initSearch() {
-      const searchInput = document.getElementById('globalSearch');
-      if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-          const term = e.target.value.toLowerCase();
-          const filtered = products.filter(p => p.name.toLowerCase().includes(term));
-          if (filtered.length) {
-            window.location.href = `description.html?id=${filtered[0].id}`;
-          }
-        });
-      }
-    }
-    
-    // ==================== INITIALIZE LOCATION SELECTOR ====================
-    function initLocation() {
-      const locationSelect = document.getElementById('locationSelect');
-      if (locationSelect) {
-        locationSelect.addEventListener('change', (e) => {
-          alert(`📍 Location changed to ${e.target.value}`);
-        });
-      }
-    }
-    
-    // ==================== INITIALIZE BACK TO TOP ====================
-    function initBackToTop() {
-      const backBtn = document.getElementById('backToTopBtn');
-      if (backBtn) {
-        backBtn.addEventListener('click', () => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-      }
-    }
-    
-    // ==================== INITIALIZE DARK MODE ====================
-    function initDarkMode() {
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      document.body.setAttribute('data-theme', savedTheme);
-      const toggleBtn = document.getElementById('darkModeToggle');
-      if (toggleBtn) {
-        toggleBtn.innerHTML = savedTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-        toggleBtn.addEventListener('click', () => {
-          const cur = document.body.getAttribute('data-theme');
-          const nxt = cur === 'dark' ? 'light' : 'dark';
-          document.body.setAttribute('data-theme', nxt);
-          localStorage.setItem('theme', nxt);
-          toggleBtn.innerHTML = nxt === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-        });
-      }
+    // ==================== SKELETONS ====================
+    function showAllSkeletons() {
+      showHeroSkeleton();
+      showCategoriesSkeleton();
+      showRecentlyViewedSkeleton();
+      showProductsSkeleton('offeringsGrid', 12);
+      showSubscriptionSkeleton();
+      showReviewsSkeleton();
     }
     
     // ==================== PAGE INITIALIZATION ====================
-    function initPage() {
-      // Initialize all components
+    async function initPage() {
+      showAllSkeletons();
+      await loadProductsFromJSON();
+      loadRecentlyViewed();
+      
       initHeroSlider();
       initQuickCategories();
       initSubscriptionItems();
       initCustomerReviews();
       initCountdownTimer();
       initSubscriptionExpand();
-      initSearch();
-      initLocation();
+      initLocationSelector();
       initBackToTop();
-      initDarkMode();
       bindCartEvents();
-      
-      // Initialize cart UI
+      initGlobalSearch(allProductsData);
       updateCartUI();
-      
-      // Initialize product display
-      displayOfferings();
       updateRecentlyViewed();
       
-      // Initialize recently viewed swiper
-      window.recentlySwiper = new Swiper('.recentlySwiper', {
-        slidesPerView: 2.5,
-        spaceBetween: 12,
-        breakpoints: { 640: { slidesPerView: 4 }, 1024: { slidesPerView: 6 } }
+      showMoreManager = createShowMoreManager('premiumPicks', 'offeringsGrid', 'loadMoreBtn', getFilteredProducts, {
+        initialItems: SITE_CONFIG.DEFAULT_INITIAL_ITEMS,
+        loadMoreItems: SITE_CONFIG.DEFAULT_LOAD_MORE_ITEMS,
+        maxCycles: SITE_CONFIG.DEFAULT_MAX_CYCLES,
+        showCycleNotification: true
+      });
+      showMoreManager.init();
+      
+      window.recentlySwiper = new Swiper('.recentlySwiper', { 
+        slidesPerView: 2.5, spaceBetween: 12, breakpoints: { 640: { slidesPerView: 4 }, 1024: { slidesPerView: 6 } }
       });
       
-      // Tab button event listeners
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          currentPage = 1;
-          displayOfferings();
-        });
-      });
-      
-      // Load more button
-      const loadMoreBtn = document.getElementById('loadMoreBtn');
-      if (loadMoreBtn) {
-        loadMoreBtn.addEventListener('click', () => {
-          currentPage++;
-          displayOfferings();
-        });
-      }
-      
-      // Subscription plan buttons
-      document.querySelectorAll('.sub-plan-btn').forEach(btn => {
-        btn.addEventListener('click', () => alert('Subscription plan selected! Redirecting...'));
-      });
-    }
-    
-    // Override global functions
-    window.viewProduct = viewProduct;
-    window.addToCart = addToCart;
-    window.refreshProductGrids = refreshProductGrids;
-    
-    // Start the page
-    initPage(); */
-
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script src="common.js"></script>
-<script>
-  // ==================== PAGE-SPECIFIC PRODUCT DATA ====================
-  const pageProducts = [
-    { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200", isFeatured: true, isBestSelling: true, isNewArrival: false, category: "fruits" },
-    { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200", isFeatured: true, isBestSelling: true, isNewArrival: false, category: "fruits" },
-    { id: 3, name: "Carrot (Farm)", price: 35, oldPrice: 45, discountPercent: 22, image: "https://images.unsplash.com/photo-1447175008436-054170c2e979?w=200", isFeatured: false, isBestSelling: true, isNewArrival: false, category: "vegetables" },
-    { id: 4, name: "Orange Juice", price: 99, oldPrice: 120, discountPercent: 17, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=200", isFeatured: true, isBestSelling: false, isNewArrival: true, category: "beverages" },
-    { id: 5, name: "Broccoli", price: 55, oldPrice: 70, discountPercent: 21, image: "https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=200", isFeatured: false, isBestSelling: true, isNewArrival: false, category: "vegetables" },
-    { id: 6, name: "Coconut Water", price: 89, oldPrice: 110, discountPercent: 19, image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=200", isFeatured: true, isBestSelling: false, isNewArrival: false, category: "beverages" },
-    { id: 7, name: "Chocolate Cake", price: 399, oldPrice: 499, discountPercent: 20, image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200", isFeatured: true, isBestSelling: true, isNewArrival: false, category: "cakes" },
-    { id: 8, name: "Vanilla IceCream", price: 149, oldPrice: 199, discountPercent: 25, image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200", isFeatured: false, isBestSelling: false, isNewArrival: true, category: "icecream" },
-    { id: 9, name: "Paneer Masala", price: 249, oldPrice: 299, discountPercent: 16, image: "https://images.unsplash.com/photo-1631452180519-c96fe4bdf330?w=200", isFeatured: true, isBestSelling: false, isNewArrival: false, category: "meals" },
-    { id: 10, name: "Spicy Chicken", price: 299, oldPrice: 349, discountPercent: 14, image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=200", isFeatured: false, isBestSelling: true, isNewArrival: false, category: "meats" },
-    { id: 11, name: "Fresh Mangoes", price: 199, oldPrice: 280, discountPercent: 29, image: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=200", isFeatured: true, isBestSelling: false, isNewArrival: true, category: "fruits" },
-    { id: 12, name: "Organic Tomato", price: 40, oldPrice: 60, discountPercent: 33, image: "https://images.unsplash.com/photo-1546470427-1c6c87c6d6e9?w=200", isFeatured: false, isBestSelling: true, isNewArrival: false, category: "vegetables" }
-  ];
-  
-  // Generate more products for infinite scroll
-  let allPageProducts = [...pageProducts];
-  for (let i = 13; i <= 50; i++) {
-    let baseProduct = pageProducts[i % pageProducts.length];
-    allPageProducts.push({ 
-      ...baseProduct, 
-      id: i, 
-      name: `${baseProduct.name} ${i}`,
-      discountPercent: 15 + Math.floor(Math.random() * 30)
-    });
-  }
-  const products = allPageProducts;
-  window.allProducts = products;
-  
-  // ==================== PAGE-SPECIFIC VARIABLES ====================
-  let pageRecentlyViewed = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
-  let currentPage = 1;
-  const itemsPerPage = 12;
-  
-  // ==================== SHOW SKELETONS ON PAGE LOAD ====================
-  function showAllSkeletons() {
-    showHeroSkeleton();
-    showCategoriesSkeleton();
-    showRecentlyViewedSkeleton();
-    showProductsSkeleton('offeringsGrid', 8);
-    showSubscriptionSkeleton();
-    showReviewsSkeleton();
-  }
-  
-  // ==================== RECENTLY VIEWED FUNCTION ====================
-  function updateRecentlyViewed() {
-    const container = document.getElementById('recentlyViewed');
-    if (container && pageRecentlyViewed.length > 0) {
-      container.innerHTML = pageRecentlyViewed.map(p => `
-        <div class="swiper-slide">
-          <div onclick="viewProduct(${p.id})" style="text-align:center;">
-            <div style="width:65px;height:65px;border-radius:50%;overflow:hidden;margin:0 auto;">
-              <img src="${p.image}" style="width:100%;height:100%;object-fit:cover;">
-            </div>
-            <div style="font-size:11px;margin-top:6px;">${p.name}<br>₹${p.price}</div>
-          </div>
-        </div>
-      `).join('');
-      if (window.recentlySwiper) window.recentlySwiper.update();
-    }
-  }
-  
-  // ==================== DISPLAY OFFERINGS (PREMIUM PICKS) ====================
-  function displayOfferings() {
-    let active = document.querySelector('.tab-btn.active')?.dataset.tab || 'featured';
-    let filtered = [];
-    
-    if (active === 'featured') {
-      filtered = products.filter(p => p.isFeatured === true);
-    } else if (active === 'best-selling') {
-      filtered = products.filter(p => p.isBestSelling === true);
-    } else if (active === 'new-arrivals') {
-      filtered = products.filter(p => p.isNewArrival === true);
-    }
-    
-    let paginated = filtered.slice(0, currentPage * itemsPerPage);
-    const grid = document.getElementById('offeringsGrid');
-    
-    if (grid) {
-      grid.innerHTML = paginated.map(p => renderProductCard(p)).join('');
-    }
-    
-    const loadMoreBtn = document.getElementById('loadMoreBtn');
-    if (loadMoreBtn) {
-      loadMoreBtn.style.display = paginated.length >= filtered.length ? 'none' : 'block';
-    }
-  }
-  
-  // ==================== REFRESH PRODUCT GRIDS ====================
-  function refreshProductGrids() {
-    displayOfferings();
-    updateRecentlyViewed();
-  }
-  
-  // ==================== VIEW PRODUCT ====================
-  function viewProduct(productId) {
-    let p = products.find(p => p.id === productId);
-    if (p) {
-      let filtered = pageRecentlyViewed.filter(r => r.id !== productId);
-      filtered.unshift(p);
-      pageRecentlyViewed = filtered.slice(0, 10);
-      localStorage.setItem('recentlyViewed', JSON.stringify(pageRecentlyViewed));
-    }
-    window.location.href = `description.html?id=${productId}`;
-  }
-  
-  // ==================== ADD TO CART ====================
-  function addToCart(product) {
-    let existing = cart.find(i => i.id === product.id);
-    if (existing) {
-      if (existing.qty + 1 > 20) { alert("Max 20 allowed"); return; }
-      existing.qty++;
-    } else {
-      cart.push({ ...product, qty: 1 });
-    }
-    updateCartUI();
-    alert(`${product.name} added to cart!`);
-  }
-  
-  // ==================== INITIALIZE HERO SLIDER ====================
-  function initHeroSlider() {
-    const slides = [
-      { title: "Fresh Groceries", sub: "40% off first order", bg: "linear-gradient(135deg,#2e7d32,#f97316)" },
-      { title: "Farm Fresh Veggies", sub: "Direct from farmers", bg: "linear-gradient(135deg,#1e3c72,#2a5298)" },
-      { title: "Organic Fruits Sale", sub: "30% off", bg: "linear-gradient(135deg,#d4145a,#3a1c71)" }
-    ];
-    const slider = document.getElementById('heroSlider');
-    if (slider) {
-      slider.innerHTML = slides.map(s => `
-        <div class="swiper-slide hero-slide" style="background:${s.bg}">
-          <div class="hero-content">
-            <h2>${s.title}</h2>
-            <p>${s.sub}</p>
-            <button class="order-now" onclick="alert('Explore offers!')">Order Now →</button>
-          </div>
-        </div>
-      `).join('');
-      if (window.heroSwiper) window.heroSwiper.update();
-      else {
-        window.heroSwiper = new Swiper('.heroSwiper', {
-          loop: true,
-          autoplay: { delay: 3500 },
-          pagination: { el: '.swiper-pagination' },
-          navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
-        });
-      }
-    }
-  }
-  
-  // ==================== INITIALIZE QUICK CATEGORIES ====================
-  function initQuickCategories() {
-    const categories = [
-      { name: "Fruits", icon: "🍎", cat: "fruits" },
-      { name: "Vegetables", icon: "🥬", cat: "vegetables" },
-      { name: "Beverages", icon: "🥤", cat: "beverages" },
-      { name: "Cakes", icon: "🎂", cat: "cakes" },
-      { name: "Ice Cream", icon: "🍦", cat: "icecream" },
-      { name: "Snacks", icon: "🍿", cat: "snacks" }
-    ];
-    const container = document.getElementById('quickCatLinks');
-    if (container) {
-      container.innerHTML = categories.map(c => `
-        <a href="categories.html?cat=${c.cat}" class="cat-link">
-          <div class="cat-icon">${c.icon}</div>
-          <span>${c.name}</span>
-        </a>
-      `).join('');
-    }
-  }
-  
-  // ==================== INITIALIZE SUBSCRIPTION ITEMS ====================
-  function initSubscriptionItems() {
-    const items = [
-      { img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=100", name: "Milk" },
-      { img: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=100", name: "Bread" },
-      { img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=100", name: "Eggs" },
-      { img: "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=100", name: "Fruits" },
-      { img: "https://images.unsplash.com/photo-1597362875127-2c6e5a8bf6f4?w=100", name: "Juice" }
-    ];
-    const wrap = document.getElementById('subscriptionItems');
-    if (wrap) {
-      wrap.innerHTML = items.map(i => `
-        <div class="swiper-slide sub-item" onclick="window.location.href='subscription.html'">
-          <img src="${i.img}"><div>${i.name}</div><small>daily</small>
-        </div>
-      `).join('');
-      if (window.subSwiper) window.subSwiper.update();
-      else {
-        window.subSwiper = new Swiper('.subscriptionSwiper', {
-          slidesPerView: 2.5,
-          spaceBetween: 14,
-          breakpoints: { 640: { slidesPerView: 3.5 }, 1024: { slidesPerView: 5 } }
-        });
-      }
-    }
-  }
-  
-  // ==================== INITIALIZE CUSTOMER REVIEWS ====================
-  function initCustomerReviews() {
-    const reviews = [
-      { name: "Priya Sharma", avatar: "P", rating: 5, text: "FreshKart is a game changer! Daily delivery is super reliable." },
-      { name: "Rahul Verma", avatar: "R", rating: 5, text: "Best grocery app, love the dark mode and smooth cart." },
-      { name: "Neha Gupta", avatar: "N", rating: 4, text: "Great discounts and fresh produce. Highly recommended!" }
-    ];
-    const grid = document.getElementById('reviewsGrid');
-    if (grid) {
-      grid.innerHTML = reviews.map(r => `
-        <div class="review-card">
-          <div class="review-header">
-            <div class="review-avatar">${r.avatar}</div>
-            <div>
-              <strong>${r.name}</strong>
-              <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
-            </div>
-          </div>
-          <div class="review-text">“${r.text}”</div>
-        </div>
-      `).join('');
-    }
-  }
-  
-  // ==================== INITIALIZE COUNTDOWN TIMER ====================
-  function initCountdownTimer() {
-    const target = new Date();
-    target.setDate(target.getDate() + 5);
-    setInterval(() => {
-      const diff = target - new Date();
-      if (diff <= 0) return;
-      const days = document.getElementById('days');
-      const hours = document.getElementById('hours');
-      const minutes = document.getElementById('minutes');
-      const seconds = document.getElementById('seconds');
-      if (days) days.innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
-      if (hours) hours.innerText = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, '0');
-      if (minutes) minutes.innerText = String(Math.floor((diff / 60000) % 60)).padStart(2, '0');
-      if (seconds) seconds.innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
-    }, 1000);
-  }
-  
-  // ==================== INITIALIZE SUBSCRIPTION EXPAND ====================
-  function initSubscriptionExpand() {
-    const expandBtn = document.getElementById('expandSubscriptionBtn');
-    const minDiv = document.getElementById('subscriptionMinimized');
-    const expDiv = document.getElementById('subscriptionExpanded');
-    if (expandBtn && minDiv && expDiv) {
-      expandBtn.addEventListener('click', () => {
-        if (minDiv.style.display !== 'none') {
-          minDiv.style.display = 'none';
-          expDiv.style.display = 'block';
-          expandBtn.innerHTML = '<span>Collapse</span> <i class="fas fa-arrow-up"></i>';
-        } else {
-          minDiv.style.display = 'block';
-          expDiv.style.display = 'none';
-          expandBtn.innerHTML = '<span>Explore plans</span> <i class="fas fa-arrow-down"></i>';
-        }
-      });
-    }
-  }
-  
-  // ==================== BIND CART EVENTS ====================
-  function bindCartEvents() {
-    const cartBtn = document.getElementById('cartBtn');
-    const bottomCartBtn = document.getElementById('bottomCartBtn');
-    const mobileCartIcon = document.getElementById('mobileCartIcon');
-    const closeCartBtn = document.getElementById('closeCartBtn');
-    const overlay = document.getElementById('overlay');
-    const checkoutBtn = document.getElementById('checkoutBtn');
-    
-    if (cartBtn) cartBtn.addEventListener('click', openCart);
-    if (bottomCartBtn) bottomCartBtn.addEventListener('click', (e) => { e.preventDefault(); openCart(); });
-    if (mobileCartIcon) mobileCartIcon.addEventListener('click', openCart);
-    if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
-    if (overlay) overlay.addEventListener('click', closeCart);
-    if (checkoutBtn) {
-      checkoutBtn.addEventListener('click', () => {
-        if (cart.length) {
-          alert(`✅ Order placed successfully! Total ₹${cart.reduce((s, i) => s + i.price * i.qty, 0)}`);
-          cart = [];
-          updateCartUI();
-          closeCart();
-        } else {
-          alert('Cart empty');
-        }
-      });
-    }
-  }
-  
-  // ==================== INITIALIZE SEARCH ====================
-  function initSearch() {
-    const searchInput = document.getElementById('globalSearch');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        const filtered = products.filter(p => p.name.toLowerCase().includes(term));
-        if (filtered.length) {
-          window.location.href = `description.html?id=${filtered[0].id}`;
-        }
-      });
-    }
-  }
-  
-  // ==================== INITIALIZE LOCATION SELECTOR ====================
-  function initLocation() {
-    const locationSelect = document.getElementById('locationSelect');
-    if (locationSelect) {
-      locationSelect.addEventListener('change', (e) => {
-        alert(`📍 Location changed to ${e.target.value}`);
-      });
-    }
-  }
-  
-  // ==================== INITIALIZE BACK TO TOP ====================
-  function initBackToTop() {
-    const backBtn = document.getElementById('backToTopBtn');
-    if (backBtn) {
-      backBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    }
-  }
-  
-  // ==================== INITIALIZE DARK MODE ====================
-  function initDarkMode() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.body.setAttribute('data-theme', savedTheme);
-    const toggleBtn = document.getElementById('darkModeToggle');
-    if (toggleBtn) {
-      toggleBtn.innerHTML = savedTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-      toggleBtn.addEventListener('click', () => {
-        const cur = document.body.getAttribute('data-theme');
-        const nxt = cur === 'dark' ? 'light' : 'dark';
-        document.body.setAttribute('data-theme', nxt);
-        localStorage.setItem('theme', nxt);
-        toggleBtn.innerHTML = nxt === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-      });
-    }
-  }
-  
-  // ==================== LOAD ALL CONTENT WITH SKELETONS ====================
-  async function loadAllContent() {
-    // Show skeletons immediately
-    showAllSkeletons();
-    
-    // Simulate minimum loading time for better UX (optional)
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    // Load actual content
-    initHeroSlider();
-    initQuickCategories();
-    initSubscriptionItems();
-    initCustomerReviews();
-    initCountdownTimer();
-    initSubscriptionExpand();
-    initSearch();
-    initLocation();
-    initBackToTop();
-    initDarkMode();
-    bindCartEvents();
-    
-    updateCartUI();
-    displayOfferings();
-    updateRecentlyViewed();
-  }
-  
-  // ==================== PAGE INITIALIZATION ====================
-  function initPage() {
-    // Initialize recently viewed swiper
-    window.recentlySwiper = new Swiper('.recentlySwiper', {
-      slidesPerView: 2.5,
-      spaceBetween: 12,
-      breakpoints: { 640: { slidesPerView: 4 }, 1024: { slidesPerView: 6 } }
-    });
-    
-    // Tab button event listeners
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', function() {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        currentPage = 1;
-        displayOfferings();
-      });
-    });
-    
-    // Load more button
-    const loadMoreBtn = document.getElementById('loadMoreBtn');
-    if (loadMoreBtn) {
-      loadMoreBtn.addEventListener('click', () => {
-        currentPage++;
-        displayOfferings();
-      });
+        refreshOnTabChange();
+      }));
+      
+      document.querySelectorAll('.sub-plan-btn').forEach(btn => btn.addEventListener('click', () => alert('Subscription plan selected!')));
     }
     
-    // Subscription plan buttons
-    document.querySelectorAll('.sub-plan-btn').forEach(btn => {
-      btn.addEventListener('click', () => alert('Subscription plan selected! Redirecting...'));
-    });
+    window.viewProduct = viewProduct;
+    window.addToCart = addToCart;
     
-    // Start loading content with skeletons
-    loadAllContent();
-  }
-  
-  // Override global functions
-  window.viewProduct = viewProduct;
-  window.addToCart = addToCart;
-  window.refreshProductGrids = refreshProductGrids;
-  
-  // Start the page
-  initPage();
-</script>
-
-
-    </script>
+    initPage();
+  </script>
 </body>
 </html>

@@ -36,8 +36,8 @@
     .form-group input, .form-group select { padding: 12px 16px; border-radius: 40px; border: 1px solid var(--border-light); background: var(--bg-primary); color: var(--text-primary); }
   </style>
 </head>
-<body data-theme="light">
-  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+<body data-theme="dark">
+  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-sun"></i></button>
 
   <!-- Top Bar -->
   <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
@@ -58,26 +58,188 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="common.js"></script>
   <script>
-    let orders = JSON.parse(localStorage.getItem('userOrders')) || [{ id: "ORD-001", date: "2024-03-15", total: 568, status: "delivered", items: 3 }];
-    let addresses = JSON.parse(localStorage.getItem('addresses')) || [{ id: 1, name: "Home", address: "123, Green Park, New Delhi", isDefault: true }];
-    let userData = JSON.parse(localStorage.getItem('userData')) || { name: "Rahul Sharma", email: "rahul@example.com", phone: "+91 98765 43210" };
-    let products = [{ id: 1, name: "Organic Apples", price: 120, oldPrice: 150, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200" }];
-    window.allProducts = products;
+    let orders = [];
+    let addresses = [];
+    let userData = {};
+    let allProducts = [];
+    let wishlistManager = null;
     
-    function renderDashboard() { let totalSpent = orders.reduce((s, o) => s + o.total, 0); document.getElementById('accountMain').innerHTML = `<div class="section-title"><i class="fas fa-chart-line"></i> Dashboard</div><div class="stats-grid"><div class="stat-card" onclick="switchTab('orders')"><div class="stat-icon"><i class="fas fa-shopping-bag"></i></div><div class="stat-value">${orders.length}</div><div class="stat-label">Orders</div></div><div class="stat-card" onclick="switchTab('orders')"><div class="stat-icon"><i class="fas fa-rupee-sign"></i></div><div class="stat-value">₹${totalSpent}</div><div class="stat-label">Spent</div></div><div class="stat-card" onclick="switchTab('wishlist')"><div class="stat-icon"><i class="fas fa-heart"></i></div><div class="stat-value">${wishlist.length}</div><div class="stat-label">Wishlist</div></div><div class="stat-card" onclick="openCart()"><div class="stat-icon"><i class="fas fa-cart-shopping"></i></div><div class="stat-value">${cart.reduce((s,i)=>s+i.qty,0)}</div><div class="stat-label">Cart</div></div></div><div class="section-title"><i class="fas fa-clock"></i> Recent Orders</div>${orders.slice(0, 3).map(o => `<div class="order-item" style="background:var(--bg-primary);border-radius:16px;padding:16px;margin-bottom:10px;"><div><strong>${o.id}</strong><br>${o.date}</div><div>₹${o.total}</div><div class="order-status status-${o.status}">${o.status}</div></div>`).join('')}</div>`;
+    async function loadProducts() {
+      try {
+        const response = await fetch('product.json');
+        const data = await response.json();
+        allProducts = data.products.map(p => ({
+          id: p.id, name: p.name, price: p.price, oldPrice: p.oldPrice,
+          discountPercent: p.discountPercent || Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100),
+          image: p.image, category: p.category
+        }));
+        window.allProducts = allProducts;
+      } catch(e) {
+        allProducts = [
+          { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200" },
+          { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200" }
+        ];
+        window.allProducts = allProducts;
+      }
     }
-    function renderOrders() { document.getElementById('accountMain').innerHTML = `<div class="section-title"><i class="fas fa-shopping-bag"></i> My Orders</div>${orders.map(o => `<div class="order-item" style="background:var(--bg-primary);border-radius:16px;padding:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div><strong>${o.id}</strong><br>${o.date}</div><div>₹${o.total}</div><div class="order-status status-${o.status}">${o.status}</div><button onclick="window.location.href='orders.html'" style="background:var(--orange-primary);border:none;padding:6px 16px;border-radius:30px;color:white;">View</button></div>`).join('')}</div>`; }
-    function renderWishlist() { let wishlistProducts = products.filter(p => wishlist.includes(p.id)); document.getElementById('accountMain').innerHTML = `<div class="section-title"><i class="fas fa-heart"></i> Wishlist (${wishlistProducts.length})</div><div class="products-grid">${wishlistProducts.map(p => renderProductCard(p)).join('')}</div>`; }
-    function renderAddresses() { document.getElementById('accountMain').innerHTML = `<div class="section-title"><i class="fas fa-map-marker-alt"></i> Addresses</div>${addresses.map(a => `<div class="address-card ${a.isDefault ? 'address-default' : ''}"><div><strong>${a.name}</strong> ${a.isDefault ? '(Default)' : ''}<p>${a.address}</p></div><div><button onclick="setDefault(${a.id})" style="background:transparent;border:1px solid var(--border-light);padding:4px 12px;border-radius:30px;">Set Default</button><button onclick="deleteAddress(${a.id})" style="background:var(--red-primary);color:white;border:none;padding:4px 12px;border-radius:30px;margin-left:8px;">Delete</button></div></div>`).join('')}<button class="add-address-btn" onclick="addAddress()">+ Add New Address</button></div>`; }
-    function renderSettings() { document.getElementById('accountMain').innerHTML = `<div class="section-title"><i class="fas fa-user-cog"></i> Settings</div><form id="settingsForm"><div class="form-group"><label>Name</label><input type="text" id="name" value="${userData.name}"></div><div class="form-group"><label>Email</label><input type="email" id="email" value="${userData.email}"></div><div class="form-group"><label>Phone</label><input type="tel" id="phone" value="${userData.phone}"></div><button type="submit" class="save-btn">Save Changes</button></form><div style="margin-top:30px;padding:20px;background:var(--bg-primary);border-radius:16px;"><h4>Logout</h4><button onclick="logout()" style="background:var(--red-primary);color:white;border:none;padding:10px 20px;border-radius:40px;margin-top:10px;">Logout</button></div></div>`; document.getElementById('settingsForm').onsubmit = (e) => { e.preventDefault(); userData.name = document.getElementById('name').value; userData.email = document.getElementById('email').value; userData.phone = document.getElementById('phone').value; localStorage.setItem('userData', JSON.stringify(userData)); document.getElementById('userName').innerText = userData.name; document.getElementById('userEmail').innerText = userData.email; alert('Saved!'); }; }
-    function switchTab(tab) { document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active')); document.querySelector(`.sidebar-menu a[data-tab="${tab}"]`).classList.add('active'); if (tab === 'dashboard') renderDashboard(); else if (tab === 'orders') renderOrders(); else if (tab === 'wishlist') renderWishlist(); else if (tab === 'addresses') renderAddresses(); else if (tab === 'settings') renderSettings(); }
-    function setDefault(id) { addresses = addresses.map(a => ({ ...a, isDefault: a.id === id })); localStorage.setItem('addresses', JSON.stringify(addresses)); renderAddresses(); }
-    function deleteAddress(id) { addresses = addresses.filter(a => a.id !== id); if (addresses.length && !addresses.some(a => a.isDefault)) addresses[0].isDefault = true; localStorage.setItem('addresses', JSON.stringify(addresses)); renderAddresses(); }
-    function addAddress() { let newId = Date.now(); addresses.push({ id: newId, name: "New Address", address: "Enter your address", isDefault: false }); localStorage.setItem('addresses', JSON.stringify(addresses)); renderAddresses(); }
-    function logout() { if (confirm('Logout?')) { localStorage.clear(); window.location.href = 'index.html'; } }
-    function refreshProductGrids() { if (document.querySelector('.sidebar-menu a.active')?.dataset.tab === 'wishlist') renderWishlist(); }
-    function initPage() { initCommon(products, () => { renderDashboard(); document.querySelectorAll('.sidebar-menu a').forEach(a => a.addEventListener('click', (e) => { e.preventDefault(); switchTab(a.dataset.tab); })); }); }
-    window.switchTab = switchTab; window.setDefault = setDefault; window.deleteAddress = deleteAddress; window.addAddress = addAddress; window.logout = logout; window.refreshProductGrids = refreshProductGrids;
+    
+    function loadUserData() {
+      try {
+        const savedOrders = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.ORDERS);
+        orders = savedOrders ? JSON.parse(savedOrders) : [{ id: "ORD-001", date: "2024-03-15", total: 568, status: "delivered", items: 3 }];
+        
+        const savedAddresses = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.ADDRESSES);
+        addresses = savedAddresses ? JSON.parse(savedAddresses) : [{ id: 1, name: "Home", address: "123, Green Park, New Delhi", isDefault: true }];
+        
+        const savedUserData = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.USER_DATA);
+        userData = savedUserData ? JSON.parse(savedUserData) : { name: "Rahul Sharma", email: "rahul@example.com", phone: "+91 98765 43210" };
+      } catch(e) {
+        orders = [{ id: "ORD-001", date: "2024-03-15", total: 568, status: "delivered", items: 3 }];
+        addresses = [{ id: 1, name: "Home", address: "123, Green Park, New Delhi", isDefault: true }];
+        userData = { name: "Rahul Sharma", email: "rahul@example.com", phone: "+91 98765 43210" };
+      }
+    }
+    
+    function renderDashboard() { 
+      let totalSpent = orders.reduce((s, o) => s + o.total, 0); 
+      document.getElementById('accountMain').innerHTML = `
+        <div class="section-title"><i class="fas fa-chart-line"></i> Dashboard</div>
+        <div class="stats-grid">
+          <div class="stat-card" onclick="switchTab('orders')"><div class="stat-icon"><i class="fas fa-shopping-bag"></i></div><div class="stat-value">${orders.length}</div><div class="stat-label">Orders</div></div>
+          <div class="stat-card" onclick="switchTab('orders')"><div class="stat-icon"><i class="fas fa-rupee-sign"></i></div><div class="stat-value">₹${totalSpent}</div><div class="stat-label">Spent</div></div>
+          <div class="stat-card" onclick="switchTab('wishlist')"><div class="stat-icon"><i class="fas fa-heart"></i></div><div class="stat-value">${wishlist.length}</div><div class="stat-label">Wishlist</div></div>
+          <div class="stat-card" onclick="openCart()"><div class="stat-icon"><i class="fas fa-cart-shopping"></i></div><div class="stat-value">${cart.reduce((s,i)=>s+i.qty,0)}</div><div class="stat-label">Cart</div></div>
+        </div>
+        <div class="section-title"><i class="fas fa-clock"></i> Recent Orders</div>
+        ${orders.slice(0, 3).map(o => `<div class="order-item" style="background:var(--bg-primary);border-radius:16px;padding:16px;margin-bottom:10px;"><div><strong>${o.id}</strong><br>${o.date}</div><div>₹${o.total}</div><div class="order-status status-${o.status}">${o.status}</div></div>`).join('')}
+      `;
+    }
+    
+    function renderOrders() { 
+      document.getElementById('accountMain').innerHTML = `
+        <div class="section-title"><i class="fas fa-shopping-bag"></i> My Orders</div>
+        ${orders.map(o => `<div class="order-item" style="background:var(--bg-primary);border-radius:16px;padding:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div><strong>${o.id}</strong><br>${o.date}</div><div>₹${o.total}</div><div class="order-status status-${o.status}">${o.status}</div><button onclick="window.location.href='orders.html'" style="background:var(--orange-primary);border:none;padding:6px 16px;border-radius:30px;color:white;">View</button></div>`).join('')}
+      `;
+    }
+    
+    function renderWishlist() { 
+      let wishlistProducts = getWishlistProducts(allProducts);
+      document.getElementById('accountMain').innerHTML = `
+        <div class="section-title"><i class="fas fa-heart"></i> My Wishlist (${wishlistProducts.length})</div>
+        <div class="products-grid" id="wishlistGrid"></div>
+        <button class="show-more-btn" id="loadMoreWishlist" style="${wishlistProducts.length > 8 ? 'display:block' : 'display:none'}">Show More →</button>
+      `;
+      
+      if (!wishlistManager) {
+        wishlistManager = createShowMoreManager('wishlistProducts', 'wishlistGrid', 'loadMoreWishlist', () => getWishlistProducts(allProducts), {
+          initialItems: 8,
+          loadMoreItems: 4,
+          maxCycles: 5,
+          showCycleNotification: false
+        });
+        wishlistManager.init();
+      } else {
+        wishlistManager.refresh();
+      }
+    }
+    
+    function renderAddresses() { 
+      document.getElementById('accountMain').innerHTML = `
+        <div class="section-title"><i class="fas fa-map-marker-alt"></i> Addresses</div>
+        ${addresses.map(a => `<div class="address-card ${a.isDefault ? 'address-default' : ''}"><div><strong>${a.name}</strong> ${a.isDefault ? '(Default)' : ''}<p>${a.address}</p></div><div><button onclick="setDefault(${a.id})" style="background:transparent;border:1px solid var(--border-light);padding:4px 12px;border-radius:30px;">Set Default</button><button onclick="deleteAddress(${a.id})" style="background:var(--red-primary);color:white;border:none;padding:4px 12px;border-radius:30px;margin-left:8px;">Delete</button></div></div>`).join('')}
+        <button class="add-address-btn" onclick="addAddress()">+ Add New Address</button>
+      `;
+    }
+    
+    function renderSettings() { 
+      document.getElementById('accountMain').innerHTML = `
+        <div class="section-title"><i class="fas fa-user-cog"></i> Settings</div>
+        <form id="settingsForm"><div class="form-group"><label>Name</label><input type="text" id="name" value="${userData.name}"></div><div class="form-group"><label>Email</label><input type="email" id="email" value="${userData.email}"></div><div class="form-group"><label>Phone</label><input type="tel" id="phone" value="${userData.phone}"></div><button type="submit" class="save-btn">Save Changes</button></form>
+        <div style="margin-top:30px;padding:20px;background:var(--bg-primary);border-radius:16px;"><h4>Logout</h4><button onclick="logout()" style="background:var(--red-primary);color:white;border:none;padding:10px 20px;border-radius:40px;margin-top:10px;">Logout</button></div>
+      `;
+      document.getElementById('settingsForm').onsubmit = (e) => { 
+        e.preventDefault(); 
+        userData.name = document.getElementById('name').value; 
+        userData.email = document.getElementById('email').value; 
+        userData.phone = document.getElementById('phone').value; 
+        localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(userData)); 
+        document.getElementById('userName').innerText = userData.name; 
+        document.getElementById('userEmail').innerText = userData.email; 
+        alert('Saved!'); 
+      };
+    }
+    
+    function switchTab(tab) { 
+      document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active')); 
+      document.querySelector(`.sidebar-menu a[data-tab="${tab}"]`).classList.add('active'); 
+      if (tab === 'dashboard') renderDashboard(); 
+      else if (tab === 'orders') renderOrders(); 
+      else if (tab === 'wishlist') renderWishlist(); 
+      else if (tab === 'addresses') renderAddresses(); 
+      else if (tab === 'settings') renderSettings(); 
+    }
+    
+    function setDefault(id) { 
+      addresses = addresses.map(a => ({ ...a, isDefault: a.id === id })); 
+      localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.ADDRESSES, JSON.stringify(addresses)); 
+      renderAddresses(); 
+    }
+    
+    function deleteAddress(id) { 
+      addresses = addresses.filter(a => a.id !== id); 
+      if (addresses.length && !addresses.some(a => a.isDefault)) addresses[0].isDefault = true; 
+      localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.ADDRESSES, JSON.stringify(addresses)); 
+      renderAddresses(); 
+    }
+    
+    function addAddress() { 
+      let newId = Date.now(); 
+      addresses.push({ id: newId, name: "New Address", address: "Enter your address", isDefault: false }); 
+      localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.ADDRESSES, JSON.stringify(addresses)); 
+      renderAddresses(); 
+    }
+    
+    function logout() { 
+      if (confirm('Logout?')) { 
+        localStorage.clear(); 
+        window.location.href = 'index.html'; 
+      } 
+    }
+    
+    async function initPage() { 
+      await loadProducts();
+      loadUserData();
+      
+      initCommon(allProducts, () => { 
+        renderDashboard(); 
+        document.querySelectorAll('.sidebar-menu a').forEach(a => a.addEventListener('click', (e) => { 
+          e.preventDefault(); 
+          switchTab(a.dataset.tab); 
+        })); 
+      }); 
+    }
+
+    // Ensure cart button works on account page
+function bindAccountCartEvents() {
+  const cartBtn = document.getElementById('cartBtn');
+  const bottomCartBtn = document.getElementById('bottomCartBtn');
+  const mobileCartIcon = document.getElementById('mobileCartIcon');
+  
+  if (cartBtn) cartBtn.addEventListener('click', openCart);
+  if (bottomCartBtn) bottomCartBtn.addEventListener('click', function(e) { e.preventDefault(); openCart(); });
+  if (mobileCartIcon) mobileCartIcon.addEventListener('click', openCart);
+}
+
+// Call this after initCommon
+bindAccountCartEvents();
+    
+    window.switchTab = switchTab; 
+    window.setDefault = setDefault; 
+    window.deleteAddress = deleteAddress; 
+    window.addAddress = addAddress; 
+    window.logout = logout; 
+    window.allProducts = allProducts;
+    
     initPage();
   </script>
 </body>

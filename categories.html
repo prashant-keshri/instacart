@@ -9,62 +9,21 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="common.css">
   <style>
-    /* Page-specific styles */
-    .filter-capsules {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 20px 0;
-      justify-content: center;
-    }
-    .filter-capsule {
-      padding: 8px 20px;
-      border-radius: 40px;
-      background: var(--surface);
-      border: 1px solid var(--border-light);
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-    .filter-capsule.active {
-      background: var(--orange-primary);
-      color: white;
-      border-color: var(--orange-primary);
-    }
-    .category-cards-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 14px;
-      margin: 20px 0;
-    }
-    .category-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 8px 12px;
-      background: var(--surface);
-      border-radius: 16px;
-      cursor: pointer;
-      border: 1px solid var(--border-light);
-      min-width: 80px;
-    }
-    .category-card.active {
-      border-color: var(--orange-primary);
-      background: var(--bg-primary);
-    }
+    .filter-capsules { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; justify-content: center; }
+    .filter-capsule { padding: 8px 20px; border-radius: 40px; background: var(--surface); border: 1px solid var(--border-light); cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
+    .filter-capsule.active { background: var(--orange-primary); color: white; border-color: var(--orange-primary); }
+    .category-cards-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 20px 0; }
+    .category-card { display: flex; flex-direction: column; align-items: center; padding: 8px 12px; background: var(--surface); border-radius: 16px; cursor: pointer; border: 1px solid var(--border-light); min-width: 80px; transition: all 0.2s; }
+    .category-card.active { border-color: var(--orange-primary); background: var(--bg-primary); }
     .category-card-icon { font-size: 32px; margin-bottom: 6px; }
     .category-card span { font-size: 11px; font-weight: 500; }
-    .load-more-btn {
-      display: block; margin: 30px auto; background: var(--blue-primary);
-      color: white; border: none; padding: 10px 28px; border-radius: 40px;
-      font-weight: 600; cursor: pointer;
-    }
+    .show-more-btn { display: block; margin: 30px auto; background: var(--blue-primary); color: white; border: none; padding: 10px 28px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .show-more-btn:hover { opacity: 0.9; transform: scale(0.98); }
+    .show-more-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
   </style>
 </head>
-<body data-theme="light">
-  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+<body data-theme="dark">
+  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-sun"></i></button>
   
   <!-- Top Bar -->
   <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
@@ -78,19 +37,17 @@
     <div class="category-cards-grid" id="categoryCardsGrid"></div>
     <div class="section-header"><h2 id="categoryTitle"><i class="fas fa-tag"></i> All Products</h2></div>
     <div class="products-grid" id="categoryProductsGrid"></div>
-    <button class="load-more-btn" id="loadMoreCatBtn" style="display: none;">Load More →</button>
+    <button class="show-more-btn" id="loadMoreCatBtn">Show More →</button>
     
-    <!-- Subscription Section -->
     <div class="daily-subscription"><div class="container"><div class="subscription-header"><h3><i class="fas fa-calendar-check"></i> 🚀 Subscription Plans</h3><span style="font-size:14px;">Save up to 25% everyday</span></div><div class="subscription-plans" id="subscriptionPlansList"></div><div class="subscription-footer-link" style="text-align:center; margin-top:16px;"><a href="subscription.html" style="color:var(--orange-primary);">📦 View All Subscription Plans →</a></div></div></div>
     
-    <!-- Deal Zone -->
     <div class="section-header"><h2><i class="fas fa-fire"></i> 🔥 Deal Zone - 30%+ OFF</h2></div>
     <div class="products-grid" id="dealZoneGrid"></div>
-    <button class="load-more-btn" id="loadMoreDealBtn" style="display: none;">Load More Deals →</button>
+    <button class="show-more-btn" id="loadMoreDealBtn">Show More Deals →</button>
     
-    <!-- You May Also Like -->
     <div class="section-header"><h2><i class="fas fa-star"></i> You May Also Like</h2></div>
     <div class="products-grid" id="youMayAlsoLikeGrid"></div>
+    <button class="show-more-btn" id="loadMoreAlsoBtn">Show More →</button>
   </main>
 
   <!-- Bottom Nav -->
@@ -103,78 +60,131 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="common.js"></script>
   <script>
-    let products = [
-      { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200", category: "fruits", isFeatured: true },
-      { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200", category: "fruits" },
-      { id: 3, name: "Carrot (Farm)", price: 35, oldPrice: 45, discountPercent: 22, image: "https://images.unsplash.com/photo-1447175008436-054170c2e979?w=200", category: "vegetables" },
-      { id: 4, name: "Orange Juice", price: 99, oldPrice: 120, discountPercent: 17, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=200", category: "beverages" },
-      { id: 5, name: "Broccoli", price: 55, oldPrice: 70, discountPercent: 21, image: "https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=200", category: "vegetables" },
-      { id: 6, name: "Coconut Water", price: 89, oldPrice: 110, discountPercent: 19, image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=200", category: "beverages" },
-      { id: 7, name: "Chocolate Cake", price: 399, oldPrice: 499, discountPercent: 20, image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200", category: "cakes" },
-      { id: 8, name: "Vanilla IceCream", price: 149, oldPrice: 199, discountPercent: 25, image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200", category: "icecream" },
-      { id: 9, name: "Paneer Masala", price: 249, oldPrice: 299, discountPercent: 16, image: "https://images.unsplash.com/photo-1631452180519-c96fe4bdf330?w=200", category: "meals" },
-      { id: 10, name: "Spicy Chicken", price: 299, oldPrice: 349, discountPercent: 14, image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=200", category: "meats" }
-    ];
-    let allProducts = [...products];
-    for (let i = 11; i <= 45; i++) allProducts.push({ ...products[i % products.length], id: i, name: `${products[i % products.length].name} ${i}`, discountPercent: 15 + Math.floor(Math.random() * 35) });
-    products = allProducts;
-    window.allProducts = products;
-    
+    let allProducts = [];
     let currentCategory = "all";
-    let catPage = 1;
-    let dealPage = 1;
-    const itemsPerPage = 12;
+    let categoryManager = null;
+    let dealManager = null;
+    let alsoManager = null;
+    
     const categoriesList = [
       { name: "All", icon: "fa-th-large", cat: "all", emoji: "📦" },
       { name: "Fruits", icon: "fa-apple", cat: "fruits", emoji: "🍎" },
       { name: "Vegetables", icon: "fa-carrot", cat: "vegetables", emoji: "🥬" },
       { name: "Beverages", icon: "fa-mug-saucer", cat: "beverages", emoji: "🥤" },
       { name: "Cakes", icon: "fa-cake-candles", cat: "cakes", emoji: "🎂" },
-      { name: "Ice Cream", icon: "fa-ice-cream", cat: "icecream", emoji: "🍦" }
+      { name: "Ice Cream", icon: "fa-ice-cream", cat: "icecream", emoji: "🍦" },
+      { name: "Meals", icon: "fa-utensils", cat: "meals", emoji: "🍛" },
+      { name: "Meats", icon: "fa-drumstick-bite", cat: "meats", emoji: "🍗" }
     ];
     
-    function getFilteredProducts() { return currentCategory === "all" ? products : products.filter(p => p.category === currentCategory); }
-    function renderCategoryProducts() {
-      const filtered = getFilteredProducts();
-      const paginated = filtered.slice(0, catPage * itemsPerPage);
-      document.getElementById('categoryProductsGrid').innerHTML = paginated.map(p => renderProductCard(p)).join('');
-      document.getElementById('loadMoreCatBtn').style.display = paginated.length >= filtered.length ? 'none' : 'block';
-      document.getElementById('categoryTitle').innerHTML = `<i class="fas fa-tag"></i> ${currentCategory === 'all' ? 'All Products' : currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)} (${filtered.length} items)`;
+    async function loadProducts() {
+      try {
+        const response = await fetch('product.json');
+        const data = await response.json();
+        allProducts = data.products.map(p => ({
+          id: p.id, name: p.name, price: p.price, oldPrice: p.oldPrice,
+          discountPercent: p.discountPercent || Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100),
+          image: p.image, category: p.category
+        }));
+        window.allProducts = allProducts;
+      } catch(e) {
+        allProducts = [
+          { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200", category: "fruits" },
+          { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200", category: "fruits" }
+        ];
+        window.allProducts = allProducts;
+      }
     }
-    function renderDealZone() {
-      const highDiscount = products.filter(p => p.discountPercent >= 30).slice(0, dealPage * itemsPerPage);
-      document.getElementById('dealZoneGrid').innerHTML = highDiscount.map(p => renderProductCard(p)).join('');
-      document.getElementById('loadMoreDealBtn').style.display = highDiscount.length >= products.filter(p => p.discountPercent >= 30).length ? 'none' : 'block';
+    
+    function getCategoryProducts() {
+      return currentCategory === "all" ? allProducts : allProducts.filter(p => p.category === currentCategory);
     }
-    function renderYouMayAlsoLike() {
-      document.getElementById('youMayAlsoLikeGrid').innerHTML = [...products].sort(() => 0.5 - Math.random()).slice(0, 8).map(p => renderProductCard(p)).join('');
+    
+    function getDealProducts() {
+      return allProducts.filter(p => p.discountPercent >= 30);
     }
+    
+    function getRandomProducts() {
+      return [...allProducts];
+    }
+    
     function renderFilterCapsules() {
-      document.getElementById('filterCapsules').innerHTML = categoriesList.map(cat => `<button class="filter-capsule ${currentCategory === cat.cat ? 'active' : ''}" data-cat="${cat.cat}" onclick="filterByCategory('${cat.cat}')"><i class="fas ${cat.icon}"></i> ${cat.name}</button>`).join('');
+      document.getElementById('filterCapsules').innerHTML = categoriesList.map(cat => 
+        `<button class="filter-capsule ${currentCategory === cat.cat ? 'active' : ''}" onclick="filterByCategory('${cat.cat}')"><i class="fas ${cat.icon}"></i> ${cat.name}</button>`
+      ).join('');
     }
+    
     function renderCategoryCards() {
-      document.getElementById('categoryCardsGrid').innerHTML = categoriesList.map(cat => `<div class="category-card ${currentCategory === cat.cat ? 'active' : ''}" onclick="filterByCategory('${cat.cat}')"><div class="category-card-icon">${cat.emoji}</div><span>${cat.name}</span></div>`).join('');
+      document.getElementById('categoryCardsGrid').innerHTML = categoriesList.map(cat => 
+        `<div class="category-card ${currentCategory === cat.cat ? 'active' : ''}" onclick="filterByCategory('${cat.cat}')"><div class="category-card-icon">${cat.emoji}</div><span>${cat.name}</span></div>`
+      ).join('');
     }
+    
     function renderSubscriptionPlans() {
-      document.getElementById('subscriptionPlansList').innerHTML = `<div class="plan"><h4>Basic Saver</h4><p>₹999/month</p><button class="sub-plan-btn">Subscribe</button></div><div class="plan"><h4>Family Pack</h4><p>₹1999/month</p><button class="sub-plan-btn">Subscribe</button></div><div class="plan"><h4>Premium+</h4><p>₹2999/month</p><button class="sub-plan-btn">Subscribe</button></div>`;
+      document.getElementById('subscriptionPlansList').innerHTML = `
+        <div class="plan"><h4>Basic Saver</h4><p>₹999/month</p><button class="sub-plan-btn">Subscribe</button></div>
+        <div class="plan"><h4>Family Pack</h4><p>₹1999/month</p><button class="sub-plan-btn">Subscribe</button></div>
+        <div class="plan"><h4>Premium+</h4><p>₹2999/month</p><button class="sub-plan-btn">Subscribe</button></div>
+      `;
       document.querySelectorAll('.sub-plan-btn').forEach(btn => btn.addEventListener('click', () => alert('Subscription plan selected!')));
     }
-    function filterByCategory(cat) { currentCategory = cat; catPage = 1; renderFilterCapsules(); renderCategoryCards(); renderCategoryProducts(); }
     
-    function refreshProductGrids() { renderCategoryProducts(); renderDealZone(); renderYouMayAlsoLike(); }
+    function filterByCategory(cat) {
+      currentCategory = cat;
+      renderFilterCapsules();
+      renderCategoryCards();
+      if (categoryManager) categoryManager.refresh();
+      document.getElementById('categoryTitle').innerHTML = `<i class="fas fa-tag"></i> ${cat === 'all' ? 'All Products' : cat.charAt(0).toUpperCase() + cat.slice(1)}`;
+    }
     
-    function initPage() {
+    function showCategorySkeleton() {
+      showProductsSkeleton('categoryProductsGrid', 12);
+      showProductsSkeleton('dealZoneGrid', 8);
+      showProductsSkeleton('youMayAlsoLikeGrid', 8);
+    }
+    
+    async function initPage() {
+      showCategorySkeleton();
+      await loadProducts();
+      
       const urlParams = new URLSearchParams(window.location.search);
       const catFromUrl = urlParams.get('cat');
       if (catFromUrl && categoriesList.some(c => c.cat === catFromUrl)) currentCategory = catFromUrl;
-      renderFilterCapsules(); renderCategoryCards(); renderCategoryProducts(); renderDealZone(); renderYouMayAlsoLike(); renderSubscriptionPlans();
-      initCommon(products, () => {});
-      document.getElementById('loadMoreCatBtn').onclick = () => { catPage++; renderCategoryProducts(); };
-      document.getElementById('loadMoreDealBtn').onclick = () => { dealPage++; renderDealZone(); };
+      
+      renderFilterCapsules();
+      renderCategoryCards();
+      renderSubscriptionPlans();
+      
+      // Initialize Show More Managers
+      categoryManager = createShowMoreManager('categoryProducts', 'categoryProductsGrid', 'loadMoreCatBtn', getCategoryProducts, {
+        initialItems: 12,
+        loadMoreItems: 6,
+        maxCycles: 10,
+        showCycleNotification: true
+      });
+      categoryManager.init();
+      
+      dealManager = createShowMoreManager('dealProducts', 'dealZoneGrid', 'loadMoreDealBtn', getDealProducts, {
+        initialItems: 8,
+        loadMoreItems: 4,
+        maxCycles: 5,
+        showCycleNotification: true
+      });
+      dealManager.init();
+      
+      alsoManager = createShowMoreManager('alsoLikeProducts', 'youMayAlsoLikeGrid', 'loadMoreAlsoBtn', getRandomProducts, {
+        initialItems: 8,
+        loadMoreItems: 4,
+        maxCycles: 5,
+        showCycleNotification: true
+      });
+      alsoManager.init();
+      
+      initCommon(allProducts, () => {});
+      document.getElementById('categoryTitle').innerHTML = `<i class="fas fa-tag"></i> ${currentCategory === 'all' ? 'All Products' : currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)}`;
     }
     
     window.filterByCategory = filterByCategory;
-    window.refreshProductGrids = refreshProductGrids;
     initPage();
   </script>
 </body>

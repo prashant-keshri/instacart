@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="common.css">
   <style>
-    /* Page-specific styles */
     .breadcrumb { margin: 20px 0; font-size: 13px; }
     .breadcrumb a { color: var(--orange-primary); text-decoration: none; }
     .product-detail-wrapper { background: var(--surface); border-radius: 24px; padding: 30px; margin: 20px 0; border: 1px solid var(--border-light); }
@@ -53,10 +52,14 @@
     .cat-box { padding: 2px 15px 15px; width: 90px; display: flex; flex-direction: column; align-items: center; background: var(--surface); border-radius: 15px; cursor: pointer; border: 1px solid var(--border-light); transition: transform 0.2s; }
     .cat-box:hover { transform: translateY(-4px); }
     .cat-box-icon { width: 60px; height: 60px; background: var(--bg-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 38px; margin-bottom: 6px; margin-top: 8px; }
+    .show-more-btn { display: block; margin: 30px auto; background: var(--blue-primary); color: white; border: none; padding: 10px 28px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .show-more-btn:hover { opacity: 0.9; transform: scale(0.98); }
+    .show-more-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; margin-bottom: 20px; }
   </style>
 </head>
-<body data-theme="light">
-  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+<body data-theme="dark">
+  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-sun"></i></button>
 
   <!-- Top Bar -->
   <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
@@ -81,7 +84,17 @@
     let currentProduct = null;
     let quantity = 1;
     let selectedVariant = null;
-    const categoryBoxes = [{ name: "Fruits", icon: "🍎", cat: "fruits" }, { name: "Vegetables", icon: "🥬", cat: "vegetables" }, { name: "Beverages", icon: "🥤", cat: "beverages" }, { name: "Cakes", icon: "🎂", cat: "cakes" }, { name: "Ice Cream", icon: "🍦", cat: "icecream" }, { name: "Snacks", icon: "🍿", cat: "snacks" }];
+    let relatedManager = null;
+    let alsoManager = null;
+    
+    const categoryBoxes = [
+      { name: "Fruits", icon: "🍎", cat: "fruits" },
+      { name: "Vegetables", icon: "🥬", cat: "vegetables" },
+      { name: "Beverages", icon: "🥤", cat: "beverages" },
+      { name: "Cakes", icon: "🎂", cat: "cakes" },
+      { name: "Ice Cream", icon: "🍦", cat: "icecream" },
+      { name: "Snacks", icon: "🍿", cat: "snacks" }
+    ];
     
     async function loadProductData() {
       try {
@@ -92,9 +105,16 @@
         const productId = parseInt(urlParams.get('id'));
         if (productId) {
           currentProduct = data.products.find(p => p.id === productId);
-          if (currentProduct) renderProductDetail();
-          else document.getElementById('productDetailContainer').innerHTML = '<div class="loading">Product not found</div>';
-        } else document.getElementById('productDetailContainer').innerHTML = '<div class="loading">No product selected</div>';
+          if (currentProduct) {
+            renderProductDetail();
+            // Setup show more managers after render
+            setupShowMoreManagers();
+          } else {
+            document.getElementById('productDetailContainer').innerHTML = '<div class="loading">Product not found</div>';
+          }
+        } else {
+          document.getElementById('productDetailContainer').innerHTML = '<div class="loading">No product selected</div>';
+        }
       } catch (error) {
         document.getElementById('productDetailContainer').innerHTML = '<div class="loading">Error loading product. Ensure product.json exists.</div>';
       }
@@ -105,6 +125,7 @@
       const mainImage = currentProduct.images?.[0] || currentProduct.image;
       const isWishlisted = wishlist.includes(currentProduct.id);
       const discountValue = Math.round(((currentProduct.oldPrice - currentProduct.price) / currentProduct.oldPrice) * 100);
+      
       container.innerHTML = `
         <div class="breadcrumb"><a href="index.html">Home</a> / <a href="categories.html?cat=${currentProduct.category}">${currentProduct.category}</a> / <span>${currentProduct.name}</span></div>
         <div class="product-detail-wrapper"><div class="detail-grid">
@@ -115,12 +136,19 @@
             <div class="price-row"><span class="current-price">₹${currentProduct.price}</span><span class="old-price">₹${currentProduct.oldPrice}</span><span class="discount-badge">${discountValue}% OFF</span></div>
             <div class="stock-status"><i class="fas fa-check-circle"></i> ${currentProduct.inStock ? 'In Stock' : 'Out of Stock'}</div>
             <p class="product-description">${currentProduct.description}</p>
-            <div class="info-cards"><div class="info-card"><div class="info-label">Brand</div><div class="info-value">${currentProduct.brand}</div></div><div class="info-card"><div class="info-label">Origin</div><div class="info-value">${currentProduct.origin}</div></div><div class="info-card"><div class="info-label">Unit</div><div class="info-value">${currentProduct.unit}</div></div><div class="info-card"><div class="info-label">Shelf Life</div><div class="info-value">${currentProduct.shelfLife}</div></div></div>
+            <div class="info-cards">
+              <div class="info-card"><div class="info-label">Brand</div><div class="info-value">${currentProduct.brand}</div></div>
+              <div class="info-card"><div class="info-label">Origin</div><div class="info-value">${currentProduct.origin}</div></div>
+              <div class="info-card"><div class="info-label">Unit</div><div class="info-value">${currentProduct.unit}</div></div>
+              <div class="info-card"><div class="info-label">Shelf Life</div><div class="info-value">${currentProduct.shelfLife}</div></div>
+              <div class="info-card"><div class="info-label">In Stock</div><div class="info-value">${currentProduct.stockQuantity || 500} units</div></div>
+              <div class="info-card"><div class="info-label">Seller</div><div class="info-value">${currentProduct.seller || 'FreshKart Direct'}</div></div>
+            </div>
             <h4><i class="fas fa-heart"></i> Key Benefits</h4>
             <ul class="benefits-list">${currentProduct.benefits.map(b => `<li><i class="fas fa-leaf"></i> ${b}</li>`).join('')}</ul>
             <div class="info-card"><div class="info-label">Storage Tips</div><div class="info-value">💡 ${currentProduct.storageTips}</div></div>
             ${currentProduct.variants ? `<div class="variant-selector"><select id="variantSelect"><option value="">Select variant</option>${currentProduct.variants.map(v => `<option value='${JSON.stringify(v)}'>${v.size} - ₹${v.price}</option>`).join('')}</select></div>` : ''}
-            <div class="quantity-wrapper"><button class="qty-btn" id="qtyMinus">-</button><input type="number" id="qtyInput" class="qty-input" value="1" min="1" max="${currentProduct.maxQuantity}"><button class="qty-btn" id="qtyPlus">+</button></div>
+            <div class="quantity-wrapper"><button class="qty-btn" id="qtyMinus">-</button><input type="number" id="qtyInput" class="qty-input" value="1" min="1" max="${currentProduct.maxQuantity || 20}"><button class="qty-btn" id="qtyPlus">+</button></div>
             <div class="action-buttons"><button class="buy-now" id="buyNowBtn"><i class="fas fa-bolt"></i> Buy Now</button><button class="add-to-cart-detail" id="addToCartDetail"><i class="fas fa-shopping-cart"></i> Add to Cart</button><button class="wishlist-detail" id="wishlistDetailBtn"><i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i></button></div>
           </div>
         </div></div>
@@ -128,17 +156,62 @@
         <div class="category-boxes-grid" id="categoryBoxes"></div>
         <div class="section-header"><h2><i class="fas fa-layer-group"></i> Related Products</h2></div>
         <div class="products-grid" id="relatedProducts"></div>
+        <button class="show-more-btn" id="loadMoreRelated" style="display: none;">Show More Related →</button>
         <div class="section-header"><h2><i class="fas fa-fire"></i> You May Also Like</h2></div>
         <div class="products-grid" id="alsoLike"></div>
+        <button class="show-more-btn" id="loadMoreAlso" style="display: none;">Show More →</button>
       `;
-      if (currentProduct.images?.length > 1) document.getElementById('thumbnailList').innerHTML = currentProduct.images.map((img, idx) => `<div class="thumb ${idx === 0 ? 'active' : ''}" onclick="document.getElementById('mainProductImage').src='${img}'; document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active')); this.classList.add('active')"><img src="${img}"></div>`).join('');
+      
+      if (currentProduct.images?.length > 1) {
+        document.getElementById('thumbnailList').innerHTML = currentProduct.images.map((img, idx) => `<div class="thumb ${idx === 0 ? 'active' : ''}" onclick="document.getElementById('mainProductImage').src='${img}'; document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active')); this.classList.add('active')"><img src="${img}"></div>`).join('');
+      }
+      
       document.getElementById('qtyMinus').onclick = () => { if (quantity > 1) { quantity--; document.getElementById('qtyInput').value = quantity; } };
-      document.getElementById('qtyPlus').onclick = () => { if (quantity < currentProduct.maxQuantity) { quantity++; document.getElementById('qtyInput').value = quantity; } };
-      if (currentProduct.variants) document.getElementById('variantSelect').onchange = (e) => { if (e.target.value) { selectedVariant = JSON.parse(e.target.value); document.querySelector('.current-price').innerText = `₹${selectedVariant.price}`; } };
+      document.getElementById('qtyPlus').onclick = () => { if (quantity < (currentProduct.maxQuantity || 20)) { quantity++; document.getElementById('qtyInput').value = quantity; } };
+      
+      if (currentProduct.variants) {
+        document.getElementById('variantSelect').onchange = (e) => {
+          if (e.target.value) { selectedVariant = JSON.parse(e.target.value); document.querySelector('.current-price').innerText = `₹${selectedVariant.price}`; }
+        };
+      }
+      
       document.getElementById('addToCartDetail').onclick = () => addToCartDetail(currentProduct.id, quantity, selectedVariant);
       document.getElementById('buyNowBtn').onclick = () => { addToCartDetail(currentProduct.id, quantity, selectedVariant); openCart(); };
       document.getElementById('wishlistDetailBtn').onclick = () => toggleWishlistDetail(currentProduct.id);
-      renderCategoryBoxes(); renderRelatedProducts(); renderAlsoLike();
+      
+      renderCategoryBoxes();
+    }
+    
+    function setupShowMoreManagers() {
+      // Setup Related Products Show More Manager
+      if (!relatedManager) {
+        relatedManager = createShowMoreManager('relatedProducts', 'relatedProducts', 'loadMoreRelated', getRelatedProducts, {
+          initialItems: 4,
+          loadMoreItems: 4,
+          maxCycles: 5,
+          showCycleNotification: false
+        });
+        relatedManager.init();
+      }
+      
+      // Setup Also Like Show More Manager
+      if (!alsoManager) {
+        alsoManager = createShowMoreManager('alsoLikeProducts', 'alsoLike', 'loadMoreAlso', getAlsoLikeProducts, {
+          initialItems: 4,
+          loadMoreItems: 4,
+          maxCycles: 5,
+          showCycleNotification: false
+        });
+        alsoManager.init();
+      }
+    }
+    
+    function getRelatedProducts() {
+      return productData.products.filter(p => p.category === currentProduct.category && p.id !== currentProduct.id);
+    }
+    
+    function getAlsoLikeProducts() {
+      return productData.products.filter(p => p.id !== currentProduct.id);
     }
     
     function addToCartDetail(productId, qty, variant) {
@@ -146,39 +219,36 @@
       let price = variant ? variant.price : product.price;
       let name = variant ? `${product.name} (${variant.size})` : product.name;
       let existing = cart.find(i => i.id === productId);
-      if (existing) { existing.qty += qty; if (existing.qty > 20) existing.qty = 20; }
-      else cart.push({ id: productId, name: name, price: price, image: product.image, oldPrice: product.oldPrice, discountPercent: product.discountPercent, qty: qty });
+      if (existing) {
+        existing.qty += qty;
+        if (existing.qty > 20) existing.qty = 20;
+      } else {
+        cart.push({ id: productId, name: name, price: price, image: product.image, oldPrice: product.oldPrice, discountPercent: product.discountPercent, qty: qty });
+      }
+      saveCart();
       updateCartUI();
       alert(`${name} added to cart!`);
     }
     
     function toggleWishlistDetail(id) {
       let idx = wishlist.indexOf(id);
-      if (idx === -1) wishlist.push(id); else wishlist.splice(idx, 1);
-      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      if (idx === -1) wishlist.push(id);
+      else wishlist.splice(idx, 1);
+      saveWishlist();
       document.getElementById('wishlistDetailBtn').innerHTML = `<i class="${wishlist.includes(id) ? 'fas' : 'far'} fa-heart"></i>`;
-      renderRelatedProducts(); renderAlsoLike();
+      if (relatedManager) relatedManager.refresh();
+      if (alsoManager) alsoManager.refresh();
     }
     
     function renderCategoryBoxes() {
       document.getElementById('categoryBoxes').innerHTML = categoryBoxes.map(c => `<div class="cat-box" onclick="window.location.href='categories.html?cat=${c.cat}'"><div class="cat-box-icon">${c.icon}</div><span>${c.name}</span></div>`).join('');
     }
     
-    function renderRelatedProducts() {
-      let related = productData.products.filter(p => p.category === currentProduct.category && p.id !== currentProduct.id).slice(0, 4);
-      document.getElementById('relatedProducts').innerHTML = related.map(p => renderProductCard(p)).join('');
+    function initPage() { 
+      loadProductData(); 
+      initCommon([], () => {}); 
     }
     
-    function renderAlsoLike() {
-      let also = productData.products.filter(p => p.id !== currentProduct.id).sort(() => 0.5 - Math.random()).slice(0, 4);
-      document.getElementById('alsoLike').innerHTML = also.map(p => renderProductCard(p)).join('');
-    }
-    
-    function refreshProductGrids() { renderRelatedProducts(); renderAlsoLike(); }
-    
-    function initPage() { loadProductData(); initCommon([], () => {}); }
-    
-    window.refreshProductGrids = refreshProductGrids;
     window.toggleWishlistDetail = toggleWishlistDetail;
     initPage();
   </script>
