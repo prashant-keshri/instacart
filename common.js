@@ -1,6 +1,5 @@
 // ==================== COMMON.JS - FreshKart Global Functions ====================
-
-// ==================== EDITABLE CONFIGURATION ====================
+// ==================== SECTION 1: EDITABLE CONFIGURATION ====================
 const SITE_CONFIG = {
   FREE_DELIVERY_THRESHOLD: 499,
   MAX_CART_QUANTITY: 20,
@@ -21,12 +20,13 @@ const SITE_CONFIG = {
   }
 };
 
-// ==================== GLOBAL VARIABLES ====================
+// ==================== SECTION 2: GLOBAL VARIABLES ====================
 let cart = [];
 let wishlist = [];
 let recentlyViewed = [];
+let allProductsData = [];
 
-// ==================== STORAGE FUNCTIONS ====================
+// ==================== SECTION 3: STORAGE FUNCTIONS ====================
 function loadAllData() {
   try {
     const savedCart = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.CART);
@@ -60,7 +60,32 @@ function saveRecentlyViewed() {
   localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.RECENTLY_VIEWED, JSON.stringify(recentlyViewed));
 }
 
-// ==================== CART FUNCTIONS ====================
+// ==================== SECTION 4: PRODUCT LOADING FROM JSON ====================
+async function loadProductsFromJSON() {
+  try {
+    const response = await fetch('product.json');
+    const data = await response.json();
+    allProductsData = data.products.map(p => ({
+      id: p.id, name: p.name, price: p.price, oldPrice: p.oldPrice,
+      discountPercent: p.discountPercent || Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100),
+      image: p.image, category: p.category, rating: p.rating,
+      isFeatured: p.isFeatured || false, isBestSelling: p.isBestSelling || false,
+      isNewArrival: p.isNewArrival || false, unit: p.unit, brand: p.brand
+    }));
+    window.allProducts = allProductsData;
+    return true;
+  } catch(e) {
+    console.log('Using fallback products');
+    allProductsData = [
+      { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200", category: "fruits", isFeatured: true, isBestSelling: true },
+      { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200", category: "fruits", isFeatured: true, isBestSelling: true }
+    ];
+    window.allProducts = allProductsData;
+    return false;
+  }
+}
+
+// ==================== SECTION 5: CART FUNCTIONS ====================
 function updatePriceBreakdown() {
   const subtotal = cart.reduce((sum, i) => sum + ((i.price || 0) * (i.qty || 0)), 0);
   const totalDiscount = cart.reduce((sum, i) => {
@@ -81,6 +106,7 @@ function updatePriceBreakdown() {
       <div class="breakdown-row total"><span>Total Amount</span><span>₹${Math.round(totalPayable)}</span></div>
     `;
   }
+  return { subtotal, totalDiscount, deliveryCharge, totalPayable };
 }
 
 function updateCartUI() {
@@ -107,10 +133,10 @@ function updateCartUI() {
                 ${item.oldPrice ? `<span class="cart-old">₹${item.oldPrice}</span><span class="cart-discount">${discountPercent}% off</span>` : ''}
               </div>
               <div class="quantity-control">
-                <button onclick="updateQty(${item.id},-1)">-</button>
+                <button onclick="window.updateQty(${item.id},-1)">-</button>
                 <span>${item.qty || 0}</span>
-                <button onclick="updateQty(${item.id},1)">+</button>
-                <button onclick="removeItem(${item.id})" style="margin-left:8px;color:var(--red-primary);background:transparent;border:none;cursor:pointer;">Remove</button>
+                <button onclick="window.updateQty(${item.id},1)">+</button>
+                <button onclick="window.removeItem(${item.id})" style="margin-left:8px;color:var(--red-primary);background:transparent;border:none;cursor:pointer;">Remove</button>
               </div>
             </div>
           </div>
@@ -167,15 +193,30 @@ function addToCart(product) {
   }
   saveCart();
   updateCartUI();
-  alert(`${product.name} added to cart!`);
+  showToast(`${product.name} added to cart!`);
 }
 
+function showToast(message) {
+  let toast = document.querySelector('.custom-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green-primary);color:white;padding:10px 20px;border-radius:40px;z-index:2000;font-size:14px;opacity:0;transition:opacity 0.3s;';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+  toast.style.opacity = '1';
+  setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+}
+
+// ==================== SECTION 6: CART SIDEBAR FUNCTIONS ====================
 function openCart() {
   updateCartUI();
   const sidebar = document.getElementById('cartSidebar');
   const overlay = document.getElementById('overlay');
   if (sidebar) sidebar.classList.add('open');
   if (overlay) overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeCart() {
@@ -183,9 +224,63 @@ function closeCart() {
   const overlay = document.getElementById('overlay');
   if (sidebar) sidebar.classList.remove('open');
   if (overlay) overlay.classList.remove('active');
+  document.body.style.overflow = '';
 }
 
-// ==================== WISHLIST FUNCTIONS ====================
+function bindCartEvents() {
+  const cartBtn = document.getElementById('cartBtn');
+  const bottomCartBtn = document.getElementById('bottomCartBtn');
+  const mobileCartIcon = document.getElementById('mobileCartIcon');
+  const closeCartBtn = document.getElementById('closeCartBtn');
+  const overlay = document.getElementById('overlay');
+  const checkoutBtn = document.getElementById('checkoutBtn');
+  
+  if (cartBtn) {
+    const newBtn = cartBtn.cloneNode(true);
+    cartBtn.parentNode.replaceChild(newBtn, cartBtn);
+    newBtn.addEventListener('click', (e) => { e.preventDefault(); openCart(); });
+  }
+  if (bottomCartBtn) {
+    const newBottomBtn = bottomCartBtn.cloneNode(true);
+    bottomCartBtn.parentNode.replaceChild(newBottomBtn, bottomCartBtn);
+    newBottomBtn.addEventListener('click', (e) => { e.preventDefault(); openCart(); });
+  }
+  if (mobileCartIcon) {
+    const newMobileIcon = mobileCartIcon.cloneNode(true);
+    mobileCartIcon.parentNode.replaceChild(newMobileIcon, mobileCartIcon);
+    newMobileIcon.addEventListener('click', (e) => { e.preventDefault(); openCart(); });
+  }
+  if (closeCartBtn) {
+    const newCloseBtn = closeCartBtn.cloneNode(true);
+    closeCartBtn.parentNode.replaceChild(newCloseBtn, closeCartBtn);
+    newCloseBtn.addEventListener('click', closeCart);
+  }
+  if (overlay) {
+    const newOverlay = overlay.cloneNode(true);
+    overlay.parentNode.replaceChild(newOverlay, overlay);
+    newOverlay.addEventListener('click', closeCart);
+  }
+  if (checkoutBtn) {
+    const newCheckoutBtn = checkoutBtn.cloneNode(true);
+    checkoutBtn.parentNode.replaceChild(newCheckoutBtn, checkoutBtn);
+    newCheckoutBtn.addEventListener('click', () => {
+      if (cart.length) {
+        alert(`✅ Order placed! Total ₹${cart.reduce((s,i)=>s+i.price*i.qty,0)}`);
+        cart = [];
+        saveCart();
+        updateCartUI();
+        closeCart();
+        if (window.location.pathname.includes('orders.html')) {
+          location.reload();
+        }
+      } else {
+        alert('Cart empty');
+      }
+    });
+  }
+}
+
+// ==================== SECTION 7: WISHLIST FUNCTIONS ====================
 function toggleWishlist(productId, event) {
   if (event) event.stopPropagation();
   
@@ -209,25 +304,25 @@ function toggleWishlist(productId, event) {
       }
     }
   }
+  
+  // Refresh any active show more managers
+  if (window.showMoreManagers) {
+    Object.values(window.showMoreManagers).forEach(manager => {
+      if (manager && typeof manager.refresh === 'function') manager.refresh();
+    });
+  }
 }
 
 function isInWishlist(productId) {
   return wishlist.includes(productId);
 }
 
-function getWishlistProducts(allProducts) {
-  if (!allProducts || !Array.isArray(allProducts)) return [];
-  return allProducts.filter(p => wishlist.includes(p.id));
+function getWishlistProducts() {
+  if (!allProductsData || !Array.isArray(allProductsData)) return [];
+  return allProductsData.filter(p => wishlist.includes(p.id));
 }
 
-function refreshWishlistDisplay() {
-  const wishlistStat = document.querySelector('.stat-card .stat-value');
-  if (wishlistStat && wishlistStat.closest('.stat-card')?.querySelector('.stat-label')?.innerText === 'Wishlist') {
-    wishlistStat.innerText = wishlist.length;
-  }
-}
-
-// ==================== DARK MODE ====================
+// ==================== SECTION 8: DARK MODE ====================
 function initDarkMode() {
   const savedTheme = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.THEME) || SITE_CONFIG.DEFAULT_THEME;
   document.body.setAttribute('data-theme', savedTheme);
@@ -244,197 +339,7 @@ function toggleDarkMode() {
   if (toggleBtn) toggleBtn.innerHTML = nxt === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
 }
 
-// ==================== HERO SLIDER ====================
-function initHeroSlider() {
-  const sliderContainer = document.getElementById('heroSlider');
-  if (!sliderContainer) return;
-  
-  const slides = [
-    { title: "Fresh Groceries", sub: "40% off first order", bg: "linear-gradient(135deg,#2e7d32,#f97316)" },
-    { title: "Farm Fresh Veggies", sub: "Direct from farmers", bg: "linear-gradient(135deg,#1e3c72,#2a5298)" },
-    { title: "Organic Fruits Sale", sub: "30% off", bg: "linear-gradient(135deg,#d4145a,#3a1c71)" }
-  ];
-  
-  sliderContainer.innerHTML = slides.map(s => `
-    <div class="swiper-slide hero-slide" style="background:${s.bg}">
-      <div class="hero-content"><h2>${s.title}</h2><p>${s.sub}</p><button class="order-now" onclick="alert('Explore offers!')">Order Now →</button></div>
-    </div>
-  `).join('');
-  
-  if (typeof Swiper !== 'undefined') {
-    new Swiper('.heroSwiper', { 
-      loop: true, 
-      autoplay: { delay: 3500 }, 
-      pagination: { el: '.swiper-pagination' }, 
-      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' } 
-    });
-  }
-}
-
-// ==================== QUICK CATEGORIES ====================
-function initQuickCategories() {
-  const container = document.getElementById('quickCatLinks');
-  if (!container) return;
-  
-  const categories = [
-    { name: "Fruits", icon: "🍎", cat: "fruits" },
-    { name: "Vegetables", icon: "🥬", cat: "vegetables" },
-    { name: "Beverages", icon: "🥤", cat: "beverages" },
-    { name: "Cakes", icon: "🎂", cat: "cakes" },
-    { name: "Ice Cream", icon: "🍦", cat: "icecream" },
-    { name: "Snacks", icon: "🍿", cat: "snacks" }
-  ];
-  
-  container.innerHTML = categories.map(c => `
-    <a href="categories.html?cat=${c.cat}" class="cat-link">
-      <div class="cat-icon">${c.icon}</div><span>${c.name}</span>
-    </a>
-  `).join('');
-}
-
-// ==================== SUBSCRIPTION ITEMS ====================
-function initSubscriptionItems() {
-  const container = document.getElementById('subscriptionItems');
-  if (!container) return;
-  
-  const items = [
-    { img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=100", name: "Milk" },
-    { img: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=100", name: "Bread" },
-    { img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=100", name: "Eggs" },
-    { img: "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=100", name: "Fruits" },
-    { img: "https://images.unsplash.com/photo-1597362875127-2c6e5a8bf6f4?w=100", name: "Juice" }
-  ];
-  
-  container.innerHTML = items.map(i => `
-    <div class="swiper-slide sub-item" onclick="window.location.href='subscription.html'">
-      <img src="${i.img}"><div>${i.name}</div><small>daily</small>
-    </div>
-  `).join('');
-  
-  if (typeof Swiper !== 'undefined') {
-    new Swiper('.subscriptionSwiper', { 
-      slidesPerView: 2.5, 
-      spaceBetween: 14, 
-      breakpoints: { 640: { slidesPerView: 3.5 }, 1024: { slidesPerView: 5 } } 
-    });
-  }
-}
-
-// ==================== CUSTOMER REVIEWS ====================
-function initCustomerReviews() {
-  const container = document.getElementById('reviewsGrid');
-  if (!container) return;
-  
-  const reviews = [
-    { name: "Priya Sharma", avatar: "P", rating: 5, text: "FreshKart is a game changer! Daily delivery is super reliable." },
-    { name: "Rahul Verma", avatar: "R", rating: 5, text: "Best grocery app, love the dark mode and smooth cart." },
-    { name: "Neha Gupta", avatar: "N", rating: 4, text: "Great discounts and fresh produce. Highly recommended!" }
-  ];
-  
-  container.innerHTML = reviews.map(r => `
-    <div class="review-card">
-      <div class="review-header"><div class="review-avatar">${r.avatar}</div><div><strong>${r.name}</strong><div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div></div></div>
-      <div class="review-text">“${r.text}”</div>
-    </div>
-  `).join('');
-}
-
-// ==================== COUNTDOWN TIMER ====================
-function initCountdownTimer() {
-  const target = new Date();
-  target.setDate(target.getDate() + 5);
-  setInterval(() => {
-    const diff = target - new Date();
-    if (diff <= 0) return;
-    const days = document.getElementById('days');
-    const hours = document.getElementById('hours');
-    const minutes = document.getElementById('minutes');
-    const seconds = document.getElementById('seconds');
-    if (days) days.innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
-    if (hours) hours.innerText = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, '0');
-    if (minutes) minutes.innerText = String(Math.floor((diff / 60000) % 60)).padStart(2, '0');
-    if (seconds) seconds.innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
-  }, 1000);
-}
-
-// ==================== CART EVENT BINDINGS ====================
-function bindCartEvents() {
-  const cartBtn = document.getElementById('cartBtn');
-  const bottomCartBtn = document.getElementById('bottomCartBtn');
-  const mobileCartIcon = document.getElementById('mobileCartIcon');
-  const closeCartBtn = document.getElementById('closeCartBtn');
-  const overlay = document.getElementById('overlay');
-  const checkoutBtn = document.getElementById('checkoutBtn');
-  
-  if (cartBtn) cartBtn.addEventListener('click', openCart);
-  if (bottomCartBtn) bottomCartBtn.addEventListener('click', (e) => { e.preventDefault(); openCart(); });
-  if (mobileCartIcon) mobileCartIcon.addEventListener('click', openCart);
-  if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
-  if (overlay) overlay.addEventListener('click', closeCart);
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', () => {
-      if (cart.length) {
-        alert(`✅ Order placed! Total ₹${cart.reduce((s,i)=>s+i.price*i.qty,0)}`);
-        cart = [];
-        saveCart();
-        updateCartUI();
-        closeCart();
-      } else {
-        alert('Cart empty');
-      }
-    });
-  }
-}
-
-// ==================== SEARCH ====================
-function initGlobalSearch(products) {
-  const searchInput = document.getElementById('globalSearch');
-  if (searchInput && products) {
-    searchInput.addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      const filtered = products.filter(p => p.name && p.name.toLowerCase().includes(term));
-      if (filtered.length) window.location.href = `description.html?id=${filtered[0].id}`;
-    });
-  }
-}
-
-// ==================== LOCATION ====================
-function initLocationSelector() {
-  const locationSelect = document.getElementById('locationSelect');
-  if (locationSelect) {
-    locationSelect.addEventListener('change', (e) => alert(`📍 Location changed to ${e.target.value}`));
-  }
-}
-
-// ==================== BACK TO TOP ====================
-function initBackToTop() {
-  const backBtn = document.getElementById('backToTopBtn');
-  if (backBtn) {
-    backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-  }
-}
-
-// ==================== SUBSCRIPTION EXPAND ====================
-function initSubscriptionExpand() {
-  const expandBtn = document.getElementById('expandSubscriptionBtn');
-  const minDiv = document.getElementById('subscriptionMinimized');
-  const expDiv = document.getElementById('subscriptionExpanded');
-  if (expandBtn && minDiv && expDiv) {
-    expandBtn.addEventListener('click', () => {
-      if (minDiv.style.display !== 'none') {
-        minDiv.style.display = 'none';
-        expDiv.style.display = 'block';
-        expandBtn.innerHTML = '<span>Collapse</span> <i class="fas fa-arrow-up"></i>';
-      } else {
-        minDiv.style.display = 'block';
-        expDiv.style.display = 'none';
-        expandBtn.innerHTML = '<span>Explore plans</span> <i class="fas fa-arrow-down"></i>';
-      }
-    });
-  }
-}
-
-// ==================== PRODUCT CARD RENDERER ====================
+// ==================== SECTION 9: PRODUCT CARD RENDERER ====================
 function renderProductCard(product) {
   if (!product) return '';
   const isWishlisted = wishlist.includes(product.id);
@@ -449,12 +354,12 @@ function renderProductCard(product) {
         </div>
       </div>
       <div class="product-info-card">
-        <div class="product-name" onclick="viewProduct(${product.id})">${product.name}</div>
+        <div class="product-name" onclick="viewProduct(${product.id})">${escapeHtml(product.name)}</div>
         <div class="price-row-card">
           <span class="current-price-card">₹${product.price}</span>
           ${product.oldPrice ? `<span class="old-price-card">₹${product.oldPrice}</span>` : ''}
         </div>
-        <button class="add-to-cart-card" onclick="event.stopPropagation();addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})">
+        <button class="add-to-cart-card" onclick="event.stopPropagation();addToCart({id:${product.id},name:'${escapeHtml(product.name)}',price:${product.price},oldPrice:${product.oldPrice || product.price},discountPercent:${discountValue},image:'${product.image}'})">
           <i class="fas fa-shopping-cart"></i> Add to Cart
         </button>
       </div>
@@ -466,53 +371,7 @@ function viewProduct(productId) {
   window.location.href = `description.html?id=${productId}`;
 }
 
-// ==================== SKELETON LOADING FUNCTIONS ====================
-function showProductsSkeleton(containerId, count = 8) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  container.innerHTML = '<div class="products-skeleton-grid">' + Array(count).fill(`
-    <div class="product-skeleton">
-      <div class="image-skeleton skeleton"></div>
-      <div class="info-skeleton">
-        <div class="title-skeleton skeleton"></div>
-        <div class="price-skeleton skeleton"></div>
-        <div class="button-skeleton skeleton"></div>
-      </div>
-    </div>
-  `).join('') + '</div>';
-}
-
-function showHeroSkeleton() {
-  const container = document.getElementById('heroSlider');
-  if (!container) return;
-  container.innerHTML = `<div class="swiper-slide"><div class="hero-skeleton skeleton"></div></div>`;
-}
-
-function showCategoriesSkeleton() {
-  const container = document.getElementById('quickCatLinks');
-  if (!container) return;
-  container.innerHTML = Array(6).fill(`<div class="cat-skeleton"><div class="cat-icon-skeleton skeleton"></div><div class="cat-text-skeleton skeleton"></div></div>`).join('');
-}
-
-function showRecentlyViewedSkeleton() {
-  const container = document.getElementById('recentlyViewed');
-  if (!container) return;
-  container.innerHTML = Array(8).fill(`<div class="swiper-slide"><div class="recently-item-skeleton"><div class="image-skeleton skeleton"></div><div class="text-skeleton skeleton"></div></div></div>`).join('');
-}
-
-function showSubscriptionSkeleton() {
-  const container = document.getElementById('subscriptionItems');
-  if (!container) return;
-  container.innerHTML = Array(8).fill(`<div class="swiper-slide"><div class="sub-skeleton"><div class="image-skeleton skeleton"></div><div class="text-skeleton skeleton"></div></div></div>`).join('');
-}
-
-function showReviewsSkeleton() {
-  const container = document.getElementById('reviewsGrid');
-  if (!container) return;
-  container.innerHTML = Array(5).fill(`<div class="review-skeleton"><div class="avatar-skeleton skeleton"></div><div class="text-line-skeleton long skeleton"></div><div class="text-line-skeleton short skeleton"></div></div>`).join('');
-}
-
-// ==================== SHOW MORE MANAGER CLASS ====================
+// ==================== SECTION 10: SHOW MORE MANAGER CLASS (INFINITE LOADING) ====================
 class ShowMoreManager {
   constructor(containerId, buttonId, getFilteredProducts, options = {}) {
     this.containerId = containerId;
@@ -649,21 +508,66 @@ function createShowMoreManager(name, containerId, buttonId, getFilteredProducts,
   return manager;
 }
 
-function refreshAllShowMoreManagers() {
-  if (window.showMoreManagers) {
-    Object.values(window.showMoreManagers).forEach(manager => manager.refresh());
+// ==================== SECTION 11: SKELETON LOADING FUNCTIONS ====================
+function showProductsSkeleton(containerId, count = 8) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '<div class="products-skeleton-grid">' + Array(count).fill(`
+    <div class="product-skeleton">
+      <div class="image-skeleton skeleton"></div>
+      <div class="info-skeleton">
+        <div class="title-skeleton skeleton"></div>
+        <div class="price-skeleton skeleton"></div>
+        <div class="button-skeleton skeleton"></div>
+      </div>
+    </div>
+  `).join('') + '</div>';
+}
+
+function showHeroSkeleton() {
+  const container = document.getElementById('heroSlider');
+  if (!container) return;
+  container.innerHTML = `<div class="swiper-slide"><div class="hero-skeleton skeleton"></div></div>`;
+}
+
+function showCategoriesSkeleton() {
+  const container = document.getElementById('quickCatLinks');
+  if (!container) return;
+  container.innerHTML = Array(6).fill(`<div class="cat-skeleton"><div class="cat-icon-skeleton skeleton"></div><div class="cat-text-skeleton skeleton"></div></div>`).join('');
+}
+
+// ==================== SECTION 12: HEADER COMPONENTS ====================
+function initGlobalSearch() {
+  const searchInput = document.getElementById('globalSearch');
+  if (searchInput && allProductsData) {
+    searchInput.addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = allProductsData.filter(p => p.name && p.name.toLowerCase().includes(term));
+      if (filtered.length) window.location.href = `description.html?id=${filtered[0].id}`;
+    });
   }
 }
 
-// ==================== MAIN INITIALIZATION ====================
-function initCommon(productsData, customInitCallback) {
+function initLocationSelector() {
+  const locationSelect = document.getElementById('locationSelect');
+  if (locationSelect) {
+    locationSelect.addEventListener('change', (e) => showToast(`📍 Location changed to ${e.target.value}`));
+  }
+}
+
+// ==================== SECTION 13: MAIN INITIALIZATION ====================
+async function initCommon(customInitCallback) {
+  await loadProductsFromJSON();
   loadAllData();
   initDarkMode();
   updateCartUI();
+  bindCartEvents();
+  initGlobalSearch();
+  initLocationSelector();
   if (customInitCallback) customInitCallback();
 }
 
-// ==================== HELPER FUNCTIONS ====================
+// ==================== SECTION 14: HELPER FUNCTIONS ====================
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/[&<>]/g, function(m) {
@@ -674,10 +578,11 @@ function escapeHtml(str) {
   });
 }
 
-// ==================== EXPOSE GLOBALS ====================
+// ==================== SECTION 15: EXPOSE GLOBALS ====================
 window.SITE_CONFIG = SITE_CONFIG;
 window.cart = cart;
 window.wishlist = wishlist;
+window.allProductsData = allProductsData;
 window.loadAllData = loadAllData;
 window.saveCart = saveCart;
 window.saveWishlist = saveWishlist;
@@ -688,26 +593,15 @@ window.addToCart = addToCart;
 window.toggleWishlist = toggleWishlist;
 window.isInWishlist = isInWishlist;
 window.getWishlistProducts = getWishlistProducts;
-window.refreshWishlistDisplay = refreshWishlistDisplay;
 window.viewProduct = viewProduct;
 window.openCart = openCart;
 window.closeCart = closeCart;
 window.renderProductCard = renderProductCard;
 window.createShowMoreManager = createShowMoreManager;
-window.refreshAllShowMoreManagers = refreshAllShowMoreManagers;
-window.initHeroSlider = initHeroSlider;
-window.initQuickCategories = initQuickCategories;
-window.initSubscriptionItems = initSubscriptionItems;
-window.initCustomerReviews = initCustomerReviews;
-window.initCountdownTimer = initCountdownTimer;
-window.initSubscriptionExpand = initSubscriptionExpand;
-window.initLocationSelector = initLocationSelector;
-window.initBackToTop = initBackToTop;
-window.bindCartEvents = bindCartEvents;
-window.initGlobalSearch = initGlobalSearch;
 window.showProductsSkeleton = showProductsSkeleton;
 window.showHeroSkeleton = showHeroSkeleton;
 window.showCategoriesSkeleton = showCategoriesSkeleton;
-window.showRecentlyViewedSkeleton = showRecentlyViewedSkeleton;
-window.showSubscriptionSkeleton = showSubscriptionSkeleton;
-window.showReviewsSkeleton = showReviewsSkeleton;
+window.initCommon = initCommon;
+window.initDarkMode = initDarkMode;
+window.toggleDarkMode = toggleDarkMode;
+window.bindCartEvents = bindCartEvents;

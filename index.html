@@ -15,7 +15,7 @@
   </style>
 </head>
 <body data-theme="dark">
-  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-sun"></i></button>
+  <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
 
   <!-- Top Bar -->
   <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
@@ -60,34 +60,9 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="common.js"></script>
   <script>
-    // ==================== PAGE-SPECIFIC DATA ====================
-    let allProductsData = [];
+    // ==================== INDEX PAGE SPECIFIC CODE ====================
     let pageRecentlyViewed = [];
     let showMoreManager = null;
-    
-    // ==================== LOAD PRODUCTS ====================
-    async function loadProductsFromJSON() {
-      try {
-        const response = await fetch('product.json');
-        const data = await response.json();
-        allProductsData = data.products.map(p => ({
-          id: p.id, name: p.name, price: p.price, oldPrice: p.oldPrice,
-          discountPercent: p.discountPercent || Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100),
-          image: p.image, isFeatured: p.isFeatured || false, isBestSelling: p.isBestSelling || false,
-          isNewArrival: p.isNewArrival || false, category: p.category
-        }));
-        window.allProducts = allProductsData;
-        return true;
-      } catch(e) {
-        console.log('Using fallback products');
-        allProductsData = [
-          { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200", isFeatured: true, isBestSelling: true },
-          { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200", isFeatured: true, isBestSelling: true }
-        ];
-        window.allProducts = allProductsData;
-        return false;
-      }
-    }
     
     // ==================== RECENTLY VIEWED ====================
     function loadRecentlyViewed() {
@@ -110,16 +85,18 @@
     
     // ==================== PRODUCT FILTERING ====================
     function getFilteredProducts() {
+      if (!window.allProducts) return [];
       let active = document.querySelector('.tab-btn.active')?.dataset.tab || 'featured';
-      return allProductsData.filter(p => active === 'featured' ? p.isFeatured : active === 'best-selling' ? p.isBestSelling : p.isNewArrival);
+      return window.allProducts.filter(p => active === 'featured' ? p.isFeatured : active === 'best-selling' ? p.isBestSelling : p.isNewArrival);
     }
     
     function refreshOnTabChange() {
       if (showMoreManager) showMoreManager.refresh();
     }
     
-    function viewProduct(productId) {
-      let p = allProductsData.find(p => p.id === productId);
+    // ==================== RECENTLY VIEWED UPDATE ====================
+    window.viewProduct = function(productId) {
+      let p = window.allProducts?.find(p => p.id === productId);
       if (p) {
         let filtered = pageRecentlyViewed.filter(r => r.id !== productId);
         filtered.unshift(p);
@@ -127,43 +104,170 @@
         localStorage.setItem('freshkart_recently', JSON.stringify(pageRecentlyViewed));
       }
       window.location.href = `description.html?id=${productId}`;
+    };
+    
+    // ==================== HERO SLIDER ====================
+    function initHeroSlider() {
+      const sliderContainer = document.getElementById('heroSlider');
+      if (!sliderContainer) return;
+      
+      const slides = [
+        { title: "Fresh Groceries", sub: "40% off first order", bg: "linear-gradient(135deg,#2e7d32,#f97316)" },
+        { title: "Farm Fresh Veggies", sub: "Direct from farmers", bg: "linear-gradient(135deg,#1e3c72,#2a5298)" },
+        { title: "Organic Fruits Sale", sub: "30% off", bg: "linear-gradient(135deg,#d4145a,#3a1c71)" }
+      ];
+      
+      sliderContainer.innerHTML = slides.map(s => `
+        <div class="swiper-slide hero-slide" style="background:${s.bg}">
+          <div class="hero-content"><h2>${s.title}</h2><p>${s.sub}</p><button class="order-now" onclick="alert('Explore offers!')">Order Now →</button></div>
+        </div>
+      `).join('');
+      
+      if (typeof Swiper !== 'undefined') {
+        new Swiper('.heroSwiper', { 
+          loop: true, 
+          autoplay: { delay: 3500 }, 
+          pagination: { el: '.swiper-pagination' }, 
+          navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' } 
+        });
+      }
     }
     
-    function addToCart(product) {
-      let existing = cart.find(i => i.id === product.id);
-      if (existing) { existing.qty++; } else { cart.push({ ...product, qty: 1 }); }
-      saveCart();
-      updateCartUI();
-      alert(`${product.name} added to cart!`);
+    // ==================== QUICK CATEGORIES ====================
+    function initQuickCategories() {
+      const container = document.getElementById('quickCatLinks');
+      if (!container) return;
+      
+      const categories = [
+        { name: "Fruits", icon: "🍎", cat: "fruits" },
+        { name: "Vegetables", icon: "🥬", cat: "vegetables" },
+        { name: "Beverages", icon: "🥤", cat: "beverages" },
+        { name: "Cakes", icon: "🎂", cat: "cakes" },
+        { name: "Ice Cream", icon: "🍦", cat: "icecream" },
+        { name: "Snacks", icon: "🍿", cat: "snacks" }
+      ];
+      
+      container.innerHTML = categories.map(c => `
+        <a href="categories.html?cat=${c.cat}" class="cat-link">
+          <div class="cat-icon">${c.icon}</div><span>${c.name}</span>
+        </a>
+      `).join('');
+    }
+    
+    // ==================== SUBSCRIPTION ITEMS ====================
+    function initSubscriptionItems() {
+      const container = document.getElementById('subscriptionItems');
+      if (!container) return;
+      
+      const items = [
+        { img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=100", name: "Milk" },
+        { img: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=100", name: "Bread" },
+        { img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=100", name: "Eggs" },
+        { img: "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=100", name: "Fruits" },
+        { img: "https://images.unsplash.com/photo-1597362875127-2c6e5a8bf6f4?w=100", name: "Juice" }
+      ];
+      
+      container.innerHTML = items.map(i => `
+        <div class="swiper-slide sub-item" onclick="window.location.href='subscription.html'">
+          <img src="${i.img}"><div>${i.name}</div><small>daily</small>
+        </div>
+      `).join('');
+      
+      if (typeof Swiper !== 'undefined') {
+        new Swiper('.subscriptionSwiper', { 
+          slidesPerView: 2.5, 
+          spaceBetween: 14, 
+          breakpoints: { 640: { slidesPerView: 3.5 }, 1024: { slidesPerView: 5 } } 
+        });
+      }
+    }
+    
+    // ==================== CUSTOMER REVIEWS ====================
+    function initCustomerReviews() {
+      const container = document.getElementById('reviewsGrid');
+      if (!container) return;
+      
+      const reviews = [
+        { name: "Priya Sharma", avatar: "P", rating: 5, text: "FreshKart is a game changer! Daily delivery is super reliable." },
+        { name: "Rahul Verma", avatar: "R", rating: 5, text: "Best grocery app, love the dark mode and smooth cart." },
+        { name: "Neha Gupta", avatar: "N", rating: 4, text: "Great discounts and fresh produce. Highly recommended!" }
+      ];
+      
+      container.innerHTML = reviews.map(r => `
+        <div class="review-card">
+          <div class="review-header"><div class="review-avatar">${r.avatar}</div><div><strong>${r.name}</strong><div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div></div></div>
+          <div class="review-text">“${r.text}”</div>
+        </div>
+      `).join('');
+    }
+    
+    // ==================== COUNTDOWN TIMER ====================
+    function initCountdownTimer() {
+      const target = new Date();
+      target.setDate(target.getDate() + 5);
+      setInterval(() => {
+        const diff = target - new Date();
+        if (diff <= 0) return;
+        const days = document.getElementById('days');
+        const hours = document.getElementById('hours');
+        const minutes = document.getElementById('minutes');
+        const seconds = document.getElementById('seconds');
+        if (days) days.innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+        if (hours) hours.innerText = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, '0');
+        if (minutes) minutes.innerText = String(Math.floor((diff / 60000) % 60)).padStart(2, '0');
+        if (seconds) seconds.innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+      }, 1000);
+    }
+    
+    // ==================== SUBSCRIPTION EXPAND ====================
+    function initSubscriptionExpand() {
+      const expandBtn = document.getElementById('expandSubscriptionBtn');
+      const minDiv = document.getElementById('subscriptionMinimized');
+      const expDiv = document.getElementById('subscriptionExpanded');
+      if (expandBtn && minDiv && expDiv) {
+        expandBtn.addEventListener('click', () => {
+          if (minDiv.style.display !== 'none') {
+            minDiv.style.display = 'none';
+            expDiv.style.display = 'block';
+            expandBtn.innerHTML = '<span>Collapse</span> <i class="fas fa-arrow-up"></i>';
+          } else {
+            minDiv.style.display = 'block';
+            expDiv.style.display = 'none';
+            expandBtn.innerHTML = '<span>Explore plans</span> <i class="fas fa-arrow-down"></i>';
+          }
+        });
+      }
+    }
+    
+    // ==================== BACK TO TOP ====================
+    function initBackToTop() {
+      const backBtn = document.getElementById('backToTopBtn');
+      if (backBtn) {
+        backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+      }
     }
     
     // ==================== SKELETONS ====================
     function showAllSkeletons() {
       showHeroSkeleton();
       showCategoriesSkeleton();
-      showRecentlyViewedSkeleton();
       showProductsSkeleton('offeringsGrid', 12);
-      showSubscriptionSkeleton();
-      showReviewsSkeleton();
     }
     
     // ==================== PAGE INITIALIZATION ====================
     async function initPage() {
       showAllSkeletons();
-      await loadProductsFromJSON();
-      loadRecentlyViewed();
       
+      await initCommon(() => {});
+      
+      loadRecentlyViewed();
       initHeroSlider();
       initQuickCategories();
       initSubscriptionItems();
       initCustomerReviews();
       initCountdownTimer();
       initSubscriptionExpand();
-      initLocationSelector();
       initBackToTop();
-      bindCartEvents();
-      initGlobalSearch(allProductsData);
-      updateCartUI();
       updateRecentlyViewed();
       
       showMoreManager = createShowMoreManager('premiumPicks', 'offeringsGrid', 'loadMoreBtn', getFilteredProducts, {
@@ -186,9 +290,6 @@
       
       document.querySelectorAll('.sub-plan-btn').forEach(btn => btn.addEventListener('click', () => alert('Subscription plan selected!')));
     }
-    
-    window.viewProduct = viewProduct;
-    window.addToCart = addToCart;
     
     initPage();
   </script>

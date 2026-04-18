@@ -32,6 +32,38 @@
     .discount-badge { background: var(--red-primary); color: white; padding: 4px 10px; border-radius: 30px; font-size: 13px; font-weight: 600; }
     .stock-status { display: inline-flex; align-items: center; gap: 6px; background: #e8f5e9; color: #2e7d32; padding: 6px 12px; border-radius: 30px; font-size: 13px; font-weight: 600; margin-bottom: 20px; }
     .product-description { line-height: 1.6; color: var(--text-secondary); margin: 20px 0; }
+    
+    /* ==================== EXPANDABLE DESCRIPTION SECTION ==================== */
+    .description-section { margin: 20px 0; border-top: 1px solid var(--border-light); padding-top: 20px; }
+    .description-section h3 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .short-description { line-height: 1.6; color: var(--text-secondary); }
+    .full-description { display: none; line-height: 1.8; color: var(--text-secondary); margin-top: 16px; }
+    .full-description.show { display: block; animation: fadeIn 0.3s ease; }
+    .show-more-desc-btn { background: transparent; color: var(--orange-primary); border: 1px solid var(--orange-primary); padding: 10px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; margin: 16px 0; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+    .show-more-desc-btn:hover { background: var(--orange-primary); color: white; }
+    .show-more-desc-btn i { transition: transform 0.2s; }
+    .show-more-desc-btn.expanded i { transform: rotate(180deg); }
+    
+    /* ==================== SPECIFICATIONS TABLE ==================== */
+    .specs-section { margin: 20px 0; background: var(--bg-primary); border-radius: 16px; padding: 20px; }
+    .specs-section h3 { font-size: 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .specs-table { width: 100%; border-collapse: collapse; }
+    .specs-table tr { border-bottom: 1px solid var(--border-light); }
+    .specs-table tr:last-child { border-bottom: none; }
+    .specs-table td { padding: 12px 8px; }
+    .specs-table td:first-child { font-weight: 600; width: 40%; color: var(--text-primary); }
+    .specs-table td:last-child { color: var(--text-secondary); }
+    
+    /* ==================== USAGE & WARRANTY SECTION ==================== */
+    .info-section { margin: 20px 0; background: var(--bg-primary); border-radius: 16px; padding: 20px; }
+    .info-section h3 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .info-section p { line-height: 1.6; color: var(--text-secondary); }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
     .info-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 20px 0; }
     .info-card { background: var(--bg-primary); padding: 12px; border-radius: 16px; }
     .info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
@@ -56,10 +88,19 @@
     .show-more-btn:hover { opacity: 0.9; transform: scale(0.98); }
     .show-more-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; margin-bottom: 20px; }
+    
+    /* Rating Progress Bar */
+    .rating-breakdown { margin: 20px 0; background: var(--bg-primary); border-radius: 16px; padding: 20px; }
+    .rating-breakdown h4 { margin-bottom: 12px; }
+    .rating-bar-item { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .rating-star-label { width: 60px; font-size: 13px; }
+    .rating-bar-bg { flex: 1; height: 8px; background: var(--border-light); border-radius: 4px; overflow: hidden; }
+    .rating-bar-fill { height: 100%; background: var(--orange-primary); border-radius: 4px; }
+    .rating-percent { width: 40px; font-size: 12px; color: var(--text-muted); }
   </style>
 </head>
 <body data-theme="dark">
-  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-sun"></i></button>
+  <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
 
   <!-- Top Bar -->
   <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
@@ -80,6 +121,7 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="common.js"></script>
   <script>
+    // ==================== DESCRIPTION PAGE SPECIFIC CODE ====================
     let productData = null;
     let currentProduct = null;
     let quantity = 1;
@@ -96,6 +138,7 @@
       { name: "Snacks", icon: "🍿", cat: "snacks" }
     ];
     
+    // ==================== LOAD PRODUCT DATA ====================
     async function loadProductData() {
       try {
         const response = await fetch('product.json');
@@ -107,7 +150,6 @@
           currentProduct = data.products.find(p => p.id === productId);
           if (currentProduct) {
             renderProductDetail();
-            // Setup show more managers after render
             setupShowMoreManagers();
           } else {
             document.getElementById('productDetailContainer').innerHTML = '<div class="loading">Product not found</div>';
@@ -120,11 +162,24 @@
       }
     }
     
+    // ==================== RENDER PRODUCT DETAIL ====================
     function renderProductDetail() {
       const container = document.getElementById('productDetailContainer');
       const mainImage = currentProduct.images?.[0] || currentProduct.image;
       const isWishlisted = wishlist.includes(currentProduct.id);
       const discountValue = Math.round(((currentProduct.oldPrice - currentProduct.price) / currentProduct.oldPrice) * 100);
+      
+      // Prepare short description (first 150 characters)
+      const shortDesc = currentProduct.description || (currentProduct.longDescription ? currentProduct.longDescription.substring(0, 150) + '...' : 'No description available');
+      const hasLongDesc = currentProduct.longDescription && currentProduct.longDescription.length > 150;
+      const longDesc = currentProduct.longDescription || currentProduct.description || '';
+      
+      // Prepare specifications HTML
+      const specsHtml = currentProduct.specifications ? 
+        Object.entries(currentProduct.specifications).map(([key, value]) => 
+          `<tr><td>${key.replace(/([A-Z])/g, ' $1').trim()}</td><td>${value}</td></tr>`
+        ).join('') : 
+        '<tr><td colspan="2">No specifications available</td></tr>';
       
       container.innerHTML = `
         <div class="breadcrumb"><a href="index.html">Home</a> / <a href="categories.html?cat=${currentProduct.category}">${currentProduct.category}</a> / <span>${currentProduct.name}</span></div>
@@ -135,55 +190,139 @@
             <div class="rating-row"><div class="stars">${'★'.repeat(Math.floor(currentProduct.rating))}${'☆'.repeat(5 - Math.floor(currentProduct.rating))}</div><div>${currentProduct.rating} (${currentProduct.ratingCount} ratings)</div></div>
             <div class="price-row"><span class="current-price">₹${currentProduct.price}</span><span class="old-price">₹${currentProduct.oldPrice}</span><span class="discount-badge">${discountValue}% OFF</span></div>
             <div class="stock-status"><i class="fas fa-check-circle"></i> ${currentProduct.inStock ? 'In Stock' : 'Out of Stock'}</div>
-            <p class="product-description">${currentProduct.description}</p>
-            <div class="info-cards">
-              <div class="info-card"><div class="info-label">Brand</div><div class="info-value">${currentProduct.brand}</div></div>
-              <div class="info-card"><div class="info-label">Origin</div><div class="info-value">${currentProduct.origin}</div></div>
-              <div class="info-card"><div class="info-label">Unit</div><div class="info-value">${currentProduct.unit}</div></div>
-              <div class="info-card"><div class="info-label">Shelf Life</div><div class="info-value">${currentProduct.shelfLife}</div></div>
-              <div class="info-card"><div class="info-label">In Stock</div><div class="info-value">${currentProduct.stockQuantity || 500} units</div></div>
-              <div class="info-card"><div class="info-label">Seller</div><div class="info-value">${currentProduct.seller || 'FreshKart Direct'}</div></div>
-            </div>
-            <h4><i class="fas fa-heart"></i> Key Benefits</h4>
-            <ul class="benefits-list">${currentProduct.benefits.map(b => `<li><i class="fas fa-leaf"></i> ${b}</li>`).join('')}</ul>
-            <div class="info-card"><div class="info-label">Storage Tips</div><div class="info-value">💡 ${currentProduct.storageTips}</div></div>
+            
+            <!-- Short Description -->
+            <div class="short-description">${escapeHtml(shortDesc)}</div>
+            
             ${currentProduct.variants ? `<div class="variant-selector"><select id="variantSelect"><option value="">Select variant</option>${currentProduct.variants.map(v => `<option value='${JSON.stringify(v)}'>${v.size} - ₹${v.price}</option>`).join('')}</select></div>` : ''}
             <div class="quantity-wrapper"><button class="qty-btn" id="qtyMinus">-</button><input type="number" id="qtyInput" class="qty-input" value="1" min="1" max="${currentProduct.maxQuantity || 20}"><button class="qty-btn" id="qtyPlus">+</button></div>
             <div class="action-buttons"><button class="buy-now" id="buyNowBtn"><i class="fas fa-bolt"></i> Buy Now</button><button class="add-to-cart-detail" id="addToCartDetail"><i class="fas fa-shopping-cart"></i> Add to Cart</button><button class="wishlist-detail" id="wishlistDetailBtn"><i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i></button></div>
           </div>
         </div></div>
+        
+        <!-- ==================== EXPANDABLE DESCRIPTION SECTION ==================== -->
+        <div class="description-section">
+          <h3><i class="fas fa-align-left"></i> Product Description</h3>
+          <div class="short-description" id="shortDesc">${escapeHtml(shortDesc)}</div>
+          <div class="full-description" id="fullDesc">${escapeHtml(longDesc).replace(/\n/g, '<br>')}</div>
+          ${hasLongDesc ? `<button class="show-more-desc-btn" id="showMoreDescBtn"><span>Read More</span> <i class="fas fa-chevron-down"></i></button>` : ''}
+        </div>
+        
+        <!-- ==================== SPECIFICATIONS SECTION ==================== -->
+        <div class="specs-section">
+          <h3><i class="fas fa-list-ul"></i> Specifications</h3>
+          <table class="specs-table">
+            <tbody>${specsHtml}</tbody>
+          </table>
+        </div>
+        
+        <!-- ==================== ADDITIONAL INFO CARDS ==================== -->
+        <div class="info-cards">
+          <div class="info-card"><div class="info-label">Brand</div><div class="info-value">${currentProduct.brand || 'FreshKart'}</div></div>
+          <div class="info-card"><div class="info-label">Origin</div><div class="info-value">${currentProduct.origin || 'India'}</div></div>
+          <div class="info-card"><div class="info-label">Unit</div><div class="info-value">${currentProduct.unit || '1 kg'}</div></div>
+          <div class="info-card"><div class="info-label">Shelf Life</div><div class="info-value">${currentProduct.shelfLife || '7 days'}</div></div>
+          <div class="info-card"><div class="info-label">In Stock</div><div class="info-value">${currentProduct.stockQuantity || 500} units</div></div>
+          <div class="info-card"><div class="info-label">Seller</div><div class="info-value">${currentProduct.seller || 'FreshKart Direct'}</div></div>
+        </div>
+        
+        <!-- ==================== BENEFITS SECTION ==================== -->
+        <h4><i class="fas fa-heart"></i> Key Benefits</h4>
+        <ul class="benefits-list">${(currentProduct.benefits || ['Fresh and premium quality', 'Direct from farm', 'Best price guaranteed']).map(b => `<li><i class="fas fa-leaf"></i> ${b}</li>`).join('')}</ul>
+        
+        <!-- ==================== STORAGE TIPS SECTION ==================== -->
+        <div class="info-section">
+          <h3><i class="fas fa-thermometer-half"></i> Storage Tips</h3>
+          <p>💡 ${currentProduct.storageTips || 'Store in a cool, dry place away from direct sunlight. Refrigerate after opening if applicable.'}</p>
+        </div>
+        
+        <!-- ==================== USAGE INSTRUCTIONS SECTION ==================== -->
+        ${currentProduct.usageInstructions ? `
+        <div class="info-section">
+          <h3><i class="fas fa-book-open"></i> Usage Instructions</h3>
+          <p>📖 ${escapeHtml(currentProduct.usageInstructions)}</p>
+        </div>
+        ` : ''}
+        
+        <!-- ==================== WARRANTY / GUARANTEE SECTION ==================== -->
+        ${currentProduct.warrantyInfo ? `
+        <div class="info-section">
+          <h3><i class="fas fa-shield-alt"></i> Warranty & Guarantee</h3>
+          <p>✅ ${escapeHtml(currentProduct.warrantyInfo)}</p>
+        </div>
+        ` : ''}
+        
+        <!-- ==================== NUTRITIONAL INFO SECTION ==================== -->
+        ${currentProduct.nutritionalInfo ? `
+        <div class="info-section">
+          <h3><i class="fas fa-apple-alt"></i> Nutritional Information</h3>
+          <p>🥗 ${escapeHtml(currentProduct.nutritionalInfo)}</p>
+        </div>
+        ` : ''}
+        
+        <!-- ==================== SHOP BY CATEGORY ==================== -->
         <div class="section-header"><h2><i class="fas fa-th-large"></i> Shop by Category</h2></div>
         <div class="category-boxes-grid" id="categoryBoxes"></div>
+        
+        <!-- ==================== RELATED PRODUCTS ==================== -->
         <div class="section-header"><h2><i class="fas fa-layer-group"></i> Related Products</h2></div>
         <div class="products-grid" id="relatedProducts"></div>
         <button class="show-more-btn" id="loadMoreRelated" style="display: none;">Show More Related →</button>
+        
+        <!-- ==================== YOU MAY ALSO LIKE ==================== -->
         <div class="section-header"><h2><i class="fas fa-fire"></i> You May Also Like</h2></div>
         <div class="products-grid" id="alsoLike"></div>
         <button class="show-more-btn" id="loadMoreAlso" style="display: none;">Show More →</button>
       `;
       
+      // ==================== SETUP THUMBNAILS ====================
       if (currentProduct.images?.length > 1) {
         document.getElementById('thumbnailList').innerHTML = currentProduct.images.map((img, idx) => `<div class="thumb ${idx === 0 ? 'active' : ''}" onclick="document.getElementById('mainProductImage').src='${img}'; document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active')); this.classList.add('active')"><img src="${img}"></div>`).join('');
       }
       
+      // ==================== SETUP QUANTITY CONTROLS ====================
       document.getElementById('qtyMinus').onclick = () => { if (quantity > 1) { quantity--; document.getElementById('qtyInput').value = quantity; } };
       document.getElementById('qtyPlus').onclick = () => { if (quantity < (currentProduct.maxQuantity || 20)) { quantity++; document.getElementById('qtyInput').value = quantity; } };
       
+      // ==================== SETUP VARIANT SELECTOR ====================
       if (currentProduct.variants) {
         document.getElementById('variantSelect').onchange = (e) => {
           if (e.target.value) { selectedVariant = JSON.parse(e.target.value); document.querySelector('.current-price').innerText = `₹${selectedVariant.price}`; }
         };
       }
       
+      // ==================== SETUP BUTTON ACTIONS ====================
       document.getElementById('addToCartDetail').onclick = () => addToCartDetail(currentProduct.id, quantity, selectedVariant);
       document.getElementById('buyNowBtn').onclick = () => { addToCartDetail(currentProduct.id, quantity, selectedVariant); openCart(); };
       document.getElementById('wishlistDetailBtn').onclick = () => toggleWishlistDetail(currentProduct.id);
       
+      // ==================== SETUP SHOW MORE DESCRIPTION BUTTON ====================
+      const showMoreBtn = document.getElementById('showMoreDescBtn');
+      if (showMoreBtn) {
+        showMoreBtn.addEventListener('click', function() {
+          const fullDesc = document.getElementById('fullDesc');
+          const shortDescDiv = document.getElementById('shortDesc');
+          const isExpanded = fullDesc.classList.contains('show');
+          
+          if (isExpanded) {
+            fullDesc.classList.remove('show');
+            shortDescDiv.style.display = 'block';
+            this.innerHTML = '<span>Read More</span> <i class="fas fa-chevron-down"></i>';
+            this.classList.remove('expanded');
+          } else {
+            fullDesc.classList.add('show');
+            shortDescDiv.style.display = 'none';
+            this.innerHTML = '<span>Show Less</span> <i class="fas fa-chevron-up"></i>';
+            this.classList.add('expanded');
+          }
+        });
+      }
+      
       renderCategoryBoxes();
     }
     
+    // ==================== SETUP SHOW MORE MANAGERS ====================
     function setupShowMoreManagers() {
-      // Setup Related Products Show More Manager
       if (!relatedManager) {
         relatedManager = createShowMoreManager('relatedProducts', 'relatedProducts', 'loadMoreRelated', getRelatedProducts, {
           initialItems: 4,
@@ -194,7 +333,6 @@
         relatedManager.init();
       }
       
-      // Setup Also Like Show More Manager
       if (!alsoManager) {
         alsoManager = createShowMoreManager('alsoLikeProducts', 'alsoLike', 'loadMoreAlso', getAlsoLikeProducts, {
           initialItems: 4,
@@ -206,6 +344,7 @@
       }
     }
     
+    // ==================== PRODUCT FILTERING FUNCTIONS ====================
     function getRelatedProducts() {
       return productData.products.filter(p => p.category === currentProduct.category && p.id !== currentProduct.id);
     }
@@ -214,6 +353,7 @@
       return productData.products.filter(p => p.id !== currentProduct.id);
     }
     
+    // ==================== CART FUNCTIONS ====================
     function addToCartDetail(productId, qty, variant) {
       let product = productData.products.find(p => p.id === productId);
       let price = variant ? variant.price : product.price;
@@ -230,6 +370,7 @@
       alert(`${name} added to cart!`);
     }
     
+    // ==================== WISHLIST FUNCTIONS ====================
     function toggleWishlistDetail(id) {
       let idx = wishlist.indexOf(id);
       if (idx === -1) wishlist.push(id);
@@ -240,13 +381,26 @@
       if (alsoManager) alsoManager.refresh();
     }
     
+    // ==================== CATEGORY BOXES ====================
     function renderCategoryBoxes() {
       document.getElementById('categoryBoxes').innerHTML = categoryBoxes.map(c => `<div class="cat-box" onclick="window.location.href='categories.html?cat=${c.cat}'"><div class="cat-box-icon">${c.icon}</div><span>${c.name}</span></div>`).join('');
     }
     
+    // ==================== ESCAPE HTML ====================
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+    
+    // ==================== PAGE INITIALIZATION ====================
     function initPage() { 
       loadProductData(); 
-      initCommon([], () => {}); 
+      initCommon(() => {}); 
     }
     
     window.toggleWishlistDetail = toggleWishlistDetail;

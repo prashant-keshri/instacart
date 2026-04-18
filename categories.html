@@ -23,7 +23,7 @@
   </style>
 </head>
 <body data-theme="dark">
-  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-sun"></i></button>
+  <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
   
   <!-- Top Bar -->
   <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
@@ -39,12 +39,15 @@
     <div class="products-grid" id="categoryProductsGrid"></div>
     <button class="show-more-btn" id="loadMoreCatBtn">Show More →</button>
     
+    <!-- ==================== SECTION: SUBSCRIPTION PLANS ==================== -->
     <div class="daily-subscription"><div class="container"><div class="subscription-header"><h3><i class="fas fa-calendar-check"></i> 🚀 Subscription Plans</h3><span style="font-size:14px;">Save up to 25% everyday</span></div><div class="subscription-plans" id="subscriptionPlansList"></div><div class="subscription-footer-link" style="text-align:center; margin-top:16px;"><a href="subscription.html" style="color:var(--orange-primary);">📦 View All Subscription Plans →</a></div></div></div>
     
+    <!-- ==================== SECTION: DEAL ZONE ==================== -->
     <div class="section-header"><h2><i class="fas fa-fire"></i> 🔥 Deal Zone - 30%+ OFF</h2></div>
     <div class="products-grid" id="dealZoneGrid"></div>
     <button class="show-more-btn" id="loadMoreDealBtn">Show More Deals →</button>
     
+    <!-- ==================== SECTION: YOU MAY ALSO LIKE ==================== -->
     <div class="section-header"><h2><i class="fas fa-star"></i> You May Also Like</h2></div>
     <div class="products-grid" id="youMayAlsoLikeGrid"></div>
     <button class="show-more-btn" id="loadMoreAlsoBtn">Show More →</button>
@@ -60,7 +63,7 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="common.js"></script>
   <script>
-    let allProducts = [];
+    // ==================== CATEGORIES PAGE SPECIFIC CODE ====================
     let currentCategory = "all";
     let categoryManager = null;
     let dealManager = null;
@@ -77,37 +80,23 @@
       { name: "Meats", icon: "fa-drumstick-bite", cat: "meats", emoji: "🍗" }
     ];
     
-    async function loadProducts() {
-      try {
-        const response = await fetch('product.json');
-        const data = await response.json();
-        allProducts = data.products.map(p => ({
-          id: p.id, name: p.name, price: p.price, oldPrice: p.oldPrice,
-          discountPercent: p.discountPercent || Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100),
-          image: p.image, category: p.category
-        }));
-        window.allProducts = allProducts;
-      } catch(e) {
-        allProducts = [
-          { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200", category: "fruits" },
-          { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200", category: "fruits" }
-        ];
-        window.allProducts = allProducts;
-      }
-    }
-    
+    // ==================== PRODUCT FILTERING FUNCTIONS ====================
     function getCategoryProducts() {
-      return currentCategory === "all" ? allProducts : allProducts.filter(p => p.category === currentCategory);
+      if (!window.allProducts) return [];
+      return currentCategory === "all" ? window.allProducts : window.allProducts.filter(p => p.category === currentCategory);
     }
     
     function getDealProducts() {
-      return allProducts.filter(p => p.discountPercent >= 30);
+      if (!window.allProducts) return [];
+      return window.allProducts.filter(p => p.discountPercent >= 30);
     }
     
     function getRandomProducts() {
-      return [...allProducts];
+      if (!window.allProducts) return [];
+      return [...window.allProducts];
     }
     
+    // ==================== RENDER FUNCTIONS ====================
     function renderFilterCapsules() {
       document.getElementById('filterCapsules').innerHTML = categoriesList.map(cat => 
         `<button class="filter-capsule ${currentCategory === cat.cat ? 'active' : ''}" onclick="filterByCategory('${cat.cat}')"><i class="fas ${cat.icon}"></i> ${cat.name}</button>`
@@ -129,6 +118,7 @@
       document.querySelectorAll('.sub-plan-btn').forEach(btn => btn.addEventListener('click', () => alert('Subscription plan selected!')));
     }
     
+    // ==================== CATEGORY FILTER FUNCTION ====================
     function filterByCategory(cat) {
       currentCategory = cat;
       renderFilterCapsules();
@@ -137,15 +127,18 @@
       document.getElementById('categoryTitle').innerHTML = `<i class="fas fa-tag"></i> ${cat === 'all' ? 'All Products' : cat.charAt(0).toUpperCase() + cat.slice(1)}`;
     }
     
+    // ==================== SKELETON FUNCTIONS ====================
     function showCategorySkeleton() {
       showProductsSkeleton('categoryProductsGrid', 12);
       showProductsSkeleton('dealZoneGrid', 8);
       showProductsSkeleton('youMayAlsoLikeGrid', 8);
     }
     
+    // ==================== PAGE INITIALIZATION ====================
     async function initPage() {
       showCategorySkeleton();
-      await loadProducts();
+      
+      await initCommon(() => {});
       
       const urlParams = new URLSearchParams(window.location.search);
       const catFromUrl = urlParams.get('cat');
@@ -155,7 +148,7 @@
       renderCategoryCards();
       renderSubscriptionPlans();
       
-      // Initialize Show More Managers
+      // Initialize Show More Managers with infinite loading
       categoryManager = createShowMoreManager('categoryProducts', 'categoryProductsGrid', 'loadMoreCatBtn', getCategoryProducts, {
         initialItems: 12,
         loadMoreItems: 6,
@@ -180,7 +173,6 @@
       });
       alsoManager.init();
       
-      initCommon(allProducts, () => {});
       document.getElementById('categoryTitle').innerHTML = `<i class="fas fa-tag"></i> ${currentCategory === 'all' ? 'All Products' : currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)}`;
     }
     

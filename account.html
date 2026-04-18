@@ -34,10 +34,11 @@
     .save-btn { background: var(--green-primary); color: white; border: none; padding: 12px; border-radius: 40px; font-weight: 600; cursor: pointer; margin-top: 10px; width: 100%; }
     .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
     .form-group input, .form-group select { padding: 12px 16px; border-radius: 40px; border: 1px solid var(--border-light); background: var(--bg-primary); color: var(--text-primary); }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; margin-top: 20px; }
   </style>
 </head>
 <body data-theme="dark">
-  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-sun"></i></button>
+  <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
 
   <!-- Top Bar -->
   <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
@@ -58,31 +59,13 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="common.js"></script>
   <script>
+    // ==================== ACCOUNT PAGE SPECIFIC CODE ====================
     let orders = [];
     let addresses = [];
     let userData = {};
-    let allProducts = [];
     let wishlistManager = null;
     
-    async function loadProducts() {
-      try {
-        const response = await fetch('product.json');
-        const data = await response.json();
-        allProducts = data.products.map(p => ({
-          id: p.id, name: p.name, price: p.price, oldPrice: p.oldPrice,
-          discountPercent: p.discountPercent || Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100),
-          image: p.image, category: p.category
-        }));
-        window.allProducts = allProducts;
-      } catch(e) {
-        allProducts = [
-          { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200" },
-          { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200" }
-        ];
-        window.allProducts = allProducts;
-      }
-    }
-    
+    // ==================== LOAD USER DATA ====================
     function loadUserData() {
       try {
         const savedOrders = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.ORDERS);
@@ -100,6 +83,7 @@
       }
     }
     
+    // ==================== DASHBOARD RENDER ====================
     function renderDashboard() { 
       let totalSpent = orders.reduce((s, o) => s + o.total, 0); 
       document.getElementById('accountMain').innerHTML = `
@@ -111,19 +95,21 @@
           <div class="stat-card" onclick="openCart()"><div class="stat-icon"><i class="fas fa-cart-shopping"></i></div><div class="stat-value">${cart.reduce((s,i)=>s+i.qty,0)}</div><div class="stat-label">Cart</div></div>
         </div>
         <div class="section-title"><i class="fas fa-clock"></i> Recent Orders</div>
-        ${orders.slice(0, 3).map(o => `<div class="order-item" style="background:var(--bg-primary);border-radius:16px;padding:16px;margin-bottom:10px;"><div><strong>${o.id}</strong><br>${o.date}</div><div>₹${o.total}</div><div class="order-status status-${o.status}">${o.status}</div></div>`).join('')}
+        ${orders.slice(0, 3).map(o => `<div class="order-item" style="background:var(--bg-primary);border-radius:16px;padding:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div><strong>${o.id}</strong><br>${o.date}</div><div>₹${o.total}</div><div class="order-status status-${o.status}">${o.status}</div></div>`).join('')}
       `;
     }
     
+    // ==================== ORDERS RENDER ====================
     function renderOrders() { 
       document.getElementById('accountMain').innerHTML = `
         <div class="section-title"><i class="fas fa-shopping-bag"></i> My Orders</div>
-        ${orders.map(o => `<div class="order-item" style="background:var(--bg-primary);border-radius:16px;padding:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div><strong>${o.id}</strong><br>${o.date}</div><div>₹${o.total}</div><div class="order-status status-${o.status}">${o.status}</div><button onclick="window.location.href='orders.html'" style="background:var(--orange-primary);border:none;padding:6px 16px;border-radius:30px;color:white;">View</button></div>`).join('')}
+        ${orders.map(o => `<div class="order-item" style="background:var(--bg-primary);border-radius:16px;padding:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div><strong>${o.id}</strong><br>${o.date}</div><div>₹${o.total}</div><div class="order-status status-${o.status}">${o.status}</div><button onclick="window.location.href='orders.html'" style="background:var(--orange-primary);border:none;padding:6px 16px;border-radius:30px;color:white;cursor:pointer;">View</button></div>`).join('')}
       `;
     }
     
+    // ==================== WISHLIST RENDER ====================
     function renderWishlist() { 
-      let wishlistProducts = getWishlistProducts(allProducts);
+      let wishlistProducts = getWishlistProducts();
       document.getElementById('accountMain').innerHTML = `
         <div class="section-title"><i class="fas fa-heart"></i> My Wishlist (${wishlistProducts.length})</div>
         <div class="products-grid" id="wishlistGrid"></div>
@@ -131,7 +117,7 @@
       `;
       
       if (!wishlistManager) {
-        wishlistManager = createShowMoreManager('wishlistProducts', 'wishlistGrid', 'loadMoreWishlist', () => getWishlistProducts(allProducts), {
+        wishlistManager = createShowMoreManager('wishlistProducts', 'wishlistGrid', 'loadMoreWishlist', getWishlistProducts, {
           initialItems: 8,
           loadMoreItems: 4,
           maxCycles: 5,
@@ -143,19 +129,21 @@
       }
     }
     
+    // ==================== ADDRESSES RENDER ====================
     function renderAddresses() { 
       document.getElementById('accountMain').innerHTML = `
         <div class="section-title"><i class="fas fa-map-marker-alt"></i> Addresses</div>
-        ${addresses.map(a => `<div class="address-card ${a.isDefault ? 'address-default' : ''}"><div><strong>${a.name}</strong> ${a.isDefault ? '(Default)' : ''}<p>${a.address}</p></div><div><button onclick="setDefault(${a.id})" style="background:transparent;border:1px solid var(--border-light);padding:4px 12px;border-radius:30px;">Set Default</button><button onclick="deleteAddress(${a.id})" style="background:var(--red-primary);color:white;border:none;padding:4px 12px;border-radius:30px;margin-left:8px;">Delete</button></div></div>`).join('')}
+        ${addresses.map(a => `<div class="address-card ${a.isDefault ? 'address-default' : ''}"><div><strong>${a.name}</strong> ${a.isDefault ? '(Default)' : ''}<p>${a.address}</p></div><div><button onclick="setDefault(${a.id})" style="background:transparent;border:1px solid var(--border-light);padding:4px 12px;border-radius:30px;cursor:pointer;">Set Default</button><button onclick="deleteAddress(${a.id})" style="background:var(--red-primary);color:white;border:none;padding:4px 12px;border-radius:30px;margin-left:8px;cursor:pointer;">Delete</button></div></div>`).join('')}
         <button class="add-address-btn" onclick="addAddress()">+ Add New Address</button>
       `;
     }
     
+    // ==================== SETTINGS RENDER ====================
     function renderSettings() { 
       document.getElementById('accountMain').innerHTML = `
         <div class="section-title"><i class="fas fa-user-cog"></i> Settings</div>
         <form id="settingsForm"><div class="form-group"><label>Name</label><input type="text" id="name" value="${userData.name}"></div><div class="form-group"><label>Email</label><input type="email" id="email" value="${userData.email}"></div><div class="form-group"><label>Phone</label><input type="tel" id="phone" value="${userData.phone}"></div><button type="submit" class="save-btn">Save Changes</button></form>
-        <div style="margin-top:30px;padding:20px;background:var(--bg-primary);border-radius:16px;"><h4>Logout</h4><button onclick="logout()" style="background:var(--red-primary);color:white;border:none;padding:10px 20px;border-radius:40px;margin-top:10px;">Logout</button></div>
+        <div style="margin-top:30px;padding:20px;background:var(--bg-primary);border-radius:16px;"><h4>Logout</h4><button onclick="logout()" style="background:var(--red-primary);color:white;border:none;padding:10px 20px;border-radius:40px;margin-top:10px;cursor:pointer;">Logout</button></div>
       `;
       document.getElementById('settingsForm').onsubmit = (e) => { 
         e.preventDefault(); 
@@ -169,6 +157,7 @@
       };
     }
     
+    // ==================== TAB SWITCHING ====================
     function switchTab(tab) { 
       document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active')); 
       document.querySelector(`.sidebar-menu a[data-tab="${tab}"]`).classList.add('active'); 
@@ -179,6 +168,7 @@
       else if (tab === 'settings') renderSettings(); 
     }
     
+    // ==================== ADDRESS FUNCTIONS ====================
     function setDefault(id) { 
       addresses = addresses.map(a => ({ ...a, isDefault: a.id === id })); 
       localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.ADDRESSES, JSON.stringify(addresses)); 
@@ -206,39 +196,23 @@
       } 
     }
     
+    // ==================== PAGE INITIALIZATION ====================
     async function initPage() { 
-      await loadProducts();
+      await initCommon(() => {});
       loadUserData();
       
-      initCommon(allProducts, () => { 
-        renderDashboard(); 
-        document.querySelectorAll('.sidebar-menu a').forEach(a => a.addEventListener('click', (e) => { 
-          e.preventDefault(); 
-          switchTab(a.dataset.tab); 
-        })); 
-      }); 
+      renderDashboard(); 
+      document.querySelectorAll('.sidebar-menu a').forEach(a => a.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        switchTab(a.dataset.tab); 
+      })); 
     }
-
-    // Ensure cart button works on account page
-function bindAccountCartEvents() {
-  const cartBtn = document.getElementById('cartBtn');
-  const bottomCartBtn = document.getElementById('bottomCartBtn');
-  const mobileCartIcon = document.getElementById('mobileCartIcon');
-  
-  if (cartBtn) cartBtn.addEventListener('click', openCart);
-  if (bottomCartBtn) bottomCartBtn.addEventListener('click', function(e) { e.preventDefault(); openCart(); });
-  if (mobileCartIcon) mobileCartIcon.addEventListener('click', openCart);
-}
-
-// Call this after initCommon
-bindAccountCartEvents();
     
     window.switchTab = switchTab; 
     window.setDefault = setDefault; 
     window.deleteAddress = deleteAddress; 
     window.addAddress = addAddress; 
     window.logout = logout; 
-    window.allProducts = allProducts;
     
     initPage();
   </script>

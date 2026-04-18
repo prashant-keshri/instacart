@@ -52,16 +52,11 @@
     .update-title { font-weight: 600; font-size: 13px; }
     .update-date { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
     .empty-state { text-align: center; padding: 60px 20px; background: var(--surface); border-radius: 24px; border: 1px solid var(--border-light); }
-    .orders-skeleton-list { display: flex; flex-direction: column; gap: 20px; }
-    .order-skeleton { background: var(--skeleton-card-bg); border-radius: 20px; border: 1px solid var(--skeleton-border); padding: 18px 20px; }
-    .order-skeleton .order-header-skeleton { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-    .order-skeleton .id-skeleton { width: 150px; height: 18px; border-radius: 8px; background: var(--skeleton-base); }
-    .order-skeleton .status-skeleton { width: 80px; height: 24px; border-radius: 30px; background: var(--skeleton-base); }
-    .order-skeleton .price-skeleton { width: 80px; height: 20px; border-radius: 8px; background: var(--skeleton-base); }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; margin-top: 20px; }
   </style>
 </head>
 <body data-theme="dark">
-  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-sun"></i></button>
+  <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
 
   <!-- Top Bar -->
   <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
@@ -82,12 +77,9 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="common.js"></script>
   <script>
-    // ==================== DATA STORAGE ====================
+    // ==================== ORDERS PAGE SPECIFIC CODE ====================
     let orders = [];
-    let allProducts = [];
     let suggestedManager = null;
-    let currentPage = 1;
-    const itemsPerPage = 8;
     
     const exploreCategories = [
       { name: "Fruits", icon: "🍎", cat: "fruits" },
@@ -99,29 +91,6 @@
       { name: "Meals", icon: "🍛", cat: "meals" },
       { name: "Meats", icon: "🍗", cat: "meats" }
     ];
-    
-    // ==================== LOAD PRODUCTS ====================
-    async function loadProducts() {
-      try {
-        const response = await fetch('product.json');
-        const data = await response.json();
-        allProducts = data.products.map(p => ({
-          id: p.id, name: p.name, price: p.price, oldPrice: p.oldPrice,
-          discountPercent: p.discountPercent || Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100),
-          image: p.image, category: p.category
-        }));
-        window.allProducts = allProducts;
-        return true;
-      } catch (error) {
-        console.log('Using fallback products');
-        allProducts = [
-          { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200" },
-          { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200" }
-        ];
-        window.allProducts = allProducts;
-        return false;
-      }
-    }
     
     // ==================== LOAD ORDERS ====================
     function loadOrders() {
@@ -234,7 +203,7 @@
       return `<div class="explore-categories-section"><div class="section-header"><h2><i class="fas fa-th-large"></i> Explore More Categories</h2></div><div class="explore-categories-grid">${exploreCategories.map(c => `<a href="categories.html?cat=${c.cat}" class="cat-link"><div class="cat-icon">${c.icon}</div><span>${c.name}</span></a>`).join('')}</div></div>`;
     }
     
-    function getSuggestedProducts() { return allProducts; }
+    function getSuggestedProducts() { return window.allProducts || []; }
     
     function renderSuggestedProducts() {
       return `
@@ -248,7 +217,7 @@
       const container = document.getElementById('ordersContainer');
       
       if (orders.length === 0) {
-        container.innerHTML = `<div class="empty-state"><i class="fas fa-shopping-bag"></i><h3>No Orders Yet</h3><p>Looks like you haven't placed any orders yet.</p><button onclick="location.href='index.html'">Start Shopping</button></div>${renderExploreCategories()}${renderSuggestedProducts()}`;
+        container.innerHTML = `<div class="empty-state"><i class="fas fa-shopping-bag"></i><h3>No Orders Yet</h3><p>Looks like you haven't placed any orders yet.</p><button onclick="location.href='index.html'" style="background:var(--orange-primary);color:white;border:none;padding:10px 20px;border-radius:30px;cursor:pointer;">Start Shopping</button></div>${renderExploreCategories()}${renderSuggestedProducts()}`;
       } else {
         container.innerHTML = `<div class="page-header"><h1><i class="fas fa-shopping-bag"></i> My Orders</h1><p>Track, manage, and reorder your purchases</p></div><div class="orders-list">${orders.map(order => renderOrderCard(order)).join('')}</div>${renderExploreCategories()}${renderSuggestedProducts()}`;
       }
@@ -275,31 +244,14 @@
       }
     }
     
+    // ==================== PAGE INITIALIZATION ====================
     async function initPage() {
       showOrdersSkeleton();
-      await loadProducts();
+      await initCommon(() => {});
       loadOrders();
-      
-      initDarkMode();
-      initLocationSelector();
-      initBackToTop();
-      bindCartEvents();
-      initGlobalSearch(allProducts);
-      updateCartUI();
       renderOrdersPage();
     }
     
-    // Ensure cart button works on orders page
-document.addEventListener('DOMContentLoaded', function() {
-  const cartBtn = document.getElementById('cartBtn');
-  const bottomCartBtn = document.getElementById('bottomCartBtn');
-  const mobileCartIcon = document.getElementById('mobileCartIcon');
-  
-  if (cartBtn) cartBtn.addEventListener('click', openCart);
-  if (bottomCartBtn) bottomCartBtn.addEventListener('click', function(e) { e.preventDefault(); openCart(); });
-  if (mobileCartIcon) mobileCartIcon.addEventListener('click', openCart);
-});
-
     window.toggleOrderDetails = toggleOrderDetails;
     window.cancelOrder = cancelOrder;
     window.editAddress = editAddress;
