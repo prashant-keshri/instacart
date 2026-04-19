@@ -5,8 +5,8 @@ const SITE_CONFIG = {
   MAX_CART_QUANTITY: 20,
   PLATFORM_FEE: 9,
   DELIVERY_CHARGE: 40,
-  DEFAULT_INITIAL_ITEMS: 12,
-  DEFAULT_LOAD_MORE_ITEMS: 6,
+  DEFAULT_INITIAL_ITEMS: 24,
+  DEFAULT_LOAD_MORE_ITEMS: 12,
   DEFAULT_MAX_CYCLES: 10,
   DEFAULT_THEME: 'dark',
   STORAGE_KEYS: {
@@ -340,31 +340,56 @@ function toggleDarkMode() {
 }
 
 // ==================== SECTION 9: PRODUCT CARD RENDERER ====================
+
+// ==================== SECTION 9: PRODUCT CARD RENDERER ====================
 function renderProductCard(product) {
   if (!product) return '';
   const isWishlisted = wishlist.includes(product.id);
   const discountValue = product.discountPercent || (product.oldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : 0);
+  const isSubscription = product.category === "subscription" || product.subscriptionType;
+  
   return `
-    <div class="product-card" data-product-id="${product.id}">
-      <div class="product-image" onclick="viewProduct(${product.id})">
+    <div class="product-card" data-product-id="${product.id}" onclick="viewProduct(${product.id})">
+      <div class="product-image">
         <img src="${product.image}" onerror="this.src='https://placehold.co/200'">
         ${discountValue ? `<div class="product-badge">${discountValue}% OFF</div>` : ''}
+        ${isSubscription ? `<div class="subscription-badge"><i class="fas fa-calendar-check"></i> Subscription</div>` : ''}
         <div class="wishlist-icon" onclick="event.stopPropagation();toggleWishlist(${product.id}, event)">
           <i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i>
         </div>
       </div>
       <div class="product-info-card">
-        <div class="product-name" onclick="viewProduct(${product.id})">${escapeHtml(product.name)}</div>
+        <div class="product-name">${escapeHtml(product.name)}</div>
         <div class="price-row-card">
           <span class="current-price-card">₹${product.price}</span>
           ${product.oldPrice ? `<span class="old-price-card">₹${product.oldPrice}</span>` : ''}
         </div>
-        <button class="add-to-cart-card" onclick="event.stopPropagation();addToCart({id:${product.id},name:'${escapeHtml(product.name)}',price:${product.price},oldPrice:${product.oldPrice || product.price},discountPercent:${discountValue},image:'${product.image}'})">
-          <i class="fas fa-shopping-cart"></i> Add to Cart
+        ${isSubscription ? `<div class="subscription-delivery-info"><i class="fas fa-truck"></i> ${product.deliverySchedule || 'Flexible delivery'}</div>` : ''}
+        <button class="add-to-cart-card" onclick="event.stopPropagation();addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})">
+          <i class="fas fa-shopping-cart"></i> ${isSubscription ? 'Subscribe Now' : 'Add to Cart'}
         </button>
       </div>
     </div>
   `;
+}
+
+// Update viewProduct function to handle subscription products
+function viewProduct(productId) {
+  // Store product in recently viewed
+  const product = window.allProducts?.find(p => p.id === productId);
+  if (product) {
+    let recentlyViewed = [];
+    try {
+      recentlyViewed = JSON.parse(localStorage.getItem('freshkart_recently')) || [];
+    } catch(e) { recentlyViewed = []; }
+    
+    const filtered = recentlyViewed.filter(r => r.id !== productId);
+    filtered.unshift(product);
+    localStorage.setItem('freshkart_recently', JSON.stringify(filtered.slice(0, 30)));
+  }
+  
+  // Navigate to description page (works for both regular and subscription products)
+  window.location.href = `description.html?id=${productId}`;
 }
 
 function viewProduct(productId) {
@@ -372,6 +397,8 @@ function viewProduct(productId) {
 }
 
 // ==================== SECTION 10: SHOW MORE MANAGER CLASS (INFINITE LOADING) ====================
+// ==================== SECTION 10: SHOW MORE MANAGER CLASS (ENHANCED INFINITE RANDOM CYCLING) ====================
+// ==================== SECTION 10: SHOW MORE MANAGER CLASS (PRIORITIZE UNSHOWN PRODUCTS) ====================
 class ShowMoreManager {
   constructor(containerId, buttonId, getFilteredProducts, options = {}) {
     this.containerId = containerId;
@@ -383,72 +410,199 @@ class ShowMoreManager {
       maxCycles: options.maxCycles || SITE_CONFIG.DEFAULT_MAX_CYCLES,
       showCycleNotification: options.showCycleNotification !== undefined ? options.showCycleNotification : true
     };
+    
+    // Track shown products across all cycles
+    this.shownProductIds = new Set();      // All products ever shown
+    this.currentCycleShownIds = new Set(); // Products shown in current cycle
+    this.availableUnshownProducts = [];     // Products not yet shown
+    this.allProductsList = [];              // Complete list of products
     this.currentDisplayedIds = [];
-    this.availableProductsPool = [];
     this.cycleCount = 1;
     this.isActive = true;
-    this.allProductsList = [];
+    this.hasCompletedFullCycle = false;     // Track if all products have been shown at least once
   }
   
-  init() { this.reset(); this.bindEvents(); }
+  init() { 
+    this.reset(); 
+    this.bindEvents(); 
+  }
   
   reset() {
+    this.shownProductIds.clear();
+    this.currentCycleShownIds.clear();
     this.currentDisplayedIds = [];
     this.cycleCount = 1;
     this.isActive = true;
+    this.hasCompletedFullCycle = false;
+    
     const filtered = this.getFilteredProducts();
     this.allProductsList = [...filtered];
-    if (filtered.length === 0) { this.showEmptyState(); return; }
-    this.availableProductsPool = this.shuffleArray([...filtered]);
+    
+    if (filtered.length === 0) { 
+      this.showEmptyState(); 
+      return; 
+    }
+    
+    // Initialize unshown products with all products (none shown yet)
+    this.availableUnshownProducts = this.shuffleArray([...filtered]);
+    
+    // Load initial products (prioritize unshown)
     this.loadInitialProducts();
     this.updateButtonState();
   }
   
   loadInitialProducts() {
-    const initialProducts = this.availableProductsPool.splice(0, this.options.initialItems);
+    // Take initial products from unshown pool
+    const initialProducts = this.getProductsFromPool(this.options.initialItems);
     this.currentDisplayedIds = initialProducts.map(p => p.id);
+    
+    // Mark these as shown
+    initialProducts.forEach(p => {
+      this.shownProductIds.add(p.id);
+      this.currentCycleShownIds.add(p.id);
+    });
+    
     const container = document.getElementById(this.containerId);
-    if (container) container.innerHTML = initialProducts.map(p => renderProductCard(p)).join('');
+    if (container) {
+      container.innerHTML = initialProducts.map(p => renderProductCard(p)).join('');
+    }
+  }
+  
+  // Get products from the appropriate pool (unshown first, then repeat)
+  getProductsFromPool(count) {
+    const productsToReturn = [];
+    
+    // First, try to get unshown products
+    while (productsToReturn.length < count && this.availableUnshownProducts.length > 0) {
+      const product = this.availableUnshownProducts.shift();
+      productsToReturn.push(product);
+    }
+    
+    // If we still need more products, we've shown all products at least once
+    if (productsToReturn.length < count) {
+      if (!this.hasCompletedFullCycle) {
+        this.hasCompletedFullCycle = true;
+        
+        // Show notification that we've completed showing all products
+        if (this.options.showCycleNotification) {
+          this.showNotification(`🎉 You've seen all ${this.allProductsList.length} products! Now showing random repeats...`);
+        }
+      }
+      
+      // Now repeat products randomly (excluding the most recent ones to avoid immediate repeats)
+      const remainingNeeded = count - productsToReturn.length;
+      const repeatProducts = this.getRandomRepeatProducts(remainingNeeded);
+      productsToReturn.push(...repeatProducts);
+    }
+    
+    return productsToReturn;
+  }
+  
+  // Get random products for repetition (avoiding immediate duplicates)
+  getRandomRepeatProducts(count) {
+    const repeats = [];
+    const availableForRepeat = [...this.allProductsList];
+    
+    // Shuffle available products for randomness
+    const shuffled = this.shuffleArray([...availableForRepeat]);
+    
+    for (let i = 0; i < count && i < shuffled.length; i++) {
+      repeats.push(shuffled[i]);
+    }
+    
+    return repeats;
   }
   
   loadMore() {
     if (!this.isActive) return;
-    let newProducts = this.availableProductsPool.splice(0, this.options.loadMoreItems);
-    if (newProducts.length === 0) {
-      if (this.cycleCount < this.options.maxCycles) { this.startNewCycle(); } 
-      else { this.complete(); }
+    
+    // Check if we've reached max cycles
+    if (this.cycleCount > this.options.maxCycles) {
+      this.complete();
       return;
     }
-    newProducts.forEach(p => this.currentDisplayedIds.push(p.id));
+    
+    // Get new products (prioritizes unshown)
+    const newProducts = this.getProductsFromPool(this.options.loadMoreItems);
+    
+    if (newProducts.length === 0) {
+      // No more products available, start new cycle if within limits
+      if (this.cycleCount < this.options.maxCycles) {
+        this.startNewCycle();
+      } else {
+        this.complete();
+      }
+      return;
+    }
+    
+    // Add new products to display
+    newProducts.forEach(p => {
+      this.currentDisplayedIds.push(p.id);
+      this.shownProductIds.add(p.id);
+      this.currentCycleShownIds.add(p.id);
+    });
+    
     const container = document.getElementById(this.containerId);
     if (container) {
       container.insertAdjacentHTML('beforeend', newProducts.map(p => renderProductCard(p)).join(''));
     }
+    
     this.updateButtonState();
   }
   
   startNewCycle() {
     this.cycleCount++;
-    this.currentDisplayedIds = [];
-    this.availableProductsPool = this.shuffleArray([...this.allProductsList]);
-    const newInitialProducts = this.availableProductsPool.splice(0, this.options.initialItems);
+    
+    // Reset cycle tracking but keep overall shown products
+    this.currentCycleShownIds.clear();
+    
+    // Reset unshown products for the new cycle
+    // Only include products that haven't been shown in this cycle
+    // But since it's a new cycle, all products are eligible again
+    this.availableUnshownProducts = this.shuffleArray([...this.allProductsList]);
+    
+    // Show notification for new cycle
+    if (this.options.showCycleNotification) {
+      this.showNotification(`🔄 Starting Round ${this.cycleCount} of ${this.options.maxCycles}! Loading fresh products...`);
+    }
+    
+    // Load initial products for the new cycle
+    const newInitialProducts = this.getProductsFromPool(this.options.initialItems);
     this.currentDisplayedIds = newInitialProducts.map(p => p.id);
+    
+    // Mark as shown
+    newInitialProducts.forEach(p => {
+      this.shownProductIds.add(p.id);
+      this.currentCycleShownIds.add(p.id);
+    });
+    
     const container = document.getElementById(this.containerId);
-    if (container) container.innerHTML = newInitialProducts.map(p => renderProductCard(p)).join('');
-    if (this.options.showCycleNotification) this.showNotification(`🎉 Round ${this.cycleCount} started! Loading fresh random products...`);
+    if (container) {
+      container.innerHTML = newInitialProducts.map(p => renderProductCard(p)).join('');
+    }
+    
     this.updateButtonState();
   }
   
   complete() {
     this.isActive = false;
     const button = document.getElementById(this.buttonId);
-    if (button) { button.textContent = "🏁 All Products Explored!"; button.disabled = true; }
-    if (this.options.showCycleNotification) this.showNotification(`✨ You've explored all ${this.cycleCount} cycles! ✨`);
+    if (button) { 
+      button.textContent = "🏁 All Products Explored! (" + this.options.maxCycles + " cycles complete)"; 
+      button.disabled = true;
+      button.style.opacity = '0.6';
+      button.style.cursor = 'not-allowed';
+    }
+    if (this.options.showCycleNotification) {
+      this.showNotification(`✨ Thank you for exploring all ${this.options.maxCycles} cycles! ✨`);
+    }
   }
   
   showEmptyState() {
     const container = document.getElementById(this.containerId);
-    if (container) container.innerHTML = '<div class="empty-state">No products available in this category</div>';
+    if (container) {
+      container.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>No products available in this category</p></div>';
+    }
     const button = document.getElementById(this.buttonId);
     if (button) button.style.display = 'none';
   }
@@ -456,32 +610,103 @@ class ShowMoreManager {
   updateButtonState() {
     const button = document.getElementById(this.buttonId);
     if (!button) return;
-    if (this.availableProductsPool.length === 0) {
+    
+    // Calculate remaining products
+    const unshownCount = this.availableUnshownProducts.length;
+    const remainingCycles = this.options.maxCycles - this.cycleCount;
+    
+    if (unshownCount === 0 && this.hasCompletedFullCycle) {
       if (this.cycleCount < this.options.maxCycles) {
-        button.textContent = `🔄 Start Round ${this.cycleCount + 1} (${this.options.loadMoreItems} new) →`;
+        // More cycles available - show cycle start button
+        button.textContent = `🔄 Start Round ${this.cycleCount + 1} (${this.options.loadMoreItems} fresh repeats) →`;
         button.disabled = false;
-      } else { button.textContent = "🏁 Complete!"; button.disabled = true; }
-    } else {
-      const remaining = Math.min(this.options.loadMoreItems, this.availableProductsPool.length);
-      button.textContent = `Show More (${remaining} more) → Round ${this.cycleCount}`;
+        button.style.opacity = '1';
+      } else if (this.cycleCount === this.options.maxCycles) {
+        // Final cycle, check if we have more to show in current cycle
+        button.textContent = `Show More (${this.options.loadMoreItems} repeats) → Round ${this.cycleCount}/${this.options.maxCycles}`;
+        button.disabled = false;
+        button.style.opacity = '1';
+      } else {
+        // All cycles complete
+        button.textContent = `🏁 Complete! (${this.options.maxCycles}/${this.options.maxCycles} cycles)`;
+        button.disabled = true;
+        button.style.opacity = '0.6';
+      }
+    } else if (unshownCount > 0) {
+      // Still have unshown products
+      const remainingToShow = Math.min(this.options.loadMoreItems, unshownCount);
+      button.textContent = `Show More (${remainingToShow} new products) → Round ${this.cycleCount}/${this.options.maxCycles}`;
       button.disabled = false;
+      button.style.opacity = '1';
+    } else {
+      // No unshown products, showing repeats
+      button.textContent = `Show More (${this.options.loadMoreItems} products) → Round ${this.cycleCount}/${this.options.maxCycles}`;
+      button.disabled = false;
+      button.style.opacity = '1';
     }
   }
   
   showNotification(message) {
-    const existingBanner = document.querySelector('.cycle-notification');
-    if (existingBanner) existingBanner.remove();
+    // Remove any existing notification banners
+    const existingBanners = document.querySelectorAll('.cycle-notification');
+    existingBanners.forEach(banner => banner.remove());
+    
+    // Create new notification banner
     const banner = document.createElement('div');
-    banner.className = 'info-banner cycle-notification';
+    banner.className = 'cycle-notification';
+    banner.style.cssText = `
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--orange-primary);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      z-index: 2000;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      animation: slideUpFade 3s ease forwards;
+      white-space: nowrap;
+      pointer-events: none;
+    `;
     banner.innerHTML = `<i class="fas fa-sync-alt"></i> ${message}`;
-    const container = document.querySelector(`#${this.containerId}`)?.closest('.container') || document.querySelector('.container');
-    if (container) {
-      container.insertBefore(banner, document.getElementById(this.containerId));
-      setTimeout(() => banner.remove(), 3000);
+    document.body.appendChild(banner);
+    
+    // Add animation styles if not present
+    if (!document.querySelector('#cycle-notification-styles')) {
+      const style = document.createElement('style');
+      style.id = 'cycle-notification-styles';
+      style.textContent = `
+        @keyframes slideUpFade {
+          0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+          15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+          85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+          100% { opacity: 0; transform: translateX(-50%) translateY(-20px); visibility: hidden; }
+        }
+        @media (max-width: 768px) {
+          .cycle-notification {
+            white-space: normal;
+            text-align: center;
+            max-width: 90%;
+            font-size: 12px;
+            padding: 10px 18px;
+            bottom: 70px;
+          }
+        }
+      `;
+      document.head.appendChild(style);
     }
+    
+    // Auto-remove after animation
+    setTimeout(() => {
+      if (banner && banner.parentNode) banner.remove();
+    }, 3000);
   }
   
   shuffleArray(array) {
+    // Fisher-Yates shuffle algorithm for true randomness
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
@@ -489,11 +714,26 @@ class ShowMoreManager {
     return array;
   }
   
-  refresh() { this.reset(); }
+  refresh() { 
+    this.reset(); 
+  }
+  
+  getStats() {
+    return {
+      currentCycle: this.cycleCount,
+      maxCycles: this.options.maxCycles,
+      totalProducts: this.allProductsList.length,
+      shownProductsCount: this.shownProductIds.size,
+      unshownProductsCount: this.availableUnshownProducts.length,
+      hasCompletedFullCycle: this.hasCompletedFullCycle,
+      isActive: this.isActive
+    };
+  }
   
   bindEvents() {
     const button = document.getElementById(this.buttonId);
     if (button) {
+      // Remove existing listeners by cloning
       const newButton = button.cloneNode(true);
       button.parentNode.replaceChild(newButton, button);
       newButton.addEventListener('click', () => this.loadMore());
@@ -501,6 +741,7 @@ class ShowMoreManager {
   }
 }
 
+// Helper function to create show more manager
 function createShowMoreManager(name, containerId, buttonId, getFilteredProducts, options = {}) {
   const manager = new ShowMoreManager(containerId, buttonId, getFilteredProducts, options);
   if (!window.showMoreManagers) window.showMoreManagers = {};
@@ -508,6 +749,24 @@ function createShowMoreManager(name, containerId, buttonId, getFilteredProducts,
   return manager;
 }
 
+// Function to refresh all active show more managers
+function refreshAllShowMoreManagers() {
+  if (window.showMoreManagers) {
+    Object.values(window.showMoreManagers).forEach(manager => {
+      if (manager && typeof manager.refresh === 'function') {
+        manager.refresh();
+      }
+    });
+  }
+}
+
+// Function to get stats for debugging
+function getShowMoreManagerStats(name) {
+  if (window.showMoreManagers && window.showMoreManagers[name]) {
+    return window.showMoreManagers[name].getStats();
+  }
+  return null;
+}
 // ==================== SECTION 11: SKELETON LOADING FUNCTIONS ====================
 function showProductsSkeleton(containerId, count = 8) {
   const container = document.getElementById(containerId);

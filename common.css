@@ -403,8 +403,8 @@ body {
 
 .wishlist-icon {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: -3px;
+  right: -2px;
   background: var(--wishlist-bg);
   border-radius: 50%;
   width: 34px;
@@ -1205,6 +1205,49 @@ body {
   transform: none;
 }
 
+/* ==================== CYCLE NOTIFICATION STYLES ==================== */
+.cycle-notification {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--orange-primary);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 50px;
+  z-index: 2000;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .cycle-notification {
+    white-space: normal;
+    text-align: center;
+    max-width: 90%;
+    font-size: 12px;
+    padding: 10px 18px;
+    bottom: 70px;
+  }
+}
+
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-20px); visibility: hidden; }
+}
+
+/* Completed button state */
+.show-more-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* ==================== INFO BANNER ==================== */
 .info-banner {
   background: var(--bg-primary);
@@ -1224,6 +1267,130 @@ body {
 
 .cycle-notification {
   animation: fadeInOut 3s ease forwards;
+}
+
+/* ==================== SUBSCRIPTION CARD STYLES ==================== */
+.subscription-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 40px;
+  background: linear-gradient(135deg, var(--orange-primary), var(--green-primary));
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.subscription-badge i {
+  font-size: 10px;
+}
+
+.subscription-delivery-info {
+  font-size: 10px;
+  color: var(--orange-primary);
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.subscription-delivery-info i {
+  font-size: 10px;
+}
+
+/* Product card cursor pointer for clickable cards */
+.product-card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.product-name {
+  cursor: pointer;
+}
+
+.product-name:hover {
+  color: var(--orange-primary);
+}
+
+/* Prevent button clicks from triggering card click */
+.add-to-cart-card,
+.wishlist-icon,
+.sub-plan-btn {
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+.add-to-cart-card:active,
+.wishlist-icon:active {
+  transform: scale(0.98);
+}
+/* ==================== SUBSCRIPTION DETAILS STYLES ==================== */
+.subscription-type-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--orange-primary), var(--green-primary));
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.subscription-details-box {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(46, 125, 50, 0.1));
+  border-radius: 16px;
+  padding: 16px;
+  margin: 16px 0;
+  border: 1px solid var(--border-light);
+}
+
+.subscription-details-box h4 {
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: var(--orange-primary);
+}
+
+.subscription-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.sub-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sub-detail-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.sub-detail-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+@media (max-width: 600px) {
+  .subscription-details-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
 }
 
 @keyframes fadeInOut {

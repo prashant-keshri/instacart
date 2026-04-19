@@ -12,6 +12,150 @@
     .offer-tabs { display: flex; gap: 8px; }
     .tab-btn { padding: 5px 14px; border-radius: 40px; border: 1px solid var(--border-light); background: var(--surface); cursor: pointer; font-size: 13px; }
     .tab-btn.active { background: var(--green-primary); color: white; }
+    
+    /* Subscription Products Section */
+    .subscription-products-section {
+      margin: 40px 0;
+    }
+    .subscription-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .subscription-header-bar h2 {
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .view-all-link {
+      color: var(--orange-primary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .view-all-link:hover {
+      text-decoration: underline;
+    }
+    .subscription-products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .subscription-home-card {
+      background: var(--surface);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+    .subscription-home-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .subscription-home-card .card-image {
+      position: relative;
+      height: 180px;
+      overflow: hidden;
+    }
+    .subscription-home-card .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+    .subscription-home-card:hover .card-image img {
+      transform: scale(1.05);
+    }
+    .subscription-type-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--orange-primary);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      z-index: 2;
+    }
+    .subscription-home-card .card-content {
+      padding: 15px;
+    }
+    .subscription-home-card .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .subscription-home-card .card-price {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--green-primary);
+      margin-bottom: 5px;
+    }
+    .subscription-home-card .card-old-price {
+      text-decoration: line-through;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-left: 8px;
+    }
+    .subscription-home-card .card-discount {
+      background: var(--red-primary);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 20px;
+      font-size: 10px;
+      margin-left: 8px;
+    }
+    .subscription-home-card .card-delivery {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .subscription-home-card .card-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .subscription-home-card .feature {
+      font-size: 10px;
+      background: var(--bg-primary);
+      padding: 3px 8px;
+      border-radius: 20px;
+      color: var(--text-secondary);
+    }
+    .sub-home-add-btn {
+      width: 100%;
+      background: var(--green-primary);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s;
+      position: relative;
+      z-index: 10;
+    }
+    .sub-home-add-btn:hover {
+      opacity: 0.9;
+      transform: scale(0.98);
+    }
+    @media (max-width: 768px) {
+      .subscription-products-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body data-theme="dark">
@@ -38,8 +182,18 @@
   <!-- Premium Picks -->
   <section class="our-offerings"><div class="container"><div class="section-header"><h2><i class="fas fa-leaf"></i> Premium Picks</h2><div class="offer-tabs"><button class="tab-btn active" data-tab="featured">Featured</button><button class="tab-btn" data-tab="best-selling">Best Selling</button><button class="tab-btn" data-tab="new-arrivals">New Arrivals</button></div></div><div class="products-grid" id="offeringsGrid"></div><button class="show-more-btn" id="loadMoreBtn">Show More →</button></div></section>
 
-  <!-- Daily Subscription -->
-  <section class="daily-subscription"><div class="container"><div class="subscription-header"><h3><i class="fas fa-calendar-check"></i> Daily Subscription</h3><button class="expand-btn" id="expandSubscriptionBtn"><span>Explore plans</span> <i class="fas fa-arrow-down"></i></button></div><div id="subscriptionMinimized"><div class="swiper subscriptionSwiper"><div class="swiper-wrapper" id="subscriptionItems"></div></div><div class="swipe-hint"><i class="fas fa-chevron-left"></i> <a href="subscription.html">Swipe to see more essentials → visit full page</a> <i class="fas fa-chevron-right"></i></div></div><div id="subscriptionExpanded" style="display:none;"><div class="subscription-plans"><div class="plan"><h4>Basic Saver</h4><p>₹999/month</p><button class="sub-plan-btn">Subscribe</button></div><div class="plan"><h4>Family Pack</h4><p>₹1999/month</p><button class="sub-plan-btn">Subscribe</button></div><div class="plan"><h4>Premium+</h4><p>₹2999/month</p><button class="sub-plan-btn">Subscribe</button></div></div><div style="text-align:center; margin-top:16px;"><a href="subscription.html" style="color:var(--orange-primary);">📦 Manage full subscription →</a></div></div></div></section>
+  <!-- ==================== SUBSCRIPTION PLANS SECTION (UPDATED) ==================== -->
+  <section class="subscription-products-section">
+    <div class="container">
+      <div class="subscription-header-bar">
+        <h2><i class="fas fa-calendar-check"></i> 🔥 Popular Subscription Plans</h2>
+        <a href="subscription.html" class="view-all-link">View All Plans <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="homeSubscriptionProducts" class="subscription-products-grid">
+        <!-- Subscription products will be loaded here dynamically -->
+      </div>
+    </div>
+  </section>
 
   <!-- Customer Reviews -->
   <section class="customer-feedback"><div class="container"><div class="section-header"><h2><i class="fas fa-star"></i> Customer Love</h2></div><div class="reviews-grid" id="reviewsGrid"></div></div></section>
@@ -144,7 +298,8 @@
         { name: "Beverages", icon: "🥤", cat: "beverages" },
         { name: "Cakes", icon: "🎂", cat: "cakes" },
         { name: "Ice Cream", icon: "🍦", cat: "icecream" },
-        { name: "Snacks", icon: "🍿", cat: "snacks" }
+        { name: "Snacks", icon: "🍿", cat: "snacks" },
+        { name: "Subscriptions", icon: "📦", cat: "subscription" }
       ];
       
       container.innerHTML = categories.map(c => `
@@ -154,32 +309,103 @@
       `).join('');
     }
     
-    // ==================== SUBSCRIPTION ITEMS ====================
-    function initSubscriptionItems() {
-      const container = document.getElementById('subscriptionItems');
+    // ==================== LOAD SUBSCRIPTION PRODUCTS ON HOMEPAGE ====================
+    async function loadHomeSubscriptionProducts() {
+      const container = document.getElementById('homeSubscriptionProducts');
       if (!container) return;
       
-      const items = [
-        { img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=100", name: "Milk" },
-        { img: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=100", name: "Bread" },
-        { img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=100", name: "Eggs" },
-        { img: "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=100", name: "Fruits" },
-        { img: "https://images.unsplash.com/photo-1597362875127-2c6e5a8bf6f4?w=100", name: "Juice" }
-      ];
-      
-      container.innerHTML = items.map(i => `
-        <div class="swiper-slide sub-item" onclick="window.location.href='subscription.html'">
-          <img src="${i.img}"><div>${i.name}</div><small>daily</small>
-        </div>
-      `).join('');
-      
-      if (typeof Swiper !== 'undefined') {
-        new Swiper('.subscriptionSwiper', { 
-          slidesPerView: 2.5, 
-          spaceBetween: 14, 
-          breakpoints: { 640: { slidesPerView: 3.5 }, 1024: { slidesPerView: 5 } } 
-        });
+      try {
+        const response = await fetch('product.json');
+        const data = await response.json();
+        // Get first 3 subscription products
+        const subscriptions = data.products.filter(p => p.category === "subscription").slice(0, 3);
+        
+        if (subscriptions.length === 0) {
+          container.innerHTML = '<p style="text-align:center;">No subscription plans available</p>';
+          return;
+        }
+        
+        container.innerHTML = subscriptions.map(sub => {
+          const discount = sub.discountPercent || Math.round(((sub.oldPrice - sub.price) / sub.oldPrice) * 100);
+          const typeIcon = sub.subscriptionType === 'daily' ? 'fa-sun' : (sub.subscriptionType === 'weekly' ? 'fa-calendar-week' : 'fa-calendar-alt');
+          const typeText = sub.subscriptionType === 'daily' ? 'Daily' : (sub.subscriptionType === 'weekly' ? 'Weekly' : 'Monthly');
+          
+          return `
+            <div class="subscription-home-card" onclick="viewProduct(${sub.id})">
+              <div class="card-image">
+                <img src="${sub.image}" alt="${sub.name}" onerror="this.src='https://placehold.co/300x200'">
+                <div class="subscription-type-tag"><i class="fas ${typeIcon}"></i> ${typeText}</div>
+              </div>
+              <div class="card-content">
+                <div class="card-title">${sub.name}</div>
+                <div class="card-price">
+                  ₹${sub.price}
+                  <span class="card-old-price">₹${sub.oldPrice || sub.price + Math.round(sub.price * 0.3)}</span>
+                  <span class="card-discount">${discount}% OFF</span>
+                </div>
+                <div class="card-delivery"><i class="fas fa-truck"></i> ${sub.deliverySchedule || 'Flexible delivery'}</div>
+                <div class="card-features">
+                  ${(sub.benefits || ['Fresh delivery', 'Skip anytime', 'Easy cancellation']).slice(0, 2).map(b => `<span class="feature"><i class="fas fa-check-circle"></i> ${b.length > 20 ? b.substring(0, 20) + '...' : b}</span>`).join('')}
+                </div>
+                <button class="sub-home-add-btn" onclick="event.stopPropagation();addSubscriptionToCart(${sub.id})">
+                  <i class="fas fa-shopping-cart"></i> Subscribe Now
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch(e) {
+        console.error('Error loading subscription products:', e);
+        container.innerHTML = '<p style="text-align:center;">Unable to load subscription plans</p>';
       }
+    }
+    
+    // ==================== ADD SUBSCRIPTION TO CART ====================
+    async function addSubscriptionToCart(productId) {
+      try {
+        const response = await fetch('product.json');
+        const data = await response.json();
+        const product = data.products.find(p => p.id === productId);
+        
+        if (product) {
+          const existing = cart.find(i => i.id === product.id);
+          if (existing) {
+            existing.qty = (existing.qty || 0) + 1;
+          } else {
+            cart.push({
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              oldPrice: product.oldPrice,
+              discountPercent: product.discountPercent,
+              image: product.image,
+              qty: 1,
+              isSubscription: true,
+              subscriptionType: product.subscriptionType,
+              deliverySchedule: product.deliverySchedule
+            });
+          }
+          saveCart();
+          updateCartUI();
+          showToast(`${product.name} added to cart!`);
+        }
+      } catch(e) {
+        console.error('Error adding to cart:', e);
+        alert('Error adding to cart. Please try again.');
+      }
+    }
+    
+    function showToast(message) {
+      let toast = document.querySelector('.home-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'home-toast';
+        toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green-primary);color:white;padding:10px 20px;border-radius:40px;z-index:2000;font-size:13px;opacity:0;transition:opacity 0.3s;';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
     }
     
     // ==================== CUSTOMER REVIEWS ====================
@@ -219,26 +445,6 @@
       }, 1000);
     }
     
-    // ==================== SUBSCRIPTION EXPAND ====================
-    function initSubscriptionExpand() {
-      const expandBtn = document.getElementById('expandSubscriptionBtn');
-      const minDiv = document.getElementById('subscriptionMinimized');
-      const expDiv = document.getElementById('subscriptionExpanded');
-      if (expandBtn && minDiv && expDiv) {
-        expandBtn.addEventListener('click', () => {
-          if (minDiv.style.display !== 'none') {
-            minDiv.style.display = 'none';
-            expDiv.style.display = 'block';
-            expandBtn.innerHTML = '<span>Collapse</span> <i class="fas fa-arrow-up"></i>';
-          } else {
-            minDiv.style.display = 'block';
-            expDiv.style.display = 'none';
-            expandBtn.innerHTML = '<span>Explore plans</span> <i class="fas fa-arrow-down"></i>';
-          }
-        });
-      }
-    }
-    
     // ==================== BACK TO TOP ====================
     function initBackToTop() {
       const backBtn = document.getElementById('backToTopBtn');
@@ -263,12 +469,13 @@
       loadRecentlyViewed();
       initHeroSlider();
       initQuickCategories();
-      initSubscriptionItems();
       initCustomerReviews();
       initCountdownTimer();
-      initSubscriptionExpand();
       initBackToTop();
       updateRecentlyViewed();
+      
+      // Load subscription products on homepage
+      await loadHomeSubscriptionProducts();
       
       showMoreManager = createShowMoreManager('premiumPicks', 'offeringsGrid', 'loadMoreBtn', getFilteredProducts, {
         initialItems: SITE_CONFIG.DEFAULT_INITIAL_ITEMS,
@@ -287,9 +494,10 @@
         this.classList.add('active');
         refreshOnTabChange();
       }));
-      
-      document.querySelectorAll('.sub-plan-btn').forEach(btn => btn.addEventListener('click', () => alert('Subscription plan selected!')));
     }
+    
+    // Make functions available globally
+    window.addSubscriptionToCart = addSubscriptionToCart;
     
     initPage();
   </script>

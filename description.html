@@ -1,410 +1,874 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>FreshKart – Product Details</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="common.css">
   <style>
-    .breadcrumb { margin: 20px 0; font-size: 13px; }
-    .breadcrumb a { color: var(--orange-primary); text-decoration: none; }
-    .product-detail-wrapper { background: var(--surface); border-radius: 24px; padding: 30px; margin: 20px 0; border: 1px solid var(--border-light); }
-    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
-    @media (max-width: 900px) { .detail-grid { grid-template-columns: 1fr; gap: 32px; } .product-detail-wrapper { padding: 20px; } }
-    .product-gallery { position: sticky; top: 100px; }
-    @media (max-width: 900px) { .product-gallery { position: relative; top: 0; } }
-    .main-image-container { background: var(--bg-primary); border-radius: 20px; overflow: hidden; border: 1px solid var(--border-light); }
-    .main-image-container img { width: 100%; height: auto; display: block; aspect-ratio: 1 / 1; }
-    .thumbnail-row { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
-    .thumb { width: 80px; height: 80px; border-radius: 12px; overflow: hidden; cursor: pointer; border: 2px solid transparent; background: var(--bg-primary); }
-    .thumb.active { border-color: var(--orange-primary); }
-    .thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .product-info-detail h1 { font-size: 28px; margin-bottom: 12px; }
-    @media (max-width: 600px) { .product-info-detail h1 { font-size: 22px; } }
-    .rating-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-    .stars { color: #fbbf24; letter-spacing: 2px; }
-    .price-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-    .current-price { font-size: 32px; font-weight: 800; color: var(--green-primary); }
-    .old-price { text-decoration: line-through; color: var(--text-muted); font-size: 18px; }
-    .discount-badge { background: var(--red-primary); color: white; padding: 4px 10px; border-radius: 30px; font-size: 13px; font-weight: 600; }
-    .stock-status { display: inline-flex; align-items: center; gap: 6px; background: #e8f5e9; color: #2e7d32; padding: 6px 12px; border-radius: 30px; font-size: 13px; font-weight: 600; margin-bottom: 20px; }
-    .product-description { line-height: 1.6; color: var(--text-secondary); margin: 20px 0; }
-    
-    /* ==================== EXPANDABLE DESCRIPTION SECTION ==================== */
-    .description-section { margin: 20px 0; border-top: 1px solid var(--border-light); padding-top: 20px; }
-    .description-section h3 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .short-description { line-height: 1.6; color: var(--text-secondary); }
-    .full-description { display: none; line-height: 1.8; color: var(--text-secondary); margin-top: 16px; }
-    .full-description.show { display: block; animation: fadeIn 0.3s ease; }
-    .show-more-desc-btn { background: transparent; color: var(--orange-primary); border: 1px solid var(--orange-primary); padding: 10px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; margin: 16px 0; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
-    .show-more-desc-btn:hover { background: var(--orange-primary); color: white; }
-    .show-more-desc-btn i { transition: transform 0.2s; }
-    .show-more-desc-btn.expanded i { transform: rotate(180deg); }
-    
-    /* ==================== SPECIFICATIONS TABLE ==================== */
-    .specs-section { margin: 20px 0; background: var(--bg-primary); border-radius: 16px; padding: 20px; }
-    .specs-section h3 { font-size: 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    .specs-table { width: 100%; border-collapse: collapse; }
-    .specs-table tr { border-bottom: 1px solid var(--border-light); }
-    .specs-table tr:last-child { border-bottom: none; }
-    .specs-table td { padding: 12px 8px; }
-    .specs-table td:first-child { font-weight: 600; width: 40%; color: var(--text-primary); }
-    .specs-table td:last-child { color: var(--text-secondary); }
-    
-    /* ==================== USAGE & WARRANTY SECTION ==================== */
-    .info-section { margin: 20px 0; background: var(--bg-primary); border-radius: 16px; padding: 20px; }
-    .info-section h3 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .info-section p { line-height: 1.6; color: var(--text-secondary); }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .breadcrumb {
+      margin: 20px 0;
+      font-size: 13px;
     }
-    
-    .info-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 20px 0; }
-    .info-card { background: var(--bg-primary); padding: 12px; border-radius: 16px; }
-    .info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
-    .info-value { font-weight: 600; font-size: 14px; margin-top: 4px; }
-    .benefits-list { list-style: none; margin: 16px 0; }
-    .benefits-list li { padding: 8px 0; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-light); }
-    .benefits-list li i { color: var(--green-primary); width: 20px; }
-    .variant-selector { margin: 16px 0; }
-    .variant-selector select { width: 100%; padding: 12px 16px; border-radius: 40px; border: 1px solid var(--border-light); background: var(--surface); color: var(--text-primary); }
-    .quantity-wrapper { display: flex; align-items: center; gap: 16px; margin: 20px 0; }
-    .qty-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-light); background: var(--bg-primary); cursor: pointer; font-size: 18px; }
-    .qty-input { width: 60px; text-align: center; font-size: 18px; font-weight: 600; background: transparent; border: none; color: var(--text-primary); }
-    .action-buttons { display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
-    .buy-now { flex: 1; background: var(--orange-primary); color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 700; cursor: pointer; }
-    .add-to-cart-detail { flex: 1; background: var(--green-primary); color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 700; cursor: pointer; }
-    .wishlist-detail { width: 50px; background: var(--surface); border: 1px solid var(--border-light); border-radius: 50%; cursor: pointer; font-size: 20px; color: #ff6b6b; }
-    .category-boxes-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin: 20px 0; }
-    .cat-box { padding: 2px 15px 15px; width: 90px; display: flex; flex-direction: column; align-items: center; background: var(--surface); border-radius: 15px; cursor: pointer; border: 1px solid var(--border-light); transition: transform 0.2s; }
-    .cat-box:hover { transform: translateY(-4px); }
-    .cat-box-icon { width: 60px; height: 60px; background: var(--bg-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 38px; margin-bottom: 6px; margin-top: 8px; }
-    .show-more-btn { display: block; margin: 30px auto; background: var(--blue-primary); color: white; border: none; padding: 10px 28px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .show-more-btn:hover { opacity: 0.9; transform: scale(0.98); }
-    .show-more-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; margin-bottom: 20px; }
-    
-    /* Rating Progress Bar */
-    .rating-breakdown { margin: 20px 0; background: var(--bg-primary); border-radius: 16px; padding: 20px; }
-    .rating-breakdown h4 { margin-bottom: 12px; }
-    .rating-bar-item { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-    .rating-star-label { width: 60px; font-size: 13px; }
-    .rating-bar-bg { flex: 1; height: 8px; background: var(--border-light); border-radius: 4px; overflow: hidden; }
-    .rating-bar-fill { height: 100%; background: var(--orange-primary); border-radius: 4px; }
-    .rating-percent { width: 40px; font-size: 12px; color: var(--text-muted); }
+
+    .breadcrumb a {
+      color: var(--orange-primary);
+      text-decoration: none;
+    }
+
+    .product-detail-wrapper {
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 24px;
+      margin: 20px 0;
+      border: 1px solid var(--border-light);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 900px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .product-detail-wrapper {
+        padding: 16px;
+      }
+    }
+
+    .product-gallery {
+      position: sticky;
+      top: 100px;
+    }
+
+    @media (max-width: 900px) {
+      .product-gallery {
+        position: relative;
+        top: 0;
+      }
+    }
+
+    .main-image-container {
+      background: var(--bg-primary);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+    }
+
+    .main-image-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      aspect-ratio: 1 / 1;
+    }
+
+    .thumbnail-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .thumb {
+      width: 70px;
+      height: 70px;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      background: var(--bg-primary);
+    }
+
+    .thumb.active {
+      border-color: var(--orange-primary);
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-info-detail h1 {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .product-info-detail h1 {
+        font-size: 18px;
+      }
+    }
+
+    .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stars {
+      color: #fbbf24;
+      letter-spacing: 1px;
+      font-size: 14px;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .current-price {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--green-primary);
+    }
+
+    .old-price {
+      text-decoration: line-through;
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    .discount-badge {
+      background: var(--red-primary);
+      color: white;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .stock-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 4px 10px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .key-highlights {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin: 16px 0;
+    }
+
+    .key-highlights h4 {
+      font-size: 13px;
+      margin-bottom: 10px;
+      color: var(--text-muted);
+    }
+
+    .highlight-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .highlight-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      background: var(--surface);
+      padding: 6px 12px;
+      border-radius: 30px;
+    }
+
+    .highlight-item i {
+      color: var(--green-primary);
+      font-size: 12px;
+    }
+
+    .short-description {
+      line-height: 1.5;
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin: 12px 0;
+    }
+
+    .variant-selector {
+      margin: 12px 0;
+    }
+
+    .variant-selector select {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 30px;
+      border: 1px solid var(--border-light);
+      background: var(--surface);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .quantity-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 12px 0;
+    }
+
+    .qty-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border-light);
+      background: var(--bg-primary);
+      cursor: pointer;
+      font-size: 20px;
+      color: var(--text-primary);
+    }
+
+    .qty-input {
+      width: 50px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .buy-now {
+      flex: 1;
+      background: var(--orange-primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .add-to-cart-detail {
+      flex: 1;
+      background: var(--green-primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .wishlist-detail {
+      width: 44px;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      color: #ff6b6b;
+    }
+
+    .expandable-box {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .expandable-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      cursor: pointer;
+      background: var(--bg-primary);
+      transition: background 0.2s;
+    }
+
+    .expandable-header:hover {
+      background: var(--border-light);
+    }
+
+    .expandable-header h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .expandable-header i {
+      color: var(--orange-primary);
+    }
+
+    .expand-icon {
+      transition: transform 0.2s;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .expandable-box.open .expand-icon {
+      transform: rotate(180deg);
+    }
+
+    .expandable-content {
+      display: none;
+      padding: 16px 18px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .expandable-box.open .expandable-content {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .specs-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .specs-table tr {
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .specs-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .specs-table td {
+      padding: 10px 6px;
+      font-size: 13px;
+    }
+
+    .specs-table td:first-child {
+      font-weight: 600;
+      width: 35%;
+      color: var(--text-primary);
+    }
+
+    .specs-table td:last-child {
+      color: var(--text-secondary);
+    }
+
+    .benefits-list {
+      list-style: none;
+      margin: 0;
+    }
+
+    .benefits-list li {
+      padding: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 13px;
+    }
+
+    .benefits-list li:last-child {
+      border-bottom: none;
+    }
+
+    .benefits-list li i {
+      color: var(--green-primary);
+      width: 18px;
+      font-size: 12px;
+    }
+
+    .info-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .info-card-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 13px;
+    }
+
+    .info-card-item:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      color: var(--text-muted);
+    }
+
+    .info-value {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .full-description-text {
+      line-height: 1.6;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .category-boxes-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .cat-box {
+      padding: 2px 12px 12px;
+      width: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--surface);
+      border-radius: 12px;
+      cursor: pointer;
+      border: 1px solid var(--border-light);
+      transition: transform 0.2s;
+    }
+
+    .cat-box:hover {
+      transform: translateY(-3px);
+    }
+
+    .cat-box-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--bg-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 6px;
+      margin-top: 8px;
+    }
+
+    .cat-box span {
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .products-grid {
+        gap: 12px;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
+
+      .show-more-btn {
+        display: block;
+        margin: 20px auto;
+        background: var(--blue-primary);
+        color: white;
+        border: none;
+        padding: 8px 24px;
+        border-radius: 40px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 13px;
+      }
+
+      .section-header {
+        margin: 24px 0 16px;
+      }
+
+      .section-header h2 {
+        font-size: 18px;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+      }
+
+      .cycle-info-banner {
+        background: var(--orange-primary);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        display: inline-block;
+        margin-bottom: 12px;
+      }
   </style>
 </head>
+
 <body data-theme="dark">
   <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
 
   <!-- Top Bar -->
-  <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i
+            class="fas fa-leaf"></i> 100% Fresh</span></div>
+      <div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i
+            class="fas fa-download"></i> App</span></div>
+    </div>
+  </div>
 
   <!-- Header -->
-  <header class="main-header"><div class="container"><div class="logo-row"><div class="logo"><h1>Fresh<span>Kart</span></h1><p style="font-size:10px;">Grocery Delivery</p></div><div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span id="mobileCartCount">0</span></div></div><div class="search-location"><div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search fruits, veggies, juices..."></div><div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect"><option>📍 Delhi 110001</option><option>📍 Mumbai 400001</option><option>📍 Bangalore 560001</option></select></div></div><div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button></div></div></header>
+  <header class="main-header">
+    <div class="container">
+      <div class="logo-row">
+        <div class="logo">
+          <h1>Fresh<span>Kart</span></h1>
+          <p style="font-size:10px;">Grocery Delivery</p>
+        </div>
+        <div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span
+            id="mobileCartCount">0</span></div>
+      </div>
+      <div class="search-location">
+        <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch"
+            placeholder="Search fruits, veggies, juices..."></div>
+        <div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect">
+            <option>📍 Delhi 110001</option>
+            <option>📍 Mumbai 400001</option>
+            <option>📍 Bangalore 560001</option>
+          </select></div>
+      </div>
+      <div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i
+            class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
 
   <!-- Main Content -->
-  <main class="container" id="productDetailContainer"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading product details...</div></main>
+  <main class="container" id="productDetailContainer">
+    <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading product details...</div>
+  </main>
 
   <!-- Bottom Nav -->
-  <nav class="bottom-nav"><a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a><a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a><a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a><a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a></nav>
+  <nav class="bottom-nav"><a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a><a
+      href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a
+      href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a><a
+      href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a><a href="#"
+      class="nav-item" id="bottomCartBtn">
+      <div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count"
+          id="bottomCartCount">0</span></div><span>Cart</span>
+    </a></nav>
 
   <!-- Cart Sidebar -->
-  <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div><div class="cart-items" id="cartItemsList"></div><div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItemsList"></div>
+    <div class="cart-footer">
+      <div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place
+        Order</button>
+    </div>
+  </div>
   <div class="overlay" id="overlay"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="common.js"></script>
   <script>
-    // ==================== DESCRIPTION PAGE SPECIFIC CODE ====================
-    let productData = null;
-    let currentProduct = null;
-    let quantity = 1;
-    let selectedVariant = null;
-    let relatedManager = null;
-    let alsoManager = null;
-    
+    // ==================== DESCRIPTION PAGE CODE ====================
+    let productData = null, currentProduct = null, quantity = 1, selectedVariant = null;
+    let relatedManager = null, alsoManager = null;
+
     const categoryBoxes = [
-      { name: "Fruits", icon: "🍎", cat: "fruits" },
-      { name: "Vegetables", icon: "🥬", cat: "vegetables" },
-      { name: "Beverages", icon: "🥤", cat: "beverages" },
-      { name: "Cakes", icon: "🎂", cat: "cakes" },
-      { name: "Ice Cream", icon: "🍦", cat: "icecream" },
-      { name: "Snacks", icon: "🍿", cat: "snacks" }
+      { name: "Fruits", icon: "🍎", cat: "fruits" }, { name: "Vegetables", icon: "🥬", cat: "vegetables" },
+      { name: "Beverages", icon: "🥤", cat: "beverages" }, { name: "Cakes", icon: "🎂", cat: "cakes" },
+      { name: "Ice Cream", icon: "🍦", cat: "icecream" }, { name: "Snacks", icon: "🍿", cat: "snacks" }
     ];
-    
-    // ==================== LOAD PRODUCT DATA ====================
+
     async function loadProductData() {
       try {
         const response = await fetch('product.json');
-        const data = await response.json();
-        productData = data;
+        productData = await response.json();
         const urlParams = new URLSearchParams(window.location.search);
         const productId = parseInt(urlParams.get('id'));
-        if (productId) {
-          currentProduct = data.products.find(p => p.id === productId);
-          if (currentProduct) {
-            renderProductDetail();
-            setupShowMoreManagers();
-          } else {
-            document.getElementById('productDetailContainer').innerHTML = '<div class="loading">Product not found</div>';
-          }
-        } else {
-          document.getElementById('productDetailContainer').innerHTML = '<div class="loading">No product selected</div>';
-        }
-      } catch (error) {
-        document.getElementById('productDetailContainer').innerHTML = '<div class="loading">Error loading product. Ensure product.json exists.</div>';
-      }
+        currentProduct = productData.products.find(p => p.id === productId);
+        currentProduct ? renderProductDetail() : document.getElementById('productDetailContainer').innerHTML = '<div class="loading">Product not found</div>';
+      } catch (e) { document.getElementById('productDetailContainer').innerHTML = '<div class="loading">Error loading product</div>'; }
     }
-    
-    // ==================== RENDER PRODUCT DETAIL ====================
+
     function renderProductDetail() {
-      const container = document.getElementById('productDetailContainer');
       const mainImage = currentProduct.images?.[0] || currentProduct.image;
       const isWishlisted = wishlist.includes(currentProduct.id);
       const discountValue = Math.round(((currentProduct.oldPrice - currentProduct.price) / currentProduct.oldPrice) * 100);
-      
-      // Prepare short description (first 150 characters)
-      const shortDesc = currentProduct.description || (currentProduct.longDescription ? currentProduct.longDescription.substring(0, 150) + '...' : 'No description available');
-      const hasLongDesc = currentProduct.longDescription && currentProduct.longDescription.length > 150;
+      const shortDesc = (currentProduct.description || currentProduct.longDescription || '').substring(0, 120) + '...';
       const longDesc = currentProduct.longDescription || currentProduct.description || '';
-      
-      // Prepare specifications HTML
-      const specsHtml = currentProduct.specifications ? 
-        Object.entries(currentProduct.specifications).map(([key, value]) => 
-          `<tr><td>${key.replace(/([A-Z])/g, ' $1').trim()}</td><td>${value}</td></tr>`
-        ).join('') : 
-        '<tr><td colspan="2">No specifications available</td></tr>';
-      
-      container.innerHTML = `
+      const highlights = [
+        { icon: "fa-truck", text: "Free delivery > ₹499" }, { icon: "fa-leaf", text: "100% Fresh" },
+        { icon: "fa-shield-alt", text: "Quality Assured" }, { icon: "fa-undo", text: "Easy Returns" }
+      ];
+
+      // Add this function after renderProductDetail() in description.html
+
+      function renderProductDetail() {
+        const container = document.getElementById('productDetailContainer');
+        const mainImage = currentProduct.images?.[0] || currentProduct.image;
+        const isWishlisted = wishlist.includes(currentProduct.id);
+        const discountValue = Math.round(((currentProduct.oldPrice - currentProduct.price) / currentProduct.oldPrice) * 100);
+        const isSubscription = currentProduct.category === "subscription" || currentProduct.subscriptionType;
+
+        const shortDesc = (currentProduct.description || currentProduct.longDescription || '').substring(0, 120) + '...';
+        const longDesc = currentProduct.longDescription || currentProduct.description || '';
+
+        // Key highlights - different for subscription products
+        const highlights = isSubscription ? [
+          { icon: "fa-calendar-check", text: `Delivered ${currentProduct.deliverySchedule || 'On schedule'}` },
+          { icon: "fa-tag", text: `Save ${currentProduct.discountPercent || discountValue}%` },
+          { icon: "fa-pause", text: "Pause or cancel anytime" },
+          { icon: "fa-shield-alt", text: "Quality guaranteed" }
+        ] : [
+          { icon: "fa-truck", text: "Free delivery > ₹499" },
+          { icon: "fa-leaf", text: "100% Fresh" },
+          { icon: "fa-shield-alt", text: "Quality Assured" },
+          { icon: "fa-undo", text: "Easy Returns" }
+        ];
+
+        // Subscription specific details
+        const subscriptionDetails = isSubscription ? `
+        <div class="subscription-details-box">
+          <h4><i class="fas fa-calendar-alt"></i> Subscription Details</h4>
+          <div class="subscription-details-grid">
+            <div class="sub-detail-item"><span class="sub-detail-label">Delivery Schedule:</span><span class="sub-detail-value">${currentProduct.deliverySchedule || 'Flexible'}</span></div>
+            <div class="sub-detail-item"><span class="sub-detail-label">Plan Duration:</span><span class="sub-detail-value">${currentProduct.planDuration || 'Monthly'}</span></div>
+            <div class="sub-detail-item"><span class="sub-detail-label">Subscription Type:</span><span class="sub-detail-value">${currentProduct.subscriptionType === 'daily' ? 'Daily Delivery' : currentProduct.subscriptionType === 'weekly' ? 'Weekly Delivery' : 'Monthly Delivery'}</span></div>
+            <div class="sub-detail-item"><span class="sub-detail-label">Cancellation:</span><span class="sub-detail-value">Anytime with prorated refund</span></div>
+          </div>
+        </div>
+        ` : '';
+
+        container.innerHTML = `
         <div class="breadcrumb"><a href="index.html">Home</a> / <a href="categories.html?cat=${currentProduct.category}">${currentProduct.category}</a> / <span>${currentProduct.name}</span></div>
         <div class="product-detail-wrapper"><div class="detail-grid">
-          <div class="product-gallery"><div class="main-image-container"><img id="mainProductImage" src="${mainImage}" alt="${currentProduct.name}"></div><div class="thumbnail-row" id="thumbnailList"></div></div>
+          <div class="product-gallery"><div class="main-image-container"><img id="mainProductImage" src="${mainImage}"></div><div class="thumbnail-row" id="thumbnailList"></div></div>
+          <div class="product-info-detail">
+            ${isSubscription ? `<div class="subscription-type-badge"><i class="fas fa-calendar-check"></i> ${currentProduct.subscriptionType === 'daily' ? 'Daily Subscription' : currentProduct.subscriptionType === 'weekly' ? 'Weekly Subscription' : 'Monthly Subscription'}</div>` : ''}
+            <h1>${currentProduct.name}</h1>
+            <div class="rating-row"><div class="stars">${'★'.repeat(Math.floor(currentProduct.rating))}${'☆'.repeat(5 - Math.floor(currentProduct.rating))}</div><span>${currentProduct.rating} (${currentProduct.ratingCount} ratings)</span></div>
+            <div class="price-row"><span class="current-price">₹${currentProduct.price}</span><span class="old-price">₹${currentProduct.oldPrice}</span><span class="discount-badge">${discountValue}% OFF</span></div>
+            <div class="stock-status"><i class="fas fa-check-circle"></i> ${currentProduct.inStock ? (isSubscription ? 'Subscription Available' : 'In Stock') : 'Out of Stock'}</div>
+            <div class="key-highlights"><h4><i class="fas fa-star"></i> Key Highlights</h4><div class="highlight-list">${highlights.map(h => `<div class="highlight-item"><i class="fas ${h.icon}"></i> ${h.text}</div>`).join('')}</div></div>
+            <div class="short-description">${escapeHtml(shortDesc)}</div>
+            ${subscriptionDetails}
+            <div class="quantity-wrapper"><button class="qty-btn" id="qtyMinus">-</button><input type="number" id="qtyInput" class="qty-input" value="1" min="1" max="${currentProduct.maxQuantity || 20}"><button class="qty-btn" id="qtyPlus">+</button></div>
+            <div class="action-buttons"><button class="buy-now" id="buyNowBtn"><i class="fas fa-bolt"></i> ${isSubscription ? 'Subscribe Now' : 'Buy Now'}</button><button class="add-to-cart-detail" id="addToCartDetail"><i class="fas fa-shopping-cart"></i> ${isSubscription ? 'Add Subscription to Cart' : 'Add to Cart'}</button><button class="wishlist-detail" id="wishlistDetailBtn"><i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i></button></div>
+          </div>
+        </div></div>
+
+        <div class="expandable-box" id="descBox"><div class="expandable-header" onclick="toggleExpandable('descBox')"><h3><i class="fas fa-align-left"></i> Product Description</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><div class="full-description-text">${escapeHtml(longDesc).replace(/\n/g, '<br>')}</div></div></div>
+
+        <div class="expandable-box" id="specsBox"><div class="expandable-header" onclick="toggleExpandable('specsBox')"><h3><i class="fas fa-list-ul"></i> Specifications</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><table class="specs-table"><tbody>
+          <tr><td>Brand</td><td>${currentProduct.brand || 'FreshKart'}${isSubscription ? ' Subscriptions' : ''}</td></tr>
+          <tr><td>${isSubscription ? 'Delivery Schedule' : 'Origin'}</td><td>${currentProduct.deliverySchedule || currentProduct.origin || 'India'}</td></tr>
+          <tr><td>${isSubscription ? 'Plan Duration' : 'Unit'}</td><td>${currentProduct.planDuration || currentProduct.unit || '1 kg'}</td></tr>
+          <tr><td>Shelf Life</td><td>${currentProduct.shelfLife || (isSubscription ? 'Varies by delivery' : '7 days')}</td></tr>
+          ${currentProduct.nutritionalInfo ? `<tr><td>Nutritional Info</td><td>${currentProduct.nutritionalInfo}</td></tr>` : ''}
+          ${currentProduct.specifications ? Object.entries(currentProduct.specifications).map(([k, v]) => `<tr><td>${k.replace(/([A-Z])/g, ' $1').trim()}</td><td>${v}</td></tr>`).join('') : ''}
+        </tbody></table></div></div>
+
+        <div class="expandable-box" id="benefitsBox"><div class="expandable-header" onclick="toggleExpandable('benefitsBox')"><h3><i class="fas fa-heart"></i> Benefits & Features</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><ul class="benefits-list">${(currentProduct.benefits || ['Fresh and premium quality', 'Direct from farm', 'Best price guaranteed']).map(b => `<li><i class="fas fa-check-circle"></i> ${b}</li>`).join('')}</ul></div></div>
+
+        <div class="expandable-box" id="infoBox"><div class="expandable-header" onclick="toggleExpandable('infoBox')"><h3><i class="fas fa-info-circle"></i> Additional Information</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><div class="info-cards-grid">
+          <div class="info-card-item"><span class="info-label">Seller</span><span class="info-value">${currentProduct.seller || 'FreshKart Direct'}</span></div>
+          <div class="info-card-item"><span class="info-label">Availability</span><span class="info-value">${currentProduct.inStock ? (isSubscription ? 'Subscribe Now' : 'In Stock') : 'Out of Stock'}</span></div>
+          <div class="info-card-item"><span class="info-label">${isSubscription ? 'Cancellation Policy' : 'Return Policy'}</span><span class="info-value">${isSubscription ? 'Anytime with prorated refund' : '7 days replacement'}</span></div>
+          ${currentProduct.usageInstructions ? `<div class="info-card-item"><span class="info-label">Usage</span><span class="info-value">${currentProduct.usageInstructions}</span></div>` : ''}
+          ${currentProduct.warrantyInfo ? `<div class="info-card-item"><span class="info-label">Warranty</span><span class="info-value">${currentProduct.warrantyInfo}</span></div>` : ''}
+        </div></div></div>
+
+        <div class="section-header"><h2><i class="fas fa-th-large"></i> Shop by Category</h2></div>
+        <div class="category-boxes-grid" id="categoryBoxes"></div>
+
+        <div class="section-header"><h2><i class="fas fa-layer-group"></i> Related Products</h2></div>
+        <div class="products-grid" id="relatedProducts"></div>
+        <button class="show-more-btn" id="loadMoreRelated">Show More Related →</button>
+
+        <div class="section-header"><h2><i class="fas fa-fire"></i> You May Also Like</h2></div>
+        <div class="products-grid" id="alsoLike"></div>
+        <button class="show-more-btn" id="loadMoreAlso">Show More →</button>
+        `;
+      }
+
+      document.getElementById('productDetailContainer').innerHTML = `
+        <div class="breadcrumb"><a href="index.html">Home</a> / <a href="categories.html?cat=${currentProduct.category}">${currentProduct.category}</a> / <span>${currentProduct.name}</span></div>
+        <div class="product-detail-wrapper"><div class="detail-grid">
+          <div class="product-gallery"><div class="main-image-container"><img id="mainProductImage" src="${mainImage}"></div><div class="thumbnail-row" id="thumbnailList"></div></div>
           <div class="product-info-detail">
             <h1>${currentProduct.name}</h1>
-            <div class="rating-row"><div class="stars">${'★'.repeat(Math.floor(currentProduct.rating))}${'☆'.repeat(5 - Math.floor(currentProduct.rating))}</div><div>${currentProduct.rating} (${currentProduct.ratingCount} ratings)</div></div>
+            <div class="rating-row"><div class="stars">${'★'.repeat(Math.floor(currentProduct.rating))}${'☆'.repeat(5 - Math.floor(currentProduct.rating))}</div><span>${currentProduct.rating} (${currentProduct.ratingCount} ratings)</span></div>
             <div class="price-row"><span class="current-price">₹${currentProduct.price}</span><span class="old-price">₹${currentProduct.oldPrice}</span><span class="discount-badge">${discountValue}% OFF</span></div>
             <div class="stock-status"><i class="fas fa-check-circle"></i> ${currentProduct.inStock ? 'In Stock' : 'Out of Stock'}</div>
-            
-            <!-- Short Description -->
+            <div class="key-highlights"><h4><i class="fas fa-star"></i> Key Highlights</h4><div class="highlight-list">${highlights.map(h => `<div class="highlight-item"><i class="fas ${h.icon}"></i> ${h.text}</div>`).join('')}</div></div>
             <div class="short-description">${escapeHtml(shortDesc)}</div>
-            
             ${currentProduct.variants ? `<div class="variant-selector"><select id="variantSelect"><option value="">Select variant</option>${currentProduct.variants.map(v => `<option value='${JSON.stringify(v)}'>${v.size} - ₹${v.price}</option>`).join('')}</select></div>` : ''}
             <div class="quantity-wrapper"><button class="qty-btn" id="qtyMinus">-</button><input type="number" id="qtyInput" class="qty-input" value="1" min="1" max="${currentProduct.maxQuantity || 20}"><button class="qty-btn" id="qtyPlus">+</button></div>
             <div class="action-buttons"><button class="buy-now" id="buyNowBtn"><i class="fas fa-bolt"></i> Buy Now</button><button class="add-to-cart-detail" id="addToCartDetail"><i class="fas fa-shopping-cart"></i> Add to Cart</button><button class="wishlist-detail" id="wishlistDetailBtn"><i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i></button></div>
           </div>
         </div></div>
-        
-        <!-- ==================== EXPANDABLE DESCRIPTION SECTION ==================== -->
-        <div class="description-section">
-          <h3><i class="fas fa-align-left"></i> Product Description</h3>
-          <div class="short-description" id="shortDesc">${escapeHtml(shortDesc)}</div>
-          <div class="full-description" id="fullDesc">${escapeHtml(longDesc).replace(/\n/g, '<br>')}</div>
-          ${hasLongDesc ? `<button class="show-more-desc-btn" id="showMoreDescBtn"><span>Read More</span> <i class="fas fa-chevron-down"></i></button>` : ''}
-        </div>
-        
-        <!-- ==================== SPECIFICATIONS SECTION ==================== -->
-        <div class="specs-section">
-          <h3><i class="fas fa-list-ul"></i> Specifications</h3>
-          <table class="specs-table">
-            <tbody>${specsHtml}</tbody>
-          </table>
-        </div>
-        
-        <!-- ==================== ADDITIONAL INFO CARDS ==================== -->
-        <div class="info-cards">
-          <div class="info-card"><div class="info-label">Brand</div><div class="info-value">${currentProduct.brand || 'FreshKart'}</div></div>
-          <div class="info-card"><div class="info-label">Origin</div><div class="info-value">${currentProduct.origin || 'India'}</div></div>
-          <div class="info-card"><div class="info-label">Unit</div><div class="info-value">${currentProduct.unit || '1 kg'}</div></div>
-          <div class="info-card"><div class="info-label">Shelf Life</div><div class="info-value">${currentProduct.shelfLife || '7 days'}</div></div>
-          <div class="info-card"><div class="info-label">In Stock</div><div class="info-value">${currentProduct.stockQuantity || 500} units</div></div>
-          <div class="info-card"><div class="info-label">Seller</div><div class="info-value">${currentProduct.seller || 'FreshKart Direct'}</div></div>
-        </div>
-        
-        <!-- ==================== BENEFITS SECTION ==================== -->
-        <h4><i class="fas fa-heart"></i> Key Benefits</h4>
-        <ul class="benefits-list">${(currentProduct.benefits || ['Fresh and premium quality', 'Direct from farm', 'Best price guaranteed']).map(b => `<li><i class="fas fa-leaf"></i> ${b}</li>`).join('')}</ul>
-        
-        <!-- ==================== STORAGE TIPS SECTION ==================== -->
-        <div class="info-section">
-          <h3><i class="fas fa-thermometer-half"></i> Storage Tips</h3>
-          <p>💡 ${currentProduct.storageTips || 'Store in a cool, dry place away from direct sunlight. Refrigerate after opening if applicable.'}</p>
-        </div>
-        
-        <!-- ==================== USAGE INSTRUCTIONS SECTION ==================== -->
-        ${currentProduct.usageInstructions ? `
-        <div class="info-section">
-          <h3><i class="fas fa-book-open"></i> Usage Instructions</h3>
-          <p>📖 ${escapeHtml(currentProduct.usageInstructions)}</p>
-        </div>
-        ` : ''}
-        
-        <!-- ==================== WARRANTY / GUARANTEE SECTION ==================== -->
-        ${currentProduct.warrantyInfo ? `
-        <div class="info-section">
-          <h3><i class="fas fa-shield-alt"></i> Warranty & Guarantee</h3>
-          <p>✅ ${escapeHtml(currentProduct.warrantyInfo)}</p>
-        </div>
-        ` : ''}
-        
-        <!-- ==================== NUTRITIONAL INFO SECTION ==================== -->
-        ${currentProduct.nutritionalInfo ? `
-        <div class="info-section">
-          <h3><i class="fas fa-apple-alt"></i> Nutritional Information</h3>
-          <p>🥗 ${escapeHtml(currentProduct.nutritionalInfo)}</p>
-        </div>
-        ` : ''}
-        
-        <!-- ==================== SHOP BY CATEGORY ==================== -->
+
+        <div class="expandable-box" id="descBox"><div class="expandable-header" onclick="toggleExpandable('descBox')"><h3><i class="fas fa-align-left"></i> Product Description</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><div class="full-description-text">${escapeHtml(longDesc).replace(/\n/g, '<br>')}</div></div></div>
+
+        <div class="expandable-box" id="specsBox"><div class="expandable-header" onclick="toggleExpandable('specsBox')"><h3><i class="fas fa-list-ul"></i> Specifications</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><table class="specs-table"><tbody>
+          <tr><td>Brand</td><td>${currentProduct.brand || 'FreshKart'}</td></tr>
+          <tr><td>Origin</td><td>${currentProduct.origin || 'India'}</td></tr>
+          <tr><td>Unit</td><td>${currentProduct.unit || '1 kg'}</td></tr>
+          <tr><td>Shelf Life</td><td>${currentProduct.shelfLife || '7 days'}</td></tr>
+          <tr><td>Storage</td><td>${currentProduct.storageTips || 'Store in cool dry place'}</td></tr>
+          ${currentProduct.nutritionalInfo ? `<tr><td>Nutritional Info</td><td>${currentProduct.nutritionalInfo}</td></tr>` : ''}
+          ${currentProduct.specifications ? Object.entries(currentProduct.specifications).map(([k, v]) => `<tr><td>${k.replace(/([A-Z])/g, ' $1').trim()}</td><td>${v}</td></tr>`).join('') : ''}
+        </tbody></table></div></div>
+
+        <div class="expandable-box" id="benefitsBox"><div class="expandable-header" onclick="toggleExpandable('benefitsBox')"><h3><i class="fas fa-heart"></i> Benefits & Features</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><ul class="benefits-list">${(currentProduct.benefits || ['Fresh and premium quality', 'Direct from farm', 'Best price guaranteed']).map(b => `<li><i class="fas fa-check-circle"></i> ${b}</li>`).join('')}</ul></div></div>
+
+        <div class="expandable-box" id="infoBox"><div class="expandable-header" onclick="toggleExpandable('infoBox')"><h3><i class="fas fa-info-circle"></i> Additional Information</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><div class="info-cards-grid">
+          <div class="info-card-item"><span class="info-label">Seller</span><span class="info-value">${currentProduct.seller || 'FreshKart Direct'}</span></div>
+          <div class="info-card-item"><span class="info-label">In Stock</span><span class="info-value">${currentProduct.stockQuantity || 500} units</span></div>
+          <div class="info-card-item"><span class="info-label">Max Quantity</span><span class="info-value">${currentProduct.maxQuantity || 20}</span></div>
+          <div class="info-card-item"><span class="info-label">Return Policy</span><span class="info-value">7 days replacement</span></div>
+          ${currentProduct.usageInstructions ? `<div class="info-card-item"><span class="info-label">Usage</span><span class="info-value">${currentProduct.usageInstructions}</span></div>` : ''}
+          ${currentProduct.warrantyInfo ? `<div class="info-card-item"><span class="info-label">Warranty</span><span class="info-value">${currentProduct.warrantyInfo}</span></div>` : ''}
+        </div></div></div>
+
         <div class="section-header"><h2><i class="fas fa-th-large"></i> Shop by Category</h2></div>
         <div class="category-boxes-grid" id="categoryBoxes"></div>
-        
-        <!-- ==================== RELATED PRODUCTS ==================== -->
+
         <div class="section-header"><h2><i class="fas fa-layer-group"></i> Related Products</h2></div>
+        <div id="relatedCycleInfo" class="cycle-info-banner" style="display: none;"></div>
         <div class="products-grid" id="relatedProducts"></div>
-        <button class="show-more-btn" id="loadMoreRelated" style="display: none;">Show More Related →</button>
-        
-        <!-- ==================== YOU MAY ALSO LIKE ==================== -->
+        <button class="show-more-btn" id="loadMoreRelated">Show More Related →</button>
+
         <div class="section-header"><h2><i class="fas fa-fire"></i> You May Also Like</h2></div>
+        <div id="alsoCycleInfo" class="cycle-info-banner" style="display: none;"></div>
         <div class="products-grid" id="alsoLike"></div>
-        <button class="show-more-btn" id="loadMoreAlso" style="display: none;">Show More →</button>
-      `;
-      
-      // ==================== SETUP THUMBNAILS ====================
+        <button class="show-more-btn" id="loadMoreAlso">Show More →</button>
+        `;
+
       if (currentProduct.images?.length > 1) {
         document.getElementById('thumbnailList').innerHTML = currentProduct.images.map((img, idx) => `<div class="thumb ${idx === 0 ? 'active' : ''}" onclick="document.getElementById('mainProductImage').src='${img}'; document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active')); this.classList.add('active')"><img src="${img}"></div>`).join('');
       }
-      
-      // ==================== SETUP QUANTITY CONTROLS ====================
+
       document.getElementById('qtyMinus').onclick = () => { if (quantity > 1) { quantity--; document.getElementById('qtyInput').value = quantity; } };
       document.getElementById('qtyPlus').onclick = () => { if (quantity < (currentProduct.maxQuantity || 20)) { quantity++; document.getElementById('qtyInput').value = quantity; } };
-      
-      // ==================== SETUP VARIANT SELECTOR ====================
-      if (currentProduct.variants) {
-        document.getElementById('variantSelect').onchange = (e) => {
-          if (e.target.value) { selectedVariant = JSON.parse(e.target.value); document.querySelector('.current-price').innerText = `₹${selectedVariant.price}`; }
-        };
-      }
-      
-      // ==================== SETUP BUTTON ACTIONS ====================
+      if (currentProduct.variants) document.getElementById('variantSelect').onchange = (e) => { if (e.target.value) { selectedVariant = JSON.parse(e.target.value); document.querySelector('.current-price').innerText = `₹${selectedVariant.price}`; } };
+
       document.getElementById('addToCartDetail').onclick = () => addToCartDetail(currentProduct.id, quantity, selectedVariant);
       document.getElementById('buyNowBtn').onclick = () => { addToCartDetail(currentProduct.id, quantity, selectedVariant); openCart(); };
       document.getElementById('wishlistDetailBtn').onclick = () => toggleWishlistDetail(currentProduct.id);
-      
-      // ==================== SETUP SHOW MORE DESCRIPTION BUTTON ====================
-      const showMoreBtn = document.getElementById('showMoreDescBtn');
-      if (showMoreBtn) {
-        showMoreBtn.addEventListener('click', function() {
-          const fullDesc = document.getElementById('fullDesc');
-          const shortDescDiv = document.getElementById('shortDesc');
-          const isExpanded = fullDesc.classList.contains('show');
-          
-          if (isExpanded) {
-            fullDesc.classList.remove('show');
-            shortDescDiv.style.display = 'block';
-            this.innerHTML = '<span>Read More</span> <i class="fas fa-chevron-down"></i>';
-            this.classList.remove('expanded');
-          } else {
-            fullDesc.classList.add('show');
-            shortDescDiv.style.display = 'none';
-            this.innerHTML = '<span>Show Less</span> <i class="fas fa-chevron-up"></i>';
-            this.classList.add('expanded');
-          }
-        });
-      }
-      
+
       renderCategoryBoxes();
+      setupShowMoreManagers();
     }
-    
-    // ==================== SETUP SHOW MORE MANAGERS ====================
+
     function setupShowMoreManagers() {
       if (!relatedManager) {
         relatedManager = createShowMoreManager('relatedProducts', 'relatedProducts', 'loadMoreRelated', getRelatedProducts, {
-          initialItems: 4,
-          loadMoreItems: 4,
-          maxCycles: 5,
-          showCycleNotification: false
+          initialItems: 4, loadMoreItems: 4, maxCycles: 10, showCycleNotification: true
         });
         relatedManager.init();
       }
-      
       if (!alsoManager) {
         alsoManager = createShowMoreManager('alsoLikeProducts', 'alsoLike', 'loadMoreAlso', getAlsoLikeProducts, {
-          initialItems: 4,
-          loadMoreItems: 4,
-          maxCycles: 5,
-          showCycleNotification: false
+          initialItems: 4, loadMoreItems: 4, maxCycles: 10, showCycleNotification: true
         });
         alsoManager.init();
       }
+      updateCycleInfoDisplay();
     }
-    
-    // ==================== PRODUCT FILTERING FUNCTIONS ====================
-    function getRelatedProducts() {
-      return productData.products.filter(p => p.category === currentProduct.category && p.id !== currentProduct.id);
+
+    function updateCycleInfoDisplay() {
+      setInterval(() => {
+        if (relatedManager && window.showMoreManagers && window.showMoreManagers.relatedProducts) {
+          const stats = window.showMoreManagers.relatedProducts.getStats();
+          const cycleInfo = document.getElementById('relatedCycleInfo');
+          if (cycleInfo && stats) {
+            if (stats.hasCompletedFullCycle) {
+              cycleInfo.style.display = 'inline-block';
+              cycleInfo.innerHTML = `<i class="fas fa-sync-alt"></i> Round ${stats.currentCycle}/${stats.maxCycles} | Random repeats | ${stats.totalProducts} products`;
+            } else if (stats.unshownProductsCount > 0) {
+              cycleInfo.style.display = 'inline-block';
+              cycleInfo.innerHTML = `<i class="fas fa-eye"></i> Round ${stats.currentCycle}/${stats.maxCycles} | ${stats.unshownProductsCount} new left | ${stats.shownProductsCount}/${stats.totalProducts} shown`;
+            } else {
+              cycleInfo.style.display = 'none';
+            }
+          }
+        }
+      }, 500);
     }
-    
-    function getAlsoLikeProducts() {
-      return productData.products.filter(p => p.id !== currentProduct.id);
+
+    function getRelatedProducts() { return productData?.products.filter(p => p.category === currentProduct?.category && p.id !== currentProduct?.id) || []; }
+    function getAlsoLikeProducts() { return productData?.products.filter(p => p.id !== currentProduct?.id) || []; }
+
+    function addToCartDetail(id, qty, variant) {
+      let p = productData.products.find(p => p.id === id);
+      let price = variant ? variant.price : p.price;
+      let name = variant ? `${p.name} (${variant.size})` : p.name;
+      let existing = cart.find(i => i.id === id);
+      existing ? (existing.qty = Math.min(existing.qty + qty, 20)) : cart.push({ id, name, price, image: p.image, oldPrice: p.oldPrice, discountPercent: p.discountPercent, qty });
+      saveCart(); updateCartUI(); alert(`${name} added to cart!`);
     }
-    
-    // ==================== CART FUNCTIONS ====================
-    function addToCartDetail(productId, qty, variant) {
-      let product = productData.products.find(p => p.id === productId);
-      let price = variant ? variant.price : product.price;
-      let name = variant ? `${product.name} (${variant.size})` : product.name;
-      let existing = cart.find(i => i.id === productId);
-      if (existing) {
-        existing.qty += qty;
-        if (existing.qty > 20) existing.qty = 20;
-      } else {
-        cart.push({ id: productId, name: name, price: price, image: product.image, oldPrice: product.oldPrice, discountPercent: product.discountPercent, qty: qty });
-      }
-      saveCart();
-      updateCartUI();
-      alert(`${name} added to cart!`);
-    }
-    
-    // ==================== WISHLIST FUNCTIONS ====================
+
     function toggleWishlistDetail(id) {
       let idx = wishlist.indexOf(id);
-      if (idx === -1) wishlist.push(id);
-      else wishlist.splice(idx, 1);
+      idx === -1 ? wishlist.push(id) : wishlist.splice(idx, 1);
       saveWishlist();
       document.getElementById('wishlistDetailBtn').innerHTML = `<i class="${wishlist.includes(id) ? 'fas' : 'far'} fa-heart"></i>`;
       if (relatedManager) relatedManager.refresh();
       if (alsoManager) alsoManager.refresh();
     }
-    
-    // ==================== CATEGORY BOXES ====================
+
     function renderCategoryBoxes() {
       document.getElementById('categoryBoxes').innerHTML = categoryBoxes.map(c => `<div class="cat-box" onclick="window.location.href='categories.html?cat=${c.cat}'"><div class="cat-box-icon">${c.icon}</div><span>${c.name}</span></div>`).join('');
     }
-    
-    // ==================== ESCAPE HTML ====================
-    function escapeHtml(str) {
-      if (!str) return '';
-      return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-      });
-    }
-    
-    // ==================== PAGE INITIALIZATION ====================
-    function initPage() { 
-      loadProductData(); 
-      initCommon(() => {}); 
-    }
-    
+
+    function toggleExpandable(boxId) { document.getElementById(boxId).classList.toggle('open'); }
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+
+    loadProductData();
+    initCommon(() => { });
     window.toggleWishlistDetail = toggleWishlistDetail;
-    initPage();
+    window.toggleExpandable = toggleExpandable;
   </script>
 </body>
+
 </html>

@@ -69,16 +69,18 @@
     let dealManager = null;
     let alsoManager = null;
     
-    const categoriesList = [
-      { name: "All", icon: "fa-th-large", cat: "all", emoji: "📦" },
-      { name: "Fruits", icon: "fa-apple", cat: "fruits", emoji: "🍎" },
-      { name: "Vegetables", icon: "fa-carrot", cat: "vegetables", emoji: "🥬" },
-      { name: "Beverages", icon: "fa-mug-saucer", cat: "beverages", emoji: "🥤" },
-      { name: "Cakes", icon: "fa-cake-candles", cat: "cakes", emoji: "🎂" },
-      { name: "Ice Cream", icon: "fa-ice-cream", cat: "icecream", emoji: "🍦" },
-      { name: "Meals", icon: "fa-utensils", cat: "meals", emoji: "🍛" },
-      { name: "Meats", icon: "fa-drumstick-bite", cat: "meats", emoji: "🍗" }
-    ];
+   // In categories.html, update the categoriesList:
+const categoriesList = [
+  { name: "All", icon: "fa-th-large", cat: "all", emoji: "📦" },
+  { name: "Fruits", icon: "fa-apple", cat: "fruits", emoji: "🍎" },
+  { name: "Vegetables", icon: "fa-carrot", cat: "vegetables", emoji: "🥬" },
+  { name: "Beverages", icon: "fa-mug-saucer", cat: "beverages", emoji: "🥤" },
+  { name: "Cakes", icon: "fa-cake-candles", cat: "cakes", emoji: "🎂" },
+  { name: "Ice Cream", icon: "fa-ice-cream", cat: "icecream", emoji: "🍦" },
+  { name: "Meals", icon: "fa-utensils", cat: "meals", emoji: "🍛" },
+  { name: "Meats", icon: "fa-drumstick-bite", cat: "meats", emoji: "🍗" },
+  { name: "Subscriptions", icon: "fa-calendar-check", cat: "subscription", emoji: "📦" }
+];
     
     // ==================== PRODUCT FILTERING FUNCTIONS ====================
     function getCategoryProducts() {
