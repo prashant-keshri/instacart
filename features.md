@@ -1,3 +1,28 @@
+7. How to Edit Categories (Easy Configuration):
+To add, remove, or modify categories, simply edit the CATEGORIES_CONFIG object in common.js:
+
+javascript
+const CATEGORIES_CONFIG = {
+  allCategories: [
+    // Add new category here
+    { id: "organic", name: "Organic", icon: "fa-leaf", emoji: "🌿", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 14 },
+    
+    // To hide a category from a specific page, set showInX to false
+    { id: "cakes", name: "Cakes", icon: "fa-cake-candles", emoji: "🎂", showInNav: true, showInHome: false, showInOrders: true, showInSubscription: true, order: 4 },
+  ],
+  
+  limits: {
+    home: 8,           // Show 8 categories on home page
+    orders: 6,         // Show 6 categories on orders page
+    subscription: 10,  // Show 10 categories on subscription page
+    categories: 'all', // Show all categories on categories page
+    account: 4         // Show 4 categories on account page
+  }
+};
+
+
+
+
 Key Changes Made:
 1. Common.js - Fully Modular with 15 Sections
 Section 1: Configuration variables

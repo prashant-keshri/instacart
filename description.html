@@ -849,13 +849,76 @@
     }
 
     function toggleWishlistDetail(id) {
-      let idx = wishlist.indexOf(id);
-      idx === -1 ? wishlist.push(id) : wishlist.splice(idx, 1);
-      saveWishlist();
-      document.getElementById('wishlistDetailBtn').innerHTML = `<i class="${wishlist.includes(id) ? 'fas' : 'far'} fa-heart"></i>`;
-      if (relatedManager) relatedManager.refresh();
-      if (alsoManager) alsoManager.refresh();
+  let idx = wishlist.indexOf(id);
+  let isAdding = false;
+  
+  if (idx === -1) {
+    wishlist.push(id);
+    isAdding = true;
+  } else {
+    wishlist.splice(idx, 1);
+  }
+  saveWishlist();
+  
+  // Update the heart icon
+  const wishlistBtn = document.getElementById('wishlistDetailBtn');
+  if (wishlistBtn) {
+    wishlistBtn.innerHTML = `<i class="${wishlist.includes(id) ? 'fas' : 'far'} fa-heart"></i>`;
+  }
+  
+  // Show toast message
+  if (isAdding) {
+    showToast('Added to wishlist! ❤️');
+  } else {
+    showToast('Removed from wishlist 💔');
+  }
+  
+  // DO NOT refresh the managers - this causes product shuffling
+  // The product cards should remain as they are
+}
+
+// ==================== UPDATE WISHLIST ICONS WITHOUT REFRESH ====================
+function updateWishlistIcons(productId, isWishlisted) {
+  // Update all wishlist icons for this product across the page
+  const icons = document.querySelectorAll(`.wishlist-icon[data-product-id="${productId}"] i, #wishlistDetailBtn i`);
+  icons.forEach(icon => {
+    if (isWishlisted) {
+      icon.classList.remove('far');
+      icon.classList.add('fas');
+    } else {
+      icon.classList.remove('fas');
+      icon.classList.add('far');
     }
+  });
+}
+
+// Override the toggleWishlist function to use the new update method
+const originalToggleWishlist = toggleWishlist;
+window.toggleWishlist = function(productId, event) {
+  if (event) event.stopPropagation();
+  
+  const idx = wishlist.indexOf(productId);
+  let isAdding = false;
+  
+  if (idx === -1) {
+    wishlist.push(productId);
+    isAdding = true;
+  } else {
+    wishlist.splice(idx, 1);
+  }
+  saveWishlist();
+  
+  // Update all wishlist icons for this product
+  updateWishlistIcons(productId, isAdding);
+  
+  // Show toast message
+  if (isAdding) {
+    showToast('Added to wishlist! ❤️');
+  } else {
+    showToast('Removed from wishlist 💔');
+  }
+};
+
 
     function renderCategoryBoxes() {
       document.getElementById('categoryBoxes').innerHTML = categoryBoxes.map(c => `<div class="cat-box" onclick="window.location.href='categories.html?cat=${c.cat}'"><div class="cat-box-icon">${c.icon}</div><span>${c.name}</span></div>`).join('');

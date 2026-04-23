@@ -13,167 +13,91 @@
     .page-header h1 { font-size: 32px; margin-bottom: 10px; }
     .page-header p { color: var(--text-muted); }
     
-    /* Subscription Tabs */
-    .subscription-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 30px 0; }
-    .sub-tab-btn { padding: 10px 24px; border-radius: 40px; border: 1px solid var(--border-light); background: var(--surface); cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; }
-    .sub-tab-btn i { margin-right: 8px; }
-    .sub-tab-btn.active { background: var(--orange-primary); color: white; border-color: var(--orange-primary); }
-    .sub-tab-btn:hover:not(.active) { background: var(--bg-primary); transform: translateY(-2px); }
+    /* Timeline Section */
+    .timeline-section {
+      margin: 20px 0 30px;
+      padding: 20px;
+      background: var(--surface);
+      border-radius: 20px;
+      border: 1px solid var(--border-light);
+    }
     
-    /* Subscription Cards Grid - Clickable Cards */
-    .subscription-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin: 30px 0; }
-    .subscription-card { 
-      background: var(--surface); 
-      border-radius: 24px; 
-      border: 1px solid var(--border-light); 
-      overflow: hidden; 
-      transition: transform 0.2s, box-shadow 0.2s; 
-      position: relative;
+    .timeline-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-primary);
+    }
+    
+    .timeline-title i {
+      color: var(--orange-primary);
+    }
+    
+    /* Active Filters Bar */
+    .active-filters-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      padding: 12px 16px;
+      background: var(--bg-primary);
+      border-radius: 12px;
+      font-size: 13px;
+    }
+    
+    .active-filter-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      padding: 5px 12px;
+      border-radius: 30px;
+      border: 1px solid var(--border-light);
+    }
+    
+    .active-filter-tag i {
+      color: var(--orange-primary);
+      font-size: 11px;
+    }
+    
+    .clear-filters {
+      background: none;
+      border: none;
+      color: var(--red-primary);
       cursor: pointer;
-    }
-    .subscription-card:hover { 
-      transform: translateY(-5px); 
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15); 
-    }
-    .subscription-card.popular { border: 2px solid var(--orange-primary); }
-    .popular-badge { 
-      position: absolute; 
-      top: 12px; 
-      right: 12px; 
-      background: var(--orange-primary); 
-      color: white; 
-      padding: 4px 12px; 
-      border-radius: 20px; 
-      font-size: 11px; 
-      font-weight: 600; 
-      z-index: 10;
+      font-size: 12px;
+      margin-left: auto;
     }
     
-    .sub-card-image { 
-      position: relative; 
-      height: 200px; 
-      overflow: hidden; 
-    }
-    .sub-card-image img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: cover; 
-      transition: transform 0.3s; 
-    }
-    .subscription-card:hover .sub-card-image img { 
-      transform: scale(1.05); 
-    }
-    .sub-card-overlay { 
-      position: absolute; 
-      bottom: 0; 
-      left: 0; 
-      right: 0; 
-      background: linear-gradient(transparent, rgba(0,0,0,0.7)); 
-      padding: 20px; 
-      color: white; 
-    }
-    .sub-card-overlay h3 { 
-      font-size: 20px; 
-      margin-bottom: 5px; 
-    }
-    .sub-delivery { 
-      font-size: 12px; 
-      opacity: 0.9; 
+    .clear-filters:hover {
+      text-decoration: underline;
     }
     
-    .sub-card-content { 
-      padding: 20px; 
-    }
-    .price-section { 
-      margin-bottom: 16px; 
-    }
-    .sub-price { 
-      font-size: 28px; 
-      font-weight: 800; 
-      color: var(--green-primary); 
-    }
-    .sub-old-price { 
-      text-decoration: line-through; 
-      color: var(--text-muted); 
-      font-size: 14px; 
-      margin-left: 8px; 
-    }
-    .sub-discount { 
-      background: var(--red-primary); 
-      color: white; 
-      padding: 2px 8px; 
-      border-radius: 20px; 
-      font-size: 11px; 
-      margin-left: 8px; 
-    }
-    .sub-unit { 
-      font-size: 12px; 
-      color: var(--text-muted); 
-      margin-top: 4px; 
-    }
-    
-    .sub-features { 
-      list-style: none; 
-      margin: 16px 0; 
-    }
-    .sub-features li { 
-      padding: 8px 0; 
-      display: flex; 
-      align-items: center; 
-      gap: 10px; 
-      font-size: 13px; 
-      border-bottom: 1px solid var(--border-light); 
-    }
-    .sub-features li:last-child { 
-      border-bottom: none; 
-    }
-    .sub-features li i { 
-      color: var(--green-primary); 
-      width: 20px; 
-      font-size: 12px; 
-    }
-    
-    .delivery-info { 
-      background: var(--bg-primary); 
-      border-radius: 12px; 
-      padding: 12px; 
-      margin: 16px 0; 
-      font-size: 12px; 
-    }
-    .delivery-info i { 
-      margin-right: 8px; 
-      color: var(--orange-primary); 
-    }
-    
-    /* Button styles - prevent triggering card click */
-    .sub-action-btn { 
-      width: 100%; 
-      padding: 12px; 
-      border-radius: 40px; 
-      font-weight: 600; 
-      cursor: pointer; 
-      transition: all 0.2s; 
-      border: none; 
+    .results-count {
       font-size: 14px;
-      position: relative;
-      z-index: 15;
+      color: var(--text-muted);
+      margin: 15px 0;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-light);
     }
-    .sub-add-to-cart { 
-      background: var(--green-primary); 
-      color: white; 
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px;
+      background: var(--surface);
+      border-radius: 24px;
+      border: 1px solid var(--border-light);
     }
-    .sub-add-to-cart:hover { 
-      opacity: 0.9; 
-      transform: translateY(-2px); 
+    
+    .section-header {
+      margin: 30px 0 20px;
     }
-    .sub-buy-now { 
-      background: var(--orange-primary); 
-      color: white; 
-      margin-top: 8px; 
-    }
-    .sub-buy-now:hover { 
-      opacity: 0.9; 
-      transform: translateY(-2px); 
+    .section-header h2 {
+      font-size: 22px;
     }
     
     /* How It Works Section */
@@ -190,9 +114,7 @@
       gap: 30px; 
       margin-top: 30px; 
     }
-    .step { 
-      text-align: center; 
-    }
+    .step { text-align: center; }
     .step-icon { 
       width: 60px; 
       height: 60px; 
@@ -206,18 +128,11 @@
       color: var(--orange-primary); 
       border: 1px solid var(--border-light); 
     }
-    .step h4 { 
-      margin-bottom: 8px; 
-    }
-    .step p { 
-      font-size: 13px; 
-      color: var(--text-muted); 
-    }
+    .step h4 { margin-bottom: 8px; }
+    .step p { font-size: 13px; color: var(--text-muted); }
     
     /* FAQ Section */
-    .faq-section { 
-      margin: 40px 0; 
-    }
+    .faq-section { margin: 40px 0; }
     .faq-grid { 
       display: grid; 
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
@@ -237,12 +152,8 @@
       align-items: center; 
       font-weight: 600; 
     }
-    .faq-question i { 
-      transition: transform 0.2s; 
-    }
-    .faq-item.open .faq-question i { 
-      transform: rotate(180deg); 
-    }
+    .faq-question i { transition: transform 0.2s; }
+    .faq-item.open .faq-question i { transform: rotate(180deg); }
     .faq-answer { 
       display: none; 
       margin-top: 12px; 
@@ -255,56 +166,47 @@
       animation: fadeIn 0.3s ease; 
     }
     
+    /* Subscription Small Card */
+    .subscription-small-card { position: relative; }
+    .subscription-badge-small {
+      background: linear-gradient(135deg, var(--orange-primary), var(--green-primary));
+      font-size: 10px;
+      padding: 3px 8px;
+      top: 8px;
+      left: 8px;
+      right: auto;
+    }
+    .discount-badge {
+      top: 8px;
+      right: 8px;
+      left: auto;
+      background: var(--red-primary);
+    }
+    .subscription-delivery-info {
+      font-size: 10px;
+      color: var(--orange-primary);
+      margin: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .subscription-small-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 18px;
+      margin: 20px 0;
+    }
+    
     @keyframes fadeIn { 
       from { opacity: 0; transform: translateY(-10px); } 
       to { opacity: 1; transform: translateY(0); } 
     }
     
-    /* Cart Toast */
-    .cart-toast { 
-      position: fixed; 
-      bottom: 80px; 
-      left: 50%; 
-      transform: translateX(-50%); 
-      background: var(--green-primary); 
-      color: white; 
-      padding: 10px 20px; 
-      border-radius: 40px; 
-      z-index: 2000; 
-      font-size: 13px; 
-      animation: slideUpFade 2s ease forwards; 
-    }
-    @keyframes slideUpFade { 
-      0% { opacity: 0; transform: translateX(-50%) translateY(20px); } 
-      15% { opacity: 1; transform: translateX(-50%) translateY(0); } 
-      85% { opacity: 1; } 
-      100% { opacity: 0; visibility: hidden; } 
-    }
-    
-    .products-grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
-      gap: 18px; 
-      margin-top: 20px; 
-    }
-    .section-header { 
-      margin: 30px 0 20px; 
-    }
-    .section-header h2 { 
-      font-size: 22px; 
-    }
-    .empty-state {
-      text-align: center;
-      padding: 60px;
-      background: var(--surface);
-      border-radius: 24px;
-      border: 1px solid var(--border-light);
-    }
-    
     @media (max-width: 768px) {
-      .subscription-grid { grid-template-columns: 1fr; }
       .how-it-works { padding: 24px; }
       .steps-grid { grid-template-columns: 1fr; gap: 20px; }
+      .faq-grid { grid-template-columns: 1fr; }
+      .subscription-small-grid { gap: 12px; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
     }
   </style>
 </head>
@@ -324,16 +226,35 @@
       <p>Get your daily essentials delivered automatically. Save up to 33% and never run out!</p>
     </div>
 
-    <!-- Category Tabs -->
-    <div class="subscription-tabs" id="subTabs">
-      <button class="sub-tab-btn active" data-category="all"><i class="fas fa-th-large"></i> All Plans</button>
-      <button class="sub-tab-btn" data-category="daily"><i class="fas fa-sun"></i> Daily Delivery</button>
-      <button class="sub-tab-btn" data-category="weekly"><i class="fas fa-calendar-week"></i> Weekly Delivery</button>
-      <button class="sub-tab-btn" data-category="monthly"><i class="fas fa-calendar-alt"></i> Monthly Delivery</button>
+    <!-- Timeline Section -->
+    <div class="timeline-section">
+      <div class="timeline-title">
+        <i class="fas fa-calendar-alt"></i> Delivery Timeline
+      </div>
+      <div class="timeline-pills" id="timelinePills"></div>
     </div>
 
-    <!-- Subscription Grid -->
-    <div id="subscriptionGrid" class="subscription-grid"></div>
+    <!-- Category Section Header -->
+    <div class="category-section-header">
+      <i class="fas fa-th-large"></i> Subscription Categories
+    </div>
+    
+    <!-- Category Cards Container -->
+    <div id="subscriptionCategoryCards"></div>
+
+    <!-- Active Filters Bar -->
+    <div class="active-filters-bar" id="activeFiltersBar">
+      <span><i class="fas fa-filter"></i> Active Filters:</span>
+      <span class="active-filter-tag" id="activeTimelineTag"><i class="fas fa-clock"></i> All Timelines</span>
+      <span class="active-filter-tag" id="activeCategoryTag"><i class="fas fa-tag"></i> All Categories</span>
+      <button class="clear-filters" id="clearFiltersBtn"><i class="fas fa-times"></i> Clear All</button>
+    </div>
+
+    <!-- Results Count -->
+    <div id="resultsCount" class="results-count"></div>
+
+    <!-- Subscription Products Grid -->
+    <div id="subscriptionGrid" class="subscription-small-grid"></div>
 
     <!-- How It Works -->
     <div class="how-it-works">
@@ -368,9 +289,32 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="common.js"></script>
   <script>
-    // ==================== SUBSCRIPTION PAGE CODE ====================
+    // ==================== SUBSCRIPTION PAGE CONFIGURATION ====================
+    // Edit these variables to customize the subscription page
+    const SUBSCRIPTION_CONFIG = {
+      // Filter settings
+      defaultTimeline: "all",
+      defaultCategory: "all",
+      
+      // Display settings
+      showTimelineFilter: true,
+      showCategoryCards: true,
+      showActiveFiltersBar: true,
+      
+      // Product display settings
+      productsPerRow: 4,
+      showDiscountBadge: true,
+      showDeliveryInfo: true,
+      
+      // You May Also Like settings
+      showAlsoLike: true,
+      alsoLikeCount: 8
+    };
+    
+    // ==================== PAGE VARIABLES ====================
     let allSubscriptionProducts = [];
-    let currentCategory = "all";
+    let currentTimeline = SUBSCRIPTION_CONFIG.defaultTimeline;
+    let currentSubCategory = SUBSCRIPTION_CONFIG.defaultCategory;
     let alsoManager = null;
     
     // FAQ Data
@@ -390,160 +334,213 @@
         const data = await response.json();
         allSubscriptionProducts = data.products.filter(p => p.category === "subscription" || p.subscriptionType);
         window.allProducts = data.products;
+        
+        // Render all components
+        if (SUBSCRIPTION_CONFIG.showTimelineFilter) {
+          renderTimelinePills('timelinePills', currentTimeline, setTimelineFilter);
+        }
+        
+        renderCategoryCards('subscriptionCategoryCards', currentSubCategory, setCategoryFilter, 'subscription');
+        updateActiveFiltersBar();
         renderSubscriptionGrid();
         setupAlsoLikeManager();
         renderFAQ();
       } catch(e) {
         console.error('Error loading subscriptions:', e);
-        allSubscriptionProducts = getFallbackSubscriptions();
+        allSubscriptionProducts = [];
         renderSubscriptionGrid();
       }
     }
     
-    function getFallbackSubscriptions() {
-      return [
-        { id: 101, name: "Daily Milk Subscription", category: "subscription", price: 899, oldPrice: 1299, discountPercent: 31, unit: "30 Days Plan", image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300", rating: 4.8, subscriptionType: "daily", deliverySchedule: "Every morning 6-8 AM", benefits: ["Daily doorstep delivery", "Fresh from farm", "Pause anytime"] },
-        { id: 102, name: "Fresh Fruit Box", category: "subscription", price: 1499, oldPrice: 2200, discountPercent: 32, unit: "4 Weeks Plan", image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=300", rating: 4.7, subscriptionType: "weekly", deliverySchedule: "Every Saturday", benefits: ["7-10 seasonal fruits", "Curated by experts", "Skip any week"] }
-      ];
+    // ==================== FILTER FUNCTIONS ====================
+    function setTimelineFilter(timeline) {
+      currentTimeline = timeline;
+      if (SUBSCRIPTION_CONFIG.showTimelineFilter) {
+        renderTimelinePills('timelinePills', currentTimeline, setTimelineFilter);
+      }
+      updateActiveFiltersBar();
+      renderSubscriptionGrid();
     }
     
+    function setCategoryFilter(category) {
+      currentSubCategory = category;
+      renderCategoryCards('subscriptionCategoryCards', currentSubCategory, setCategoryFilter, 'subscription');
+      updateActiveFiltersBar();
+      renderSubscriptionGrid();
+    }
+    
+    function updateActiveFiltersBar() {
+      if (!SUBSCRIPTION_CONFIG.showActiveFiltersBar) return;
+      
+      const timelineTag = document.getElementById('activeTimelineTag');
+      const categoryTag = document.getElementById('activeCategoryTag');
+      
+      if (timelineTag) {
+        timelineTag.innerHTML = `<i class="fas fa-clock"></i> ${getTimelineName(currentTimeline)}`;
+      }
+      if (categoryTag) {
+        categoryTag.innerHTML = `<i class="fas fa-tag"></i> ${getCategoryName(currentSubCategory, 'subscription')}`;
+      }
+    }
+    
+    function clearAllFilters() {
+      currentTimeline = SUBSCRIPTION_CONFIG.defaultTimeline;
+      currentSubCategory = SUBSCRIPTION_CONFIG.defaultCategory;
+      
+      if (SUBSCRIPTION_CONFIG.showTimelineFilter) {
+        renderTimelinePills('timelinePills', currentTimeline, setTimelineFilter);
+      }
+      renderCategoryCards('subscriptionCategoryCards', currentSubCategory, setCategoryFilter, 'subscription');
+      updateActiveFiltersBar();
+      renderSubscriptionGrid();
+    }
+    
+    // ==================== FILTER SUBSCRIPTIONS ====================
     function getFilteredSubscriptions() {
-      if (currentCategory === "all") return allSubscriptionProducts;
-      return allSubscriptionProducts.filter(p => p.subscriptionType === currentCategory);
+      let filtered = [...allSubscriptionProducts];
+      
+      // Filter by timeline
+      if (currentTimeline !== "all") {
+        filtered = filtered.filter(sub => {
+          const planDuration = (sub.planDuration || sub.unit || '').toLowerCase();
+          const deliverySchedule = (sub.deliverySchedule || '').toLowerCase();
+          
+          switch(currentTimeline) {
+            case 'daily': return planDuration.includes('day') || deliverySchedule.includes('day') || sub.subscriptionType === 'daily';
+            case 'weekly': return planDuration.includes('week') || deliverySchedule.includes('week') || sub.subscriptionType === 'weekly';
+            case 'biweekly': return planDuration.includes('bi') || deliverySchedule.includes('bi') || planDuration.includes('2 week');
+            case 'monthly': return planDuration.includes('month') || deliverySchedule.includes('month') || sub.subscriptionType === 'monthly';
+            case 'quarterly': return planDuration.includes('quarter') || planDuration.includes('3 month');
+            default: return true;
+          }
+        });
+      }
+      
+      // Filter by category
+      if (currentSubCategory !== "all") {
+        filtered = filtered.filter(sub => 
+          sub.subscriptionType === currentSubCategory || sub.category === currentSubCategory
+        );
+      }
+      
+      return filtered;
     }
     
-    // ==================== RENDER SUBSCRIPTION GRID (CLICKABLE CARDS) ====================
+    // ==================== RENDER SUBSCRIPTION GRID ====================
     function renderSubscriptionGrid() {
       const container = document.getElementById('subscriptionGrid');
       const subscriptions = getFilteredSubscriptions();
+      const resultsCount = document.getElementById('resultsCount');
+      
+      if (resultsCount) {
+        resultsCount.innerHTML = `<i class="fas fa-list"></i> Showing ${subscriptions.length} subscription plans`;
+      }
       
       if (subscriptions.length === 0) {
-        container.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>No subscription plans found in this category</p></div>';
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-box-open" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+            <h3>No subscription plans found</h3>
+            <p>Try adjusting your filters or check back later for new plans.</p>
+            <button onclick="clearAllFilters()" style="background: var(--orange-primary); color: white; border: none; padding: 10px 20px; border-radius: 30px; margin-top: 16px; cursor: pointer;">Clear Filters</button>
+          </div>
+        `;
         return;
       }
       
-      container.innerHTML = subscriptions.map(sub => renderSubscriptionCard(sub)).join('');
-      
-      // Bind events for buttons (prevent card click)
-      document.querySelectorAll('.sub-add-to-cart').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const id = parseInt(btn.dataset.id);
-          const product = allSubscriptionProducts.find(p => p.id === id);
-          if (product) addSubscriptionToCart(product);
-        });
-      });
-      
-      document.querySelectorAll('.sub-buy-now').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const id = parseInt(btn.dataset.id);
-          const product = allSubscriptionProducts.find(p => p.id === id);
-          if (product) { addSubscriptionToCart(product); setTimeout(() => openCart(), 500); }
-        });
-      });
-      
-      // Add click event to cards for navigation
-      document.querySelectorAll('.subscription-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-          // Don't navigate if click target is a button or inside button
-          if (e.target.closest('.sub-add-to-cart') || e.target.closest('.sub-buy-now')) {
-            return;
+      container.innerHTML = subscriptions.map(sub => {
+        const discount = sub.discountPercent || Math.round(((sub.oldPrice - sub.price) / sub.oldPrice) * 100);
+        const typeIcon = sub.subscriptionType === 'daily' ? 'fa-sun' : (sub.subscriptionType === 'weekly' ? 'fa-calendar-week' : 'fa-calendar-alt');
+        const typeText = sub.subscriptionType === 'daily' ? 'Daily' : (sub.subscriptionType === 'weekly' ? 'Weekly' : 'Monthly');
+        
+        return `
+          <div class="product-card subscription-small-card" onclick="viewProduct(${sub.id})">
+            <div class="product-image">
+              <img src="${sub.image}" onerror="this.src='https://placehold.co/200'">
+              <div class="product-badge subscription-badge-small"><i class="fas ${typeIcon}"></i> ${typeText}</div>
+              ${SUBSCRIPTION_CONFIG.showDiscountBadge && discount ? `<div class="product-badge discount-badge">${discount}% OFF</div>` : ''}
+              <div class="wishlist-icon" data-product-id="${sub.id}" onclick="event.stopPropagation();toggleWishlist(${sub.id}, event)">
+                <i class="${wishlist.includes(sub.id) ? 'fas' : 'far'} fa-heart"></i>
+              </div>
+            </div>
+            <div class="product-info-card">
+              <div class="product-name">${escapeHtml(sub.name)}</div>
+              <div class="price-row-card">
+                <span class="current-price-card">₹${sub.price}</span>
+                ${sub.oldPrice ? `<span class="old-price-card">₹${sub.oldPrice}</span>` : ''}
+              </div>
+              ${SUBSCRIPTION_CONFIG.showDeliveryInfo ? `<div class="subscription-delivery-info"><i class="fas fa-truck"></i> ${sub.deliverySchedule || 'Flexible delivery'}</div>` : ''}
+              <button class="add-to-cart-card" onclick="event.stopPropagation();addToCartFromSubscription(${sub.id})">
+                <i class="fas fa-shopping-cart"></i> Subscribe
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    // ==================== ADD TO CART ====================
+    async function addToCartFromSubscription(productId) {
+      try {
+        const response = await fetch('product.json');
+        const data = await response.json();
+        const product = data.products.find(p => p.id === productId);
+        
+        if (product) {
+          const existing = cart.find(i => i.id === product.id);
+          if (existing) {
+            if ((existing.qty || 0) + 1 > SITE_CONFIG.MAX_CART_QUANTITY) {
+              alert(`Max ${SITE_CONFIG.MAX_CART_QUANTITY} allowed`);
+              return;
+            }
+            existing.qty = (existing.qty || 0) + 1;
+          } else {
+            cart.push({
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              oldPrice: product.oldPrice,
+              discountPercent: product.discountPercent,
+              image: product.image,
+              qty: 1,
+              isSubscription: true,
+              subscriptionType: product.subscriptionType,
+              deliverySchedule: product.deliverySchedule
+            });
           }
-          const id = parseInt(card.dataset.id);
-          if (id) viewProduct(id);
-        });
-      });
-    }
-    
-    function renderSubscriptionCard(sub) {
-      const discount = sub.discountPercent || Math.round(((sub.oldPrice - sub.price) / sub.oldPrice) * 100);
-      const isPopular = sub.isPopular || discount >= 30;
-      const deliveryIcon = sub.subscriptionType === 'daily' ? 'fa-sun' : (sub.subscriptionType === 'weekly' ? 'fa-calendar-week' : 'fa-calendar-alt');
-      const typeText = sub.subscriptionType === 'daily' ? 'Daily Delivery' : (sub.subscriptionType === 'weekly' ? 'Weekly Delivery' : 'Monthly Delivery');
-      
-      return `
-        <div class="subscription-card ${isPopular ? 'popular' : ''}" data-id="${sub.id}">
-          ${isPopular ? '<div class="popular-badge"><i class="fas fa-fire"></i> Best Value</div>' : ''}
-          <div class="sub-card-image">
-            <img src="${sub.image}" onerror="this.src='https://placehold.co/300x200'" alt="${sub.name}">
-            <div class="sub-card-overlay">
-              <h3>${sub.name}</h3>
-              <div class="sub-delivery"><i class="fas ${deliveryIcon}"></i> ${sub.deliverySchedule || typeText}</div>
-            </div>
-          </div>
-          <div class="sub-card-content">
-            <div class="price-section">
-              <span class="sub-price">₹${sub.price}</span>
-              <span class="sub-old-price">₹${sub.oldPrice || Math.round(sub.price * 1.3)}</span>
-              <span class="sub-discount">${discount}% OFF</span>
-              <div class="sub-unit">${sub.unit || (sub.subscriptionType === 'daily' ? '30 Days Plan' : sub.subscriptionType === 'weekly' ? '4 Weeks Plan' : '3 Months Plan')}</div>
-            </div>
-            <ul class="sub-features">
-              ${(sub.benefits || ['Fresh delivery', 'Skip anytime', 'Easy cancellation']).slice(0, 3).map(b => `<li><i class="fas fa-check-circle"></i> ${b}</li>`).join('')}
-            </ul>
-            <div class="delivery-info">
-              <i class="fas fa-truck"></i> Delivery: ${sub.deliverySchedule || (sub.subscriptionType === 'daily' ? 'Every morning' : sub.subscriptionType === 'weekly' ? 'Once a week' : 'Once a month')}
-            </div>
-            <button class="sub-action-btn sub-add-to-cart" data-id="${sub.id}"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
-            <button class="sub-action-btn sub-buy-now" data-id="${sub.id}"><i class="fas fa-bolt"></i> Buy Now</button>
-          </div>
-        </div>
-      `;
-    }
-    
-    // ==================== ADD SUBSCRIPTION TO CART ====================
-    function addSubscriptionToCart(product) {
-      const existing = cart.find(i => i.id === product.id);
-      if (existing) {
-        existing.qty = (existing.qty || 0) + 1;
-      } else {
-        cart.push({
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          oldPrice: product.oldPrice,
-          discountPercent: product.discountPercent,
-          image: product.image,
-          qty: 1,
-          isSubscription: true,
-          subscriptionType: product.subscriptionType,
-          deliverySchedule: product.deliverySchedule
-        });
+          saveCart();
+          updateCartUI();
+          showToast(`${product.name} added to cart!`);
+        }
+      } catch(e) {
+        console.error('Error adding to cart:', e);
+        alert('Error adding to cart. Please try again.');
       }
-      saveCart();
-      updateCartUI();
-      showCartToast(`${product.name} added to cart!`);
     }
     
-    function showCartToast(message) {
-      const toast = document.createElement('div');
-      toast.className = 'cart-toast';
+    function showToast(message) {
+      let toast = document.querySelector('.sub-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'sub-toast';
+        toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green-primary);color:white;padding:10px 20px;border-radius:40px;z-index:2000;font-size:13px;opacity:0;transition:opacity 0.3s;';
+        document.body.appendChild(toast);
+      }
       toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 2000);
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
     }
     
-    // ==================== VIEW PRODUCT (NAVIGATION) ====================
     function viewProduct(productId) {
-      // Save to recently viewed
-      const product = allSubscriptionProducts.find(p => p.id === productId);
-      if (product) {
-        let recentlyViewed = [];
-        try {
-          recentlyViewed = JSON.parse(localStorage.getItem('freshkart_recently')) || [];
-        } catch(e) { recentlyViewed = []; }
-        const filtered = recentlyViewed.filter(r => r.id !== productId);
-        filtered.unshift(product);
-        localStorage.setItem('freshkart_recently', JSON.stringify(filtered.slice(0, 30)));
-      }
       window.location.href = `description.html?id=${productId}`;
     }
     
     // ==================== SETUP ALSO LIKE MANAGER ====================
     function setupAlsoLikeManager() {
+      if (!SUBSCRIPTION_CONFIG.showAlsoLike) return;
+      
       alsoManager = createShowMoreManager('alsoLikeProducts', 'alsoLikeGrid', 'loadMoreAlso', getAlsoLikeProducts, {
-        initialItems: 8,
+        initialItems: SUBSCRIPTION_CONFIG.alsoLikeCount,
         loadMoreItems: 4,
         maxCycles: 5,
         showCycleNotification: true
@@ -553,44 +550,51 @@
     
     function getAlsoLikeProducts() {
       if (!window.allProducts) return [];
-      return window.allProducts.filter(p => p.category !== 'subscription').slice(0, 30);
+      return window.allProducts.filter(p => p.category !== 'subscription').slice(0, 50);
     }
     
     // ==================== RENDER FAQ ====================
     function renderFAQ() {
       const container = document.getElementById('faqGrid');
-      container.innerHTML = faqs.map((faq, idx) => `
-        <div class="faq-item" onclick="this.classList.toggle('open')">
-          <div class="faq-question"><span>${faq.q}</span><i class="fas fa-chevron-down"></i></div>
-          <div class="faq-answer">${faq.a}</div>
-        </div>
-      `).join('');
+      if (container) {
+        container.innerHTML = faqs.map((faq, idx) => `
+          <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-question"><span>${faq.q}</span><i class="fas fa-chevron-down"></i></div>
+            <div class="faq-answer">${faq.a}</div>
+          </div>
+        `).join('');
+      }
     }
     
-    // ==================== FILTER BY CATEGORY ====================
-    function filterByCategory(category) {
-      currentCategory = category;
-      document.querySelectorAll('.sub-tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.category === category);
+    // ==================== ESCAPE HTML ====================
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
       });
-      renderSubscriptionGrid();
     }
     
     // ==================== PAGE INITIALIZATION ====================
     async function initPage() {
       await loadSubscriptionProducts();
-      initCommon(() => {});
+      await initCommon(() => {});
       updateCartUI();
       
-      document.querySelectorAll('.sub-tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => filterByCategory(btn.dataset.category));
-      });
+      const clearBtn = document.getElementById('clearFiltersBtn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', clearAllFilters);
+      }
     }
     
     // Make functions available globally
-    window.filterByCategory = filterByCategory;
+    window.setTimelineFilter = setTimelineFilter;
+    window.setCategoryFilter = setCategoryFilter;
+    window.clearAllFilters = clearAllFilters;
     window.viewProduct = viewProduct;
-    window.addSubscriptionToCart = addSubscriptionToCart;
+    window.addToCartFromSubscription = addToCartFromSubscription;
     
     initPage();
   </script>

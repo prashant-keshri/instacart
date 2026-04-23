@@ -36,7 +36,7 @@
     .btn-edit-address { background: var(--blue-primary); color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; font-size: 12px; font-weight: 600; }
     .btn-cancel { background: var(--red-primary); color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; font-size: 12px; font-weight: 600; }
     .explore-categories-section { margin: 40px 0; }
-    .explore-categories-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 20px; }
+    .category-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 20px; }
     .order-timeline { background: var(--bg-primary); border-radius: 16px; padding: 20px; margin-top: 20px; }
     .timeline-steps { display: flex; justify-content: space-between; position: relative; margin-bottom: 20px; }
     .timeline-steps::before { content: ''; position: absolute; top: 20px; left: 0; right: 0; height: 2px; background: var(--border-light); z-index: 0; }
@@ -54,11 +54,11 @@
     .empty-state { text-align: center; padding: 60px 20px; background: var(--surface); border-radius: 24px; border: 1px solid var(--border-light); }
     .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; margin-top: 20px; }
     @media (max-width: 768px) {
-    .products-grid {
+      .products-grid {
         gap: 12px;
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
     }
-}
   </style>
 </head>
 <body data-theme="dark">
@@ -75,6 +75,9 @@
 
   <!-- Bottom Nav -->
   <nav class="bottom-nav"><a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a><a href="orders.html" class="nav-item active"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a><a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a><a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a></nav>
+  
+  <!-- Subscription Section -->
+<div id="subscriptionModuleContainer"></div>
 
   <!-- Cart Sidebar -->
   <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div><div class="cart-items" id="cartItemsList"></div><div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div></div>
@@ -87,7 +90,8 @@
     let orders = [];
     let suggestedManager = null;
     
-    const exploreCategories = [
+    // Define explore categories array
+    const exploreCategoriesArray = [
       { name: "Fruits", icon: "🍎", cat: "fruits" },
       { name: "Vegetables", icon: "🥬", cat: "vegetables" },
       { name: "Beverages", icon: "🥤", cat: "beverages" },
@@ -95,8 +99,27 @@
       { name: "Ice Cream", icon: "🍦", cat: "icecream" },
       { name: "Snacks", icon: "🍿", cat: "snacks" },
       { name: "Meals", icon: "🍛", cat: "meals" },
-      { name: "Meats", icon: "🍗", cat: "meats" }
+      { name: "Meats", icon: "🍗", cat: "meats" },
+      { name: "Dairy", icon: "🥛", cat: "dairy" },
+      { name: "Bakery", icon: "🥖", cat: "bakery" },
+      { name: "Staples", icon: "🍚", cat: "staples" },
+      { name: "Groceries", icon: "🛒", cat: "groceries" },
+      { name: "Subscriptions", icon: "📦", cat: "subscription" }
     ];
+    
+    // ==================== EXPLORE CATEGORIES ====================
+    function renderExploreCategoriesSection() {
+      const container = document.getElementById('exploreCategoriesContainer');
+      if (!container) return;
+      
+      // Use the defined array
+      container.innerHTML = exploreCategoriesArray.map(c => `
+        <a href="categories.html?cat=${c.cat}" class="cat-link">
+          <div class="cat-icon">${c.icon}</div>
+          <span>${c.name}</span>
+        </a>
+      `).join('');
+    }
     
     // ==================== LOAD ORDERS ====================
     function loadOrders() {
@@ -204,9 +227,16 @@
       `;
     }
     
-    // ==================== RENDER FUNCTIONS ====================
-    function renderExploreCategories() {
-      return `<div class="explore-categories-section"><div class="section-header"><h2><i class="fas fa-th-large"></i> Explore More Categories</h2></div><div class="explore-categories-grid">${exploreCategories.map(c => `<a href="categories.html?cat=${c.cat}" class="cat-link"><div class="cat-icon">${c.icon}</div><span>${c.name}</span></a>`).join('')}</div></div>`;
+    // ==================== RENDER EXPLORE CATEGORIES SECTION ====================
+    function renderExploreCategoriesHTML() {
+      return `
+        <div class="explore-categories-section">
+          <div class="section-header">
+            <h2><i class="fas fa-th-large"></i> Explore More Categories</h2>
+          </div>
+          <div class="category-links" id="exploreCategoriesContainer"></div>
+        </div>
+      `;
     }
     
     function getSuggestedProducts() { return window.allProducts || []; }
@@ -223,10 +253,30 @@
       const container = document.getElementById('ordersContainer');
       
       if (orders.length === 0) {
-        container.innerHTML = `<div class="empty-state"><i class="fas fa-shopping-bag"></i><h3>No Orders Yet</h3><p>Looks like you haven't placed any orders yet.</p><button onclick="location.href='index.html'" style="background:var(--orange-primary);color:white;border:none;padding:10px 20px;border-radius:30px;cursor:pointer;">Start Shopping</button></div>${renderExploreCategories()}${renderSuggestedProducts()}`;
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-shopping-bag"></i>
+            <h3>No Orders Yet</h3>
+            <p>Looks like you haven't placed any orders yet.</p>
+            <button onclick="location.href='index.html'" style="background:var(--orange-primary);color:white;border:none;padding:10px 20px;border-radius:30px;cursor:pointer;">Start Shopping</button>
+          </div>
+          ${renderExploreCategoriesHTML()}
+          ${renderSuggestedProducts()}
+        `;
       } else {
-        container.innerHTML = `<div class="page-header"><h1><i class="fas fa-shopping-bag"></i> My Orders</h1><p>Track, manage, and reorder your purchases</p></div><div class="orders-list">${orders.map(order => renderOrderCard(order)).join('')}</div>${renderExploreCategories()}${renderSuggestedProducts()}`;
+        container.innerHTML = `
+          <div class="page-header">
+            <h1><i class="fas fa-shopping-bag"></i> My Orders</h1>
+            <p>Track, manage, and reorder your purchases</p>
+          </div>
+          <div class="orders-list">${orders.map(order => renderOrderCard(order)).join('')}</div>
+          ${renderExploreCategoriesHTML()}
+          ${renderSuggestedProducts()}
+        `;
       }
+      
+      // Render the categories after the HTML is inserted
+      renderExploreCategoriesSection();
       
       if (!suggestedManager) {
         suggestedManager = createShowMoreManager('suggestedProducts', 'suggestedProductsGrid', 'showMoreSuggested', getSuggestedProducts, {
@@ -241,7 +291,9 @@
       }
     }
     
-    function viewProduct(productId) { window.location.href = `description.html?id=${productId}`; }
+    function viewProduct(productId) { 
+      window.location.href = `description.html?id=${productId}`; 
+    }
     
     function showOrdersSkeleton() {
       const container = document.getElementById('ordersContainer');
@@ -249,13 +301,29 @@
         container.innerHTML = `<div class="page-header"><div class="skeleton" style="width:200px;height:32px;border-radius:8px;"></div><div class="skeleton" style="width:300px;height:16px;border-radius:8px;margin-top:8px;"></div></div><div class="orders-skeleton-list">${Array(3).fill(`<div class="order-skeleton"><div class="order-header-skeleton"><div class="id-skeleton skeleton"></div><div class="status-skeleton skeleton"></div><div class="price-skeleton skeleton"></div></div></div>`).join('')}</div>`;
       }
     }
-    
-    // ==================== PAGE INITIALIZATION ====================
-    async function initPage() {
-      showOrdersSkeleton();
-      await initCommon(() => {});
-      loadOrders();
-      renderOrdersPage();
+
+    // ==================== RENDER SUBSCRIPTION SECTION ON ORDERS PAGE ====================
+async function renderOrdersSubscriptionSection() {
+  if (typeof renderSubscriptionSection === 'function') {
+    await renderSubscriptionSection('subscriptionModuleContainer', 'orders', function(category) {
+      if (category && category !== 'all') {
+        window.location.href = `subscription.html?cat=${category}`;
+      } else {
+        window.location.href = 'subscription.html';
+      }
+    });
+  }
+}
+
+
+// ==================== PAGE INITIALIZATION ====================
+async function initPage() {
+  showOrdersSkeleton();
+  await initCommon(() => {});
+  loadOrders();
+  renderOrdersPage();
+  // Call this in renderOrdersPage after rendering orders
+  await renderOrdersSubscriptionSection();
     }
     
     window.toggleOrderDetails = toggleOrderDetails;

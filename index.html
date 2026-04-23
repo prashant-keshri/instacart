@@ -174,13 +174,16 @@
   <section class="quick-categories"><div class="container"><div class="category-links" id="quickCatLinks"></div></div></section>
 
   <!-- Recently Viewed -->
-  <section style="margin:0 16px 20px;"><div class="section-header"><h2><i class="fas fa-history"></i> Recently Viewed</h2></div><div class="swiper recentlySwiper"><div class="swiper-wrapper" id="recentlyViewed"></div></div></section>
+  <section style="max-width: 1280px; margin: 0 auto; padding: 0 20px;"><div class="section-header"><h2><i class="fas fa-history"></i> Recently Viewed</h2></div><div class="swiper recentlySwiper"><div class="swiper-wrapper" id="recentlyViewed"></div></div></section>
 
   <!-- Festival Banner -->
   <section><div class="container"><div class="festival-banner"><div class="festival-content"><span class="festival-tag">🎉 DIWALI MEGA SALE 🎉</span><h2>Up to 60% Off</h2><div class="countdown" id="countdown"><div class="time-box"><span id="days">00</span>d</div><div class="time-box"><span id="hours">00</span>h</div><div class="time-box"><span id="minutes">00</span>m</div><div class="time-box"><span id="seconds">00</span>s</div></div><button class="shop-festive">Shop Now →</button></div></div></div></section>
 
   <!-- Premium Picks -->
   <section class="our-offerings"><div class="container"><div class="section-header"><h2><i class="fas fa-leaf"></i> Premium Picks</h2><div class="offer-tabs"><button class="tab-btn active" data-tab="featured">Featured</button><button class="tab-btn" data-tab="best-selling">Best Selling</button><button class="tab-btn" data-tab="new-arrivals">New Arrivals</button></div></div><div class="products-grid" id="offeringsGrid"></div><button class="show-more-btn" id="loadMoreBtn">Show More →</button></div></section>
+
+<!-- Subscription Section -->
+<div id="subscriptionModuleContainer"></div>
 
   <!-- ==================== SUBSCRIPTION PLANS SECTION (UPDATED) ==================== -->
   <section class="subscription-products-section">
@@ -288,26 +291,35 @@
     }
     
     // ==================== QUICK CATEGORIES ====================
-    function initQuickCategories() {
-      const container = document.getElementById('quickCatLinks');
-      if (!container) return;
-      
-      const categories = [
+function initQuickCategories() {
+  // Use common function to render categories
+  if (typeof renderQuickCategories === 'function') {
+    renderQuickCategories('quickCatLinks', 'home', function(category) {
+      window.location.href = `categories.html?cat=${category}`;
+    });
+  } else {
+    // Fallback categories
+    const container = document.getElementById('quickCatLinks');
+    if (container) {
+      const fallbackCategories = [
         { name: "Fruits", icon: "🍎", cat: "fruits" },
         { name: "Vegetables", icon: "🥬", cat: "vegetables" },
         { name: "Beverages", icon: "🥤", cat: "beverages" },
-        { name: "Cakes", icon: "🎂", cat: "cakes" },
-        { name: "Ice Cream", icon: "🍦", cat: "icecream" },
         { name: "Snacks", icon: "🍿", cat: "snacks" },
+        { name: "Dairy", icon: "🥛", cat: "dairy" },
+        { name: "Staples", icon: "🍚", cat: "staples" },
+        { name: "Groceries", icon: "🛒", cat: "groceries" },
         { name: "Subscriptions", icon: "📦", cat: "subscription" }
       ];
       
-      container.innerHTML = categories.map(c => `
+      container.innerHTML = fallbackCategories.map(c => `
         <a href="categories.html?cat=${c.cat}" class="cat-link">
           <div class="cat-icon">${c.icon}</div><span>${c.name}</span>
         </a>
       `).join('');
     }
+  }
+}
     
     // ==================== LOAD SUBSCRIPTION PRODUCTS ON HOMEPAGE ====================
     async function loadHomeSubscriptionProducts() {
@@ -459,6 +471,62 @@
       showCategoriesSkeleton();
       showProductsSkeleton('offeringsGrid', 12);
     }
+
+         // ==================== RENDER SUBSCRIPTION SECTION ON HOME PAGE ====================
+async function renderHomeSubscriptionSection() {
+  if (typeof renderSubscriptionSection === 'function') {
+    await renderSubscriptionSection('subscriptionModuleContainer', 'home', function(category) {
+      if (category && category !== 'all') {
+        window.location.href = `subscription.html?cat=${category}`;
+      } else {
+        window.location.href = 'subscription.html';
+      }
+    });
+  } else {
+    // Fallback subscription section
+    const container = document.getElementById('subscriptionModuleContainer');
+    if (container) {
+      container.innerHTML = `
+        <div class="subscription-module">
+          <div class="subscription-module-header">
+            <h2 class="subscription-module-title"><i class="fas fa-calendar-check"></i> Popular Subscription Plans</h2>
+            <button class="subscription-view-all-btn" onclick="location.href='subscription.html'">View All Subscription Plans <i class="fas fa-arrow-right"></i></button>
+          </div>
+          <div class="subscription-category-row">
+            <div class="subscription-category-item" onclick="location.href='subscription.html?cat=daily'"><div class="subscription-category-icon">🌅</div><span class="subscription-category-name">Daily</span></div>
+            <div class="subscription-category-item" onclick="location.href='subscription.html?cat=weekly'"><div class="subscription-category-icon">📅</div><span class="subscription-category-name">Weekly</span></div>
+            <div class="subscription-category-item" onclick="location.href='subscription.html?cat=monthly'"><div class="subscription-category-icon">🗓️</div><span class="subscription-category-name">Monthly</span></div>
+            <div class="subscription-category-item" onclick="location.href='subscription.html?cat=meal'"><div class="subscription-category-icon">🍽️</div><span class="subscription-category-name">Meals</span></div>
+            <div class="subscription-category-item" onclick="location.href='subscription.html?cat=grocery'"><div class="subscription-category-icon">🛒</div><span class="subscription-category-name">Grocery</span></div>
+            <div class="subscription-category-item" onclick="location.href='subscription.html?cat=organic'"><div class="subscription-category-icon">🌿</div><span class="subscription-category-name">Organic</span></div>
+          </div>
+          <div class="subscription-products-row" id="fallbackSubProducts"></div>
+        </div>
+      `;
+      
+      // Load fallback products
+      try {
+        const response = await fetch('product.json');
+        const data = await response.json();
+        const subscriptions = data.products.filter(p => p.category === "subscription").slice(0, 6);
+        const productsContainer = document.getElementById('fallbackSubProducts');
+        if (productsContainer) {
+          productsContainer.innerHTML = subscriptions.map(sub => `
+            <div class="subscription-product-card" onclick="location.href='description.html?id=${sub.id}'">
+              <div class="subscription-product-image"><img src="${sub.image}"><div class="subscription-product-badge">${sub.subscriptionType || 'Monthly'}</div></div>
+              <div class="subscription-product-info"><div class="subscription-product-name">${sub.name}</div><div class="subscription-product-price"><span class="current-price">₹${sub.price}</span></div><button class="add-to-cart-btn" onclick="event.stopPropagation();addToCart(${JSON.stringify(sub).replace(/"/g, '&quot;')})">Subscribe</button></div>
+            </div>
+          `).join('');
+        }
+      } catch(e) {}
+    }
+  }
+}
+
+// Call this function after initCommon
+// Add this line in your initPage function:
+// await renderHomeSubscriptionSection();
+
     
     // ==================== PAGE INITIALIZATION ====================
     async function initPage() {
@@ -473,6 +541,7 @@
       initCountdownTimer();
       initBackToTop();
       updateRecentlyViewed();
+      await renderHomeSubscriptionSection();
       
       // Load subscription products on homepage
       await loadHomeSubscriptionProducts();

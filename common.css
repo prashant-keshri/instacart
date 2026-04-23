@@ -245,7 +245,9 @@ body {
 
 /* ==================== HERO SLIDER ==================== */
 .hero-section {
-  margin: 16px 12px 0;
+  max-width: 1280px;
+   margin: 0 auto; 
+   padding: 0 20px;
 }
 
 .heroSwiper {
@@ -585,6 +587,259 @@ body {
   text-align: center;
 }
 
+/* ==================== SUBSCRIPTION PRODUCTS GRID (MATCHES INDEX PAGE) ==================== */
+.subscription-products-section {
+  margin: 40px 0;
+}
+
+.subscription-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.subscription-header-bar h2 {
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.view-all-link {
+  color: var(--orange-primary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+.subscription-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.subscription-home-card {
+  background: var(--surface);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+
+.subscription-home-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.subscription-home-card .card-image {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.subscription-home-card .card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.subscription-home-card:hover .card-image img {
+  transform: scale(1.05);
+}
+
+.subscription-type-tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--orange-primary);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  z-index: 2;
+}
+
+.subscription-home-card .card-content {
+  padding: 15px;
+}
+
+.subscription-home-card .card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.subscription-home-card .card-price {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--green-primary);
+  margin-bottom: 5px;
+}
+
+.subscription-home-card .card-old-price {
+  text-decoration: line-through;
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+.subscription-home-card .card-discount {
+  background: var(--red-primary);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 20px;
+  font-size: 10px;
+  margin-left: 8px;
+}
+
+.subscription-home-card .card-delivery {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.subscription-home-card .card-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.subscription-home-card .feature {
+  font-size: 10px;
+  background: var(--bg-primary);
+  padding: 3px 8px;
+  border-radius: 20px;
+  color: var(--text-secondary);
+}
+
+.sub-home-add-btn {
+  width: 100%;
+  background: var(--green-primary);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.2s;
+  position: relative;
+  z-index: 10;
+}
+
+.sub-home-add-btn:hover {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+  .subscription-products-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==================== SMALL SUBSCRIPTION CARDS (MATCHES PRODUCT CARDS) ==================== */
+.subscription-small-card {
+  position: relative;
+}
+
+.subscription-badge-small {
+  background: linear-gradient(135deg, var(--orange-primary), var(--green-primary));
+  font-size: 10px;
+  padding: 3px 8px;
+  top: 8px;
+  left: 8px;
+  right: auto;
+}
+
+.discount-badge {
+  top: 8px;
+  right: 8px;
+  left: auto;
+  background: var(--red-primary);
+}
+
+.subscription-delivery-info {
+  font-size: 10px;
+  color: var(--orange-primary);
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Subscription filter pills */
+.subscription-filter-section {
+  margin: 20px 0;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.subscription-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.subscription-filter-pill {
+  padding: 8px 20px;
+  border-radius: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+}
+
+.subscription-filter-pill i {
+  margin-right: 6px;
+}
+
+.subscription-filter-pill:hover {
+  background: var(--bg-primary);
+  transform: translateY(-2px);
+}
+
+.subscription-filter-pill.active {
+  background: var(--orange-primary);
+  color: white;
+  border-color: var(--orange-primary);
+}
+
+/* Subscription grid with smaller cards */
+.subscription-small-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 18px;
+  margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .subscription-small-grid {
+    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
 /* ==================== CUSTOMER REVIEWS ==================== */
 .customer-feedback {
   background: var(--surface);
@@ -704,9 +959,13 @@ body {
   backdrop-filter: blur(10px);
   display: flex;
   justify-content: space-around;
-  padding: 4px 0 8px;
+  /* padding: 4px 0 8px; */
   border-top: 1px solid var(--border-light);
   z-index: 1000;
+  max-width: 1280px;
+  border-radius: 15px;
+  margin: 6px auto;
+  padding: 8px 18px;
 }
 
 .nav-item {
@@ -859,6 +1118,7 @@ body {
   border-top: 1px solid var(--border-light);
 }
 
+/* ==================== IMPROVED CART STYLES ==================== */
 .price-breakdown {
   background: var(--bg-primary);
   border-radius: 16px;
@@ -870,7 +1130,8 @@ body {
 .breakdown-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
+  padding: 1px 0;
 }
 
 .breakdown-row.total {
@@ -879,6 +1140,149 @@ body {
   margin-top: 8px;
   padding-top: 8px;
   font-size: 15px;
+  color: var(--green-primary);
+}
+
+.breakdown-row span:first-child {
+  color: var(--text-muted);
+}
+
+.breakdown-row.total span:first-child {
+  color: var(--text-primary);
+}
+/* ==================== ENHANCED CART DISCOUNT STYLES ==================== */
+.breakdown-row.discount-row {
+  background: var(--bg-primary);
+  border-radius: 8px;
+  padding: 3px 1px;
+  margin: 4px 0;
+}
+
+.breakdown-row.discount-row span:first-child {
+  color: var(--text-primary);
+}
+
+.breakdown-row.discount-row strong {
+  font-weight: 700;
+}
+
+.breakdown-row.free-delivery-note i,
+.breakdown-row.savings-note i {
+    margin: 2px;
+    padding: 1px;
+    align-items: center;
+}
+
+.breakdown-row.savings-note {
+  background: rgba(46, 125, 50, 0.1);
+  border-radius: 8px;
+  padding: 0px 0px;
+   margin: 2px;
+    align-items: center;
+}
+
+.item-total-price {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.item-total-price span {
+  font-weight: 600;
+}
+
+.cart-item .cart-discount {
+  background: var(--red-primary);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.cart-item {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
+  transition: background 0.2s;
+}
+
+.cart-item:hover {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 12px;
+  margin: -12px -12px 6px -12px;
+}
+
+.cart-item-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.cart-item-details {
+  flex: 1;
+}
+
+.cart-item-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.price-info {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin: 4px 0;
+}
+
+.cart-current {
+  color: var(--green-primary);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.cart-old {
+  text-decoration: line-through;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.cart-discount {
+  color: var(--red-primary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.quantity-control button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  background: var(--surface);
+  cursor: pointer;
+  color: var(--text-primary);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.quantity-control button:hover {
+  background: var(--orange-primary);
+  color: white;
+  border-color: var(--orange-primary);
 }
 
 .checkout-btn {
@@ -886,11 +1290,19 @@ body {
   background: var(--green-primary);
   color: white;
   border: none;
-  padding: 12px;
+  padding: 14px;
   border-radius: 40px;
   font-weight: bold;
   cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
 }
+
+.checkout-btn:hover {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
 
 .close-cart {
   width: 28px;
@@ -1398,6 +1810,493 @@ body {
   15% { opacity: 1; transform: translateY(0); }
   85% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-10px); }
+}
+
+
+/* ==================== CATEGORY CARD STYLES ==================== */
+.category-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.category-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--surface);
+  border-radius: 16px;
+  cursor: pointer;
+  border: 1px solid var(--border-light);
+  min-width: 80px;
+  transition: all 0.2s;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.category-card.active {
+  border-color: var(--orange-primary);
+  background: var(--bg-primary);
+}
+
+.category-card-icon {
+  font-size: 32px;
+  margin-bottom: 6px;
+}
+
+.category-card span {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Filter capsules */
+.filter-capsules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+  justify-content: center;
+}
+
+.filter-capsule {
+  padding: 8px 20px;
+  border-radius: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+}
+
+.filter-capsule i {
+  margin-right: 6px;
+}
+
+.filter-capsule:hover {
+  background: var(--bg-primary);
+  transform: translateY(-2px);
+}
+
+.filter-capsule.active {
+  background: var(--orange-primary);
+  color: white;
+  border-color: var(--orange-primary);
+}
+
+/* ==================== MODULAR CATEGORY COMPONENT STYLES ==================== */
+
+/* Filter Pills (for category filters) */
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+  justify-content: center;
+}
+
+.filter-pill {
+  padding: 8px 20px;
+  border-radius: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+}
+
+.filter-pill i {
+  margin-right: 6px;
+}
+
+.filter-pill:hover {
+  background: var(--bg-primary);
+  transform: translateY(-2px);
+}
+
+.filter-pill.active {
+  background: var(--orange-primary);
+  color: white;
+  border-color: var(--orange-primary);
+}
+
+/* Category Cards (grid style like home page) */
+.category-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.category-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--surface);
+  border-radius: 16px;
+  cursor: pointer;
+  border: 1px solid var(--border-light);
+  min-width: 85px;
+  transition: all 0.2s;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.category-card.active {
+  border-color: var(--orange-primary);
+  background: var(--bg-primary);
+}
+
+.category-card-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.category-card span {
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Timeline Pills (for subscription page) */
+.timeline-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 15px 0;
+}
+
+.timeline-pill {
+  padding: 10px 24px;
+  border-radius: 40px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+}
+
+.timeline-pill i {
+  margin-right: 8px;
+}
+
+.timeline-pill:hover {
+  background: var(--surface);
+  transform: translateY(-2px);
+}
+
+.timeline-pill.active {
+  background: var(--orange-primary);
+  color: white;
+  border-color: var(--orange-primary);
+}
+
+/* Section headers for category sections */
+.category-section-header {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 25px 0 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.category-section-header i {
+  color: var(--orange-primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .filter-pill { padding: 6px 14px; font-size: 12px; }
+  .category-card { min-width: 70px; padding: 8px 12px; }
+  .category-card-icon { font-size: 28px; }
+  .timeline-pill { padding: 8px 16px; font-size: 12px; }
+}
+
+/* ==================== SUBSCRIPTION MODULE STYLES ==================== */
+
+.subscription-module {
+  /* margin: 40px 0;
+  padding: 20px; */
+  background: var(--surface);
+  border-radius: 24px;
+  border: 1px solid var(--border-light);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header Section */
+.subscription-module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--border-light);
+}
+
+.subscription-module-title {
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.subscription-module-title i {
+  color: var(--orange-primary);
+}
+
+.subscription-view-all-btn {
+  background: linear-gradient(135deg, var(--orange-primary), var(--green-primary));
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 40px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+}
+
+.subscription-view-all-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.subscription-view-all-btn i {
+  margin-left: 6px;
+  transition: transform 0.2s;
+}
+
+.subscription-view-all-btn:hover i {
+  transform: translateX(4px);
+}
+
+/* Category Cards Row */
+.subscription-category-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 30px;
+  padding: 10px 0;
+}
+
+.subscription-category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--bg-primary);
+  border-radius: 16px;
+  cursor: pointer;
+  border: 1px solid var(--border-light);
+  min-width: 80px;
+  transition: all 0.2s;
+}
+
+.subscription-category-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-color: var(--orange-primary);
+}
+
+.subscription-category-icon {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.subscription-category-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Products Row - Same size as normal product cards */
+.subscription-products-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 18px;
+  margin-top: 10px;
+}
+
+.subscription-product-card {
+  background: var(--bg-primary);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.2s;
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  position: relative;
+}
+
+.subscription-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.subscription-product-image {
+  position: relative;
+  padding-top: 100%;
+  overflow: hidden;
+}
+
+.subscription-product-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.subscription-product-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: linear-gradient(135deg, var(--orange-primary), var(--green-primary));
+  color: white;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  z-index: 2;
+}
+
+.subscription-product-discount {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--red-primary);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  z-index: 2;
+}
+
+.subscription-product-info {
+  padding: 12px;
+}
+
+.subscription-product-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subscription-product-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.subscription-product-price .current-price {
+  font-weight: 800;
+  color: var(--green-primary);
+  font-size: 16px;
+}
+
+.subscription-product-price .old-price {
+  text-decoration: line-through;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.subscription-product-delivery {
+  font-size: 10px;
+  color: var(--orange-primary);
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.add-to-cart-btn {
+  width: 100%;
+  background: var(--orange-primary);
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 12px;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-to-cart-btn:hover {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .subscription-module {
+    padding: 15px;
+    margin: 30px 0;
+  }
+  
+  .subscription-module-title {
+    font-size: 18px;
+  }
+  
+  .subscription-view-all-btn {
+    padding: 8px 16px;
+    font-size: 11px;
+  }
+  
+  .subscription-products-row {
+    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+  
+  .subscription-category-item {
+    min-width: 65px;
+    padding: 8px 12px;
+  }
+  
+  .subscription-category-icon {
+    font-size: 24px;
+  }
+  
+  .subscription-category-name {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .subscription-module-header {
+    flex-direction: column;
+    text-align: center;
+  }
 }
 
 /* ==================== ORDER STATUS COLORS ==================== */
