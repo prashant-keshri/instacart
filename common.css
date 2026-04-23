@@ -484,6 +484,112 @@ body {
   opacity: 0.9;
 }
 
+/* ==================== REUSABLE PRICE BREAKDOWN STYLES ==================== */
+.price-breakdown-box {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border-light);
+}
+
+.breakdown-header {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--orange-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+}
+
+.breakdown-header i {
+  color: var(--orange-primary);
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.breakdown-row.total {
+  font-weight: 800;
+  border-top: 2px solid var(--border-light);
+  margin-top: 8px;
+  padding-top: 12px;
+  font-size: 15px;
+  color: var(--green-primary);
+}
+
+.breakdown-row.discount-row {
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 4px 0;
+}
+
+.breakdown-row.discount-row span:first-child {
+  color: var(--text-primary);
+}
+
+.discount-percent {
+  color: var(--green-primary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.discount-amount {
+  color: var(--red-primary);
+  font-weight: 600;
+}
+
+.free-delivery {
+  color: var(--green-primary);
+  font-weight: 600;
+}
+
+.free-delivery-note {
+  background: rgba(249, 115, 22, 0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--orange-primary);
+}
+
+.free-delivery-note.success {
+  background: rgba(46, 125, 50, 0.1);
+  color: var(--green-primary);
+}
+
+.savings-note {
+  background: rgba(46, 125, 50, 0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--green-primary);
+}
+
+.savings-note i, .free-delivery-note i {
+  margin-right: 5px;
+}
+
+/* Order page specific price breakdown */
+.order-price-breakdown {
+  margin: 20px 0;
+}
+
+.order-price-breakdown .price-breakdown-box {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+}
+
 /* ==================== FESTIVAL BANNER ==================== */
 .festival-banner {
   background: linear-gradient(105deg, #d43f1f, #f97316);

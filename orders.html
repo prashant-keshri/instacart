@@ -17,6 +17,10 @@
     .order-header-left { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
     .order-id { font-weight: 700; }
     .order-status { padding: 4px 12px; border-radius: 30px; font-size: 12px; font-weight: 600; }
+    .status-delivered { background: #e8f5e9; color: #2e7d32; }
+    .status-shipped { background: #fff3e0; color: #f97316; }
+    .status-processing { background: #e3f2fd; color: #1976d2; }
+    .status-cancelled { background: #ffebee; color: #c62828; }
     .order-total { font-weight: 700; }
     .expand-icon { transition: transform 0.2s; }
     .order-header.expanded .expand-icon { transform: rotate(180deg); }
@@ -35,12 +39,10 @@
     .order-action-buttons { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
     .btn-edit-address { background: var(--blue-primary); color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; font-size: 12px; font-weight: 600; }
     .btn-cancel { background: var(--red-primary); color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; font-size: 12px; font-weight: 600; }
-    .explore-categories-section { margin: 40px 0; }
-    .category-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 20px; }
     .order-timeline { background: var(--bg-primary); border-radius: 16px; padding: 20px; margin-top: 20px; }
-    .timeline-steps { display: flex; justify-content: space-between; position: relative; margin-bottom: 20px; }
+    .timeline-steps { display: flex; justify-content: space-between; position: relative; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
     .timeline-steps::before { content: ''; position: absolute; top: 20px; left: 0; right: 0; height: 2px; background: var(--border-light); z-index: 0; }
-    .timeline-step { text-align: center; position: relative; z-index: 1; flex: 1; }
+    .timeline-step { text-align: center; position: relative; z-index: 1; flex: 1; min-width: 70px; }
     .step-icon { width: 40px; height: 40px; background: var(--surface); border: 2px solid var(--border-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 18px; color: var(--text-muted); }
     .timeline-step.completed .step-icon { background: var(--green-primary); border-color: var(--green-primary); color: white; }
     .timeline-step.active .step-icon { border-color: var(--orange-primary); color: var(--orange-primary); }
@@ -51,13 +53,212 @@
     .update-content { flex: 1; }
     .update-title { font-weight: 600; font-size: 13px; }
     .update-date { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    
+    /* Enhanced Delivery Details Styles */
+    .delivery-details-expandable {
+      margin-top: 20px;
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    
+    .delivery-details-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: var(--bg-primary);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .delivery-details-header:hover {
+      background: var(--border-light);
+    }
+    
+    .delivery-details-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+    
+    .delivery-details-title i {
+      color: var(--orange-primary);
+      font-size: 18px;
+    }
+    
+    .delivery-details-toggle {
+      transition: transform 0.2s;
+    }
+    
+    .delivery-details-expandable.open .delivery-details-toggle {
+      transform: rotate(180deg);
+    }
+    
+    .delivery-details-content {
+      display: none;
+      padding: 20px;
+      background: var(--surface);
+    }
+    
+    .delivery-details-expandable.open .delivery-details-content {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .delivery-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    
+    .delivery-section {
+      background: var(--bg-primary);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    
+    .delivery-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--orange-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .delivery-section-title i {
+      color: var(--orange-primary);
+    }
+    
+    .info-row {
+      display: flex;
+      margin-bottom: 12px;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--border-light);
+    }
+    
+    .info-label {
+      width: 120px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    
+    .info-value {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    .info-value.paid {
+      color: var(--green-primary);
+    }
+    
+    .info-value.not-paid {
+      color: var(--red-primary);
+    }
+    
+    .payment-details {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-light);
+    }
+    
+    .payment-method {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    
+    .delivery-agent-card {
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(46, 125, 50, 0.1));
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+    
+    .agent-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--surface);
+      margin-bottom: 10px;
+    }
+    
+    .agent-status.confirmed {
+      background: var(--green-primary);
+      color: white;
+    }
+    
+    .agent-status.pending {
+      background: var(--orange-primary);
+      color: white;
+    }
+    
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 768px) {
+      .delivery-details-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      
+      .info-label {
+        width: 100px;
+      }
+      
+      .timeline-steps {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .timeline-steps::before {
+        display: none;
+      }
+      
+      .timeline-step {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-align: left;
+      }
+      
+      .step-icon {
+        margin: 0;
+      }
+    }
+    
     .empty-state { text-align: center; padding: 60px 20px; background: var(--surface); border-radius: 24px; border: 1px solid var(--border-light); }
     .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; margin-top: 20px; }
+    
     @media (max-width: 768px) {
-      .products-grid {
-        gap: 12px;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      }
+      .products-grid { gap: 12px; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
     }
   </style>
 </head>
@@ -73,11 +274,19 @@
   <!-- Main Content -->
   <main class="container" id="ordersContainer"></main>
 
+  <!-- Explore Categories Section -->
+  <div class="explore-categories-section">
+    <div class="section-header">
+      <h2><i class="fas fa-th-large"></i> Explore Categories</h2>
+    </div>
+    <div class="category-links" id="exploreCategoriesContainer"></div>
+  </div>
+
+  <!-- Subscription Section -->
+  <div id="subscriptionModuleContainer"></div>
+
   <!-- Bottom Nav -->
   <nav class="bottom-nav"><a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a><a href="orders.html" class="nav-item active"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a><a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a><a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a></nav>
-  
-  <!-- Subscription Section -->
-<div id="subscriptionModuleContainer"></div>
 
   <!-- Cart Sidebar -->
   <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div><div class="cart-items" id="cartItemsList"></div><div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div></div>
@@ -112,13 +321,226 @@
       const container = document.getElementById('exploreCategoriesContainer');
       if (!container) return;
       
-      // Use the defined array
       container.innerHTML = exploreCategoriesArray.map(c => `
         <a href="categories.html?cat=${c.cat}" class="cat-link">
           <div class="cat-icon">${c.icon}</div>
           <span>${c.name}</span>
         </a>
       `).join('');
+    }
+    
+    // ==================== GENERATE DELIVERY DETAILS ====================
+    function generateDeliveryDetails(order, orderStatus, orderDate) {
+      const isConfirmed = orderStatus !== 'processing';
+      const isDelivered = orderStatus === 'delivered';
+      const isShipped = orderStatus === 'shipped';
+      
+      // Payment methods and status
+      const paymentMethods = ['UPI (Google Pay)', 'Credit Card', 'Debit Card', 'Cash on Delivery', 'EMI (3 months)'];
+      const randomPaymentMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+      const isPaid = orderStatus === 'delivered' || orderStatus === 'shipped' || (orderStatus === 'processing' && Math.random() > 0.3);
+      
+      // Delivery agent details (only assigned after order is confirmed)
+      const deliveryAgent = isConfirmed ? {
+        name: ['Rahul Kumar', 'Priya Singh', 'Amit Sharma', 'Vikram Patel', 'Neha Gupta'][Math.floor(Math.random() * 5)],
+        phone: `+91 ${Math.floor(Math.random() * 9000000000) + 1000000000}`,
+        agentId: `AG${Math.floor(Math.random() * 10000)}`,
+        rating: (3 + Math.random() * 2).toFixed(1),
+        completedDeliveries: Math.floor(Math.random() * 500) + 50
+      } : null;
+      
+      // Alternative phone numbers
+      const altPhones = ['+91 98765 43211', '+91 87654 32109', '+91 76543 21098'];
+      const randomAltPhone = altPhones[Math.floor(Math.random() * altPhones.length)];
+      
+      // Delivery timeline estimates
+      const orderPlacedDate = new Date(orderDate);
+      const estimatedDelivery = new Date(orderPlacedDate);
+      estimatedDelivery.setDate(estimatedDelivery.getDate() + (orderStatus === 'delivered' ? 0 : orderStatus === 'shipped' ? 1 : 2));
+      
+      return `
+        <div class="delivery-details-expandable" id="deliveryDetails-${order.id}">
+          <div class="delivery-details-header" onclick="toggleDeliveryDetails('${order.id}')">
+            <div class="delivery-details-title">
+              <i class="fas fa-truck"></i>
+              <span>Delivery & Payment Details</span>
+              ${isConfirmed ? `<span class="status-badge" style="background: var(--green-primary); color: white;"><i class="fas fa-check-circle"></i> Agent Assigned</span>` : `<span class="status-badge" style="background: var(--orange-primary); color: white;"><i class="fas fa-clock"></i> Awaiting Confirmation</span>`}
+            </div>
+            <i class="fas fa-chevron-down delivery-details-toggle"></i>
+          </div>
+          <div class="delivery-details-content">
+            <div class="delivery-details-grid">
+              <!-- Left Section: User Delivery Details -->
+              <div class="delivery-section">
+                <div class="delivery-section-title">
+                  <i class="fas fa-user"></i> Delivery Information
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Customer Name:</span>
+                  <span class="info-value">${order.userName || 'Rahul Sharma'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Mobile Number:</span>
+                  <span class="info-value">${order.userPhone || '+91 98765 43210'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Alt Mobile No:</span>
+                  <span class="info-value">${randomAltPhone}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Delivery Location:</span>
+                  <span class="info-value">${order.address || '123, Green Park, New Delhi - 110001'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Landmark:</span>
+                  <span class="info-value">${order.landmark || 'Near City Mall, Opp. Metro Station'}</span>
+                </div>
+                
+                <div class="delivery-section-title" style="margin-top: 16px;">
+                  <i class="fas fa-credit-card"></i> Payment Details
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Payment Status:</span>
+                  <span class="info-value ${isPaid ? 'paid' : 'not-paid'}">
+                    ${isPaid ? '<i class="fas fa-check-circle"></i> Paid' : '<i class="fas fa-times-circle"></i> Not Paid'}
+                  </span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Payment Method:</span>
+                  <span class="info-value">
+                    <span class="payment-method">
+                      <i class="fas ${randomPaymentMethod.includes('UPI') ? 'fa-google-pay' : randomPaymentMethod.includes('Card') ? 'fa-credit-card' : randomPaymentMethod.includes('COD') ? 'fa-money-bill' : 'fa-chart-line'}"></i>
+                      ${randomPaymentMethod}
+                    </span>
+                  </span>
+                </div>
+                ${randomPaymentMethod === 'EMI (3 months)' ? `
+                <div class="payment-details">
+                  <div class="info-row">
+                    <span class="info-label">EMI Details:</span>
+                    <span class="info-value">3 months @ ₹${Math.round(order.total / 3)}/month</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Bank/Card:</span>
+                    <span class="info-value">HDFC Bank - **** 1234</span>
+                  </div>
+                </div>
+                ` : ''}
+                <div class="info-row">
+                  <span class="info-label">Transaction ID:</span>
+                  <span class="info-value">TXN${Math.floor(Math.random() * 1000000000)}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Order Status:</span>
+                  <span class="info-value">
+                    <span class="status-badge status-${order.status}" style="background: ${order.status === 'delivered' ? '#2e7d32' : order.status === 'shipped' ? '#f97316' : '#1976d2'}; color: white;">
+                      ${order.status.toUpperCase()}
+                    </span>
+                  </span>
+                </div>
+              </div>
+              
+              <!-- Right Section: Delivery Agent Details -->
+              <div class="delivery-section">
+                <div class="delivery-section-title">
+                  <i class="fas fa-motorcycle"></i> Delivery Agent Details
+                </div>
+                ${isConfirmed ? `
+                  <div class="delivery-agent-card">
+                    <div class="agent-status confirmed">
+                      <i class="fas fa-check-circle"></i> Agent Assigned
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Agent Name:</span>
+                      <span class="info-value">${deliveryAgent.name}</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Contact Number:</span>
+                      <span class="info-value">${deliveryAgent.phone}</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Agent ID:</span>
+                      <span class="info-value">${deliveryAgent.agentId}</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Rating:</span>
+                      <span class="info-value"><i class="fas fa-star" style="color: #fbbf24;"></i> ${deliveryAgent.rating} ★ (${deliveryAgent.completedDeliveries}+ deliveries)</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Current Status:</span>
+                      <span class="info-value">
+                        ${isDelivered ? '<i class="fas fa-check-circle" style="color: #2e7d32;"></i> Order Delivered' : 
+                          isShipped ? '<i class="fas fa-truck" style="color: #f97316;"></i> Out for Delivery' : 
+                          '<i class="fas fa-box" style="color: #1976d2;"></i> Picked Up - In Transit'}
+                      </span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Est. Delivery:</span>
+                      <span class="info-value">${estimatedDelivery.toLocaleDateString()} ${isShipped ? '(Today)' : isDelivered ? '(Delivered)' : ''}</span>
+                    </div>
+                  </div>
+                  <div class="delivery-agent-card" style="margin-top: 12px; background: var(--bg-primary);">
+                    <div class="info-row">
+                      <span class="info-label">Company Helpline:</span>
+                      <span class="info-value"><i class="fas fa-phone-alt"></i> 1800-123-FRESH (37374)</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Emergency Contact:</span>
+                      <span class="info-value"><i class="fas fa-shield-alt"></i> +91 11 4567 8901</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Track Order:</span>
+                      <span class="info-value"><i class="fas fa-map-marker-alt"></i> <a href="#" onclick="return false;" style="color: var(--orange-primary);">Click to Track Live Location</a></span>
+                    </div>
+                  </div>
+                ` : `
+                  <div class="delivery-agent-card">
+                    <div class="agent-status pending">
+                      <i class="fas fa-clock"></i> Order Not Confirmed Yet
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Agent Status:</span>
+                      <span class="info-value">Awaiting confirmation</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Est. Assignment:</span>
+                      <span class="info-value">Within 30 minutes of order confirmation</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Company Helpline:</span>
+                      <span class="info-value"><i class="fas fa-phone-alt"></i> 1800-123-FRESH (37374)</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">Support Email:</span>
+                      <span class="info-value">support@freshkart.com</span>
+                    </div>
+                  </div>
+                `}
+                <div class="delivery-agent-card" style="margin-top: 12px; background: var(--bg-primary);">
+                  <div class="delivery-section-title" style="margin-bottom: 8px; font-size: 12px;">
+                    <i class="fas fa-info-circle"></i> Need Help?
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">24/7 Support:</span>
+                    <span class="info-value"><i class="fas fa-headset"></i> +91 11 4567 8902</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">WhatsApp:</span>
+                    <span class="info-value"><i class="fab fa-whatsapp"></i> +91 98765 43210</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    
+    function toggleDeliveryDetails(orderId) {
+      const element = document.getElementById(`deliveryDetails-${orderId}`);
+      if (element) {
+        element.classList.toggle('open');
+      }
     }
     
     // ==================== LOAD ORDERS ====================
@@ -130,13 +552,13 @@
         orders = [
           { id: "FRK-2024-001", date: "2024-03-15", status: "delivered", subtotal: 568, deliveryFee: 0, platformFee: 9, discount: 82, total: 495, 
             items: [{ productId: 1, name: "Organic Apples", price: 120, oldPrice: 150, quantity: 2, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200" }, { productId: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, quantity: 3, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200" }], 
-            address: "Rahul Sharma, +91 98765 43210\n123, Green Park, New Delhi - 110001" },
+            address: "123, Green Park, New Delhi - 110001", userName: "Rahul Sharma", userPhone: "+91 98765 43210", landmark: "Near City Mall" },
           { id: "FRK-2024-002", date: "2024-03-10", status: "shipped", subtotal: 249, deliveryFee: 40, platformFee: 9, discount: 50, total: 248, 
             items: [{ productId: 4, name: "Orange Juice", price: 99, oldPrice: 120, quantity: 2, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=200" }], 
-            address: "Rahul Sharma, +91 98765 43210\n456, Cyber City, Gurgaon - 122002" },
+            address: "456, Cyber City, Gurgaon - 122002", userName: "Rahul Sharma", userPhone: "+91 98765 43210", landmark: "Near Huda City Centre" },
           { id: "FRK-2024-003", date: "2024-03-05", status: "processing", subtotal: 899, deliveryFee: 0, platformFee: 9, discount: 180, total: 728, 
             items: [{ productId: 3, name: "Carrot (Farm)", price: 35, oldPrice: 45, quantity: 4, image: "https://images.unsplash.com/photo-1447175008436-054170c2e979?w=200" }], 
-            address: "Rahul Sharma, +91 98765 43210\n123, Green Park, New Delhi - 110001" }
+            address: "123, Green Park, New Delhi - 110001", userName: "Rahul Sharma", userPhone: "+91 98765 43210", landmark: "Near City Mall" }
         ];
       }
     }
@@ -189,43 +611,147 @@
     }
     
     // ==================== RENDER ORDER CARD ====================
-    function renderOrderCard(order) {
-      const isCancellable = order.status !== 'delivered' && order.status !== 'cancelled';
-      const canEdit = order.status === 'processing';
-      const timeline = getOrderTimeline(order.status);
-      const updates = getOrderUpdates(order.status, order.date);
-      
-      return `
-        <div class="order-card">
-          <div class="order-header" onclick="toggleOrderDetails('${order.id}')">
-            <div class="order-header-left">
-              <div class="order-id">Order: <strong>${order.id}</strong></div>
-              <div class="order-date"><i class="fas fa-calendar-alt"></i> ${order.date}</div>
-              <div class="order-status status-${order.status}">${order.status.toUpperCase()}</div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 15px;">
-              <div class="order-total"><strong>₹${order.total}</strong></div>
-              <div class="expand-icon"><i class="fas fa-chevron-down"></i></div>
-            </div>
-          </div>
-          <div class="order-items" id="order-items-${order.id}">
-            <div class="order-items-grid">
-              ${order.items.map(item => `
-                <div class="order-item-product" onclick="viewProduct(${item.productId})">
-                  <div class="order-item-left"><img class="order-item-img" src="${item.image}"><div class="order-item-details"><div class="order-item-name">${item.name}</div><div class="order-item-qty">Qty: ${item.quantity}</div></div></div>
-                  <div class="order-item-price">₹${item.price * item.quantity}<div class="order-item-subtotal">₹${item.price} × ${item.quantity}</div></div>
+    // ==================== RENDER ORDER CARD (UPDATED WITH COMMON PRICE BREAKDOWN) ====================
+function renderOrderCard(order) {
+  const isCancellable = order.status !== 'delivered' && order.status !== 'cancelled';
+  const canEdit = order.status === 'processing';
+  const timeline = getOrderTimeline(order.status);
+  const updates = getOrderUpdates(order.status, order.date);
+  const deliveryDetails = generateDeliveryDetails(order, order.status, order.date);
+  
+  // Prepare price data for the common price breakdown component
+  const priceData = {
+    subtotal: order.subtotal,
+    discount: order.discount || 0,
+    deliveryFee: order.deliveryFee || 0,
+    platformFee: order.platformFee || 9,
+    total: order.total
+  };
+  
+  // Use the common price breakdown component
+  const priceBreakdownHTML = typeof renderPriceBreakdown === 'function' 
+    ? renderPriceBreakdown(priceData, false)
+    : `
+      <div class="price-breakdown-box">
+        <div class="breakdown-header"><i class="fas fa-receipt"></i> Price Details</div>
+        <div class="breakdown-row"><span>Subtotal</span><span>₹${order.subtotal}</span></div>
+        ${order.discount ? `<div class="breakdown-row discount-row"><span>Total Discount</span><span class="discount-amount">- ₹${order.discount}</span></div>` : ''}
+        <div class="breakdown-row"><span>Delivery Fee</span><span>${order.deliveryFee === 0 ? '<span class="free-delivery">FREE</span>' : '₹' + order.deliveryFee}</span></div>
+        <div class="breakdown-row"><span>Platform Fee</span><span>₹${order.platformFee}</span></div>
+        <div class="breakdown-row total"><span>Total Amount</span><span>₹${order.total}</span></div>
+      </div>
+    `;
+  
+  return `
+    <div class="order-card">
+      <div class="order-header" onclick="toggleOrderDetails('${order.id}')">
+        <div class="order-header-left">
+          <div class="order-id">Order: <strong>${order.id}</strong></div>
+          <div class="order-date"><i class="fas fa-calendar-alt"></i> ${order.date}</div>
+          <div class="order-status status-${order.status}">${order.status.toUpperCase()}</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <div class="order-total"><strong>₹${order.total}</strong></div>
+          <div class="expand-icon"><i class="fas fa-chevron-down"></i></div>
+        </div>
+      </div>
+      <div class="order-items" id="order-items-${order.id}">
+        <div class="order-items-grid">
+          ${order.items.map(item => `
+            <div class="order-item-product" onclick="viewProduct(${item.productId})">
+              <div class="order-item-left">
+                <img class="order-item-img" src="${item.image}" onerror="this.src='https://placehold.co/60'">
+                <div class="order-item-details">
+                  <div class="order-item-name">${escapeHtml(item.name)}</div>
+                  <div class="order-item-qty">Qty: ${item.quantity}</div>
+                  ${item.oldPrice ? `<div class="order-item-savings" style="font-size: 11px; color: var(--green-primary);">Saved ₹${(item.oldPrice - item.price) * item.quantity}</div>` : ''}
                 </div>
-              `).join('')}
+              </div>
+              <div class="order-item-price">
+                ₹${item.price * item.quantity}
+                <div class="order-item-subtotal" style="font-size: 11px; color: var(--text-muted);">₹${item.price} × ${item.quantity}</div>
+              </div>
             </div>
-            <div class="order-timeline"><div class="timeline-steps">${timeline.map(step => `<div class="timeline-step ${step.completed ? 'completed' : ''} ${step.active ? 'active' : ''}"><div class="step-icon"><i class="fas ${step.icon}"></i></div><div class="step-label">${step.name}</div></div>`).join('')}</div></div>
-            <div class="price-breakdown-section"><div class="price-breakdown-title">Order Updates</div>${updates.map(update => `<div class="update-item"><div class="update-icon"><i class="fas ${update.icon}" style="color: ${update.color};"></i></div><div class="update-content"><div class="update-title">${update.title}</div><div class="update-date">${update.date}</div></div></div>`).join('')}</div>
-            <div class="price-breakdown-section"><div class="price-breakdown-title">Price Details</div><div class="breakdown-row"><span>Total MRP</span><span>₹${order.subtotal + order.discount}</span></div><div class="breakdown-row"><span>Discount</span><span>- ₹${order.discount}</span></div><div class="breakdown-row"><span>Delivery Fee</span><span>${order.deliveryFee === 0 ? 'FREE' : '₹' + order.deliveryFee}</span></div><div class="breakdown-row"><span>Platform Fee</span><span>₹${order.platformFee}</span></div><div class="breakdown-row total"><span>Total Amount</span><span>₹${order.total}</span></div></div>
-            <div class="delivery-address"><h4><i class="fas fa-map-marker-alt"></i> Delivery Address</h4><p>${order.address.replace(/\n/g, '<br>')}</p></div>
-            <div class="order-action-buttons">${canEdit ? `<button class="btn-edit-address" onclick="event.stopPropagation();editAddress('${order.id}')"><i class="fas fa-edit"></i> Edit Address</button>` : ''}${isCancellable ? `<button class="btn-cancel" onclick="event.stopPropagation();cancelOrder('${order.id}')">Cancel Order</button>` : ''}</div>
+          `).join('')}
+        </div>
+        
+        <!-- Order Timeline -->
+        <div class="order-timeline">
+          <div class="timeline-steps">
+            ${timeline.map(step => `
+              <div class="timeline-step ${step.completed ? 'completed' : ''} ${step.active ? 'active' : ''}">
+                <div class="step-icon"><i class="fas ${step.icon}"></i></div>
+                <div class="step-label">${step.name}</div>
+              </div>
+            `).join('')}
           </div>
         </div>
-      `;
+        
+        <!-- Order Updates -->
+        <div class="price-breakdown-section">
+          <div class="breakdown-header" style="margin-bottom: 12px;">
+            <i class="fas fa-clock"></i> Order Updates
+          </div>
+          ${updates.map(update => `
+            <div class="update-item">
+              <div class="update-icon"><i class="fas ${update.icon}" style="color: ${update.color};"></i></div>
+              <div class="update-content">
+                <div class="update-title">${update.title}</div>
+                <div class="update-date">${update.date}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        
+        <!-- Price Breakdown (Using Common Component) -->
+        <div class="order-price-breakdown">
+          ${priceBreakdownHTML}
+        </div>
+        
+        <!-- Delivery Address -->
+        <div class="delivery-address">
+          <h4><i class="fas fa-map-marker-alt"></i> Delivery Address</h4>
+          <p>${(order.address || '').replace(/\n/g, '<br>')}</p>
+        </div>
+        
+        <!-- Delivery Details Expandable Section -->
+        ${deliveryDetails}
+        
+        <!-- Action Buttons -->
+        <div class="order-action-buttons">
+          ${canEdit ? `<button class="btn-edit-address" onclick="event.stopPropagation();editAddress('${order.id}')"><i class="fas fa-edit"></i> Edit Address</button>` : ''}
+          ${isCancellable ? `<button class="btn-cancel" onclick="event.stopPropagation();cancelOrder('${order.id}')"><i class="fas fa-times"></i> Cancel Order</button>` : ''}
+          <button class="btn-reorder" onclick="event.stopPropagation();reorderItems(${JSON.stringify(order.items).replace(/"/g, '&quot;')})"><i class="fas fa-redo"></i> Reorder</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Add reorder function
+function reorderItems(items) {
+  items.forEach(item => {
+    const product = {
+      id: item.productId,
+      name: item.name,
+      price: item.price,
+      oldPrice: item.oldPrice,
+      image: item.image,
+      discountPercent: item.discountPercent || Math.round(((item.oldPrice - item.price) / item.oldPrice) * 100)
+    };
+    
+    const existing = cart.find(i => i.id === product.id);
+    if (existing) {
+      existing.qty = (existing.qty || 0) + item.quantity;
+    } else {
+      cart.push({ ...product, qty: item.quantity });
     }
+  });
+  saveCart();
+  updateCartUI();
+  alert('Items added to cart!');
+  openCart();
+}
     
     // ==================== RENDER EXPLORE CATEGORIES SECTION ====================
     function renderExploreCategoriesHTML() {
@@ -275,7 +801,6 @@
         `;
       }
       
-      // Render the categories after the HTML is inserted
       renderExploreCategoriesSection();
       
       if (!suggestedManager) {
@@ -301,35 +826,31 @@
         container.innerHTML = `<div class="page-header"><div class="skeleton" style="width:200px;height:32px;border-radius:8px;"></div><div class="skeleton" style="width:300px;height:16px;border-radius:8px;margin-top:8px;"></div></div><div class="orders-skeleton-list">${Array(3).fill(`<div class="order-skeleton"><div class="order-header-skeleton"><div class="id-skeleton skeleton"></div><div class="status-skeleton skeleton"></div><div class="price-skeleton skeleton"></div></div></div>`).join('')}</div>`;
       }
     }
-
-    // ==================== RENDER SUBSCRIPTION SECTION ON ORDERS PAGE ====================
-async function renderOrdersSubscriptionSection() {
-  if (typeof renderSubscriptionSection === 'function') {
-    await renderSubscriptionSection('subscriptionModuleContainer', 'orders', function(category) {
-      if (category && category !== 'all') {
-        window.location.href = `subscription.html?cat=${category}`;
-      } else {
-        window.location.href = 'subscription.html';
+    
+    // ==================== PAGE INITIALIZATION ====================
+    async function initPage() {
+      showOrdersSkeleton();
+      await initCommon(() => {});
+      loadOrders();
+      renderOrdersPage();
+      
+      // Render subscription section
+      if (typeof renderSubscriptionSection === 'function') {
+        await renderSubscriptionSection('subscriptionModuleContainer', 'orders', function(category) {
+          if (category && category !== 'all') {
+            window.location.href = `subscription.html?cat=${category}`;
+          } else {
+            window.location.href = 'subscription.html';
+          }
+        });
       }
-    });
-  }
-}
-
-
-// ==================== PAGE INITIALIZATION ====================
-async function initPage() {
-  showOrdersSkeleton();
-  await initCommon(() => {});
-  loadOrders();
-  renderOrdersPage();
-  // Call this in renderOrdersPage after rendering orders
-  await renderOrdersSubscriptionSection();
     }
     
     window.toggleOrderDetails = toggleOrderDetails;
     window.cancelOrder = cancelOrder;
     window.editAddress = editAddress;
     window.viewProduct = viewProduct;
+    window.toggleDeliveryDetails = toggleDeliveryDetails;
     
     initPage();
   </script>

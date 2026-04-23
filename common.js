@@ -1901,6 +1901,131 @@ function showSubscriptionToast(message) {
   setTimeout(() => { toast.style.opacity = '0'; }, 2000);
 }
 
+// ==================== SECTION 19: REUSABLE PRICE BREAKDOWN COMPONENT ====================
+
+/**
+ * Render a price breakdown box (same as cart)
+ * @param {string} containerId - ID of container element
+ * @param {object} priceData - Object containing price details
+ * @param {number} priceData.subtotal - Subtotal amount
+ * @param {number} priceData.discount - Discount amount
+ * @param {number} priceData.deliveryFee - Delivery fee amount
+ * @param {number} priceData.platformFee - Platform fee amount
+ * @param {number} priceData.total - Total amount
+ * @param {boolean} showFreeDeliveryMessage - Whether to show free delivery message
+ * @param {number} freeDeliveryThreshold - Threshold for free delivery
+ * @returns {string} HTML string
+ */
+function renderPriceBreakdown(priceData, showFreeDeliveryMessage = false, freeDeliveryThreshold = 499) {
+  const { subtotal, discount, deliveryFee, platformFee, total } = priceData;
+  const totalDiscount = discount || 0;
+  const originalTotal = subtotal + totalDiscount;
+  const discountPercent = originalTotal > 0 ? Math.round((totalDiscount / originalTotal) * 100) : 0;
+  
+  let html = `
+    <div class="price-breakdown-box">
+      <div class="breakdown-header">
+        <i class="fas fa-receipt"></i> Price Details
+      </div>
+      <div class="breakdown-row">
+        <span>Subtotal (${formatCurrency(subtotal)})</span>
+        <span>${formatCurrency(subtotal)}</span>
+      </div>
+  `;
+  
+  if (totalDiscount > 0) {
+    html += `
+      <div class="breakdown-row discount-row">
+        <span>Total Discount <strong class="discount-percent">(${discountPercent}% OFF)</strong></span>
+        <span class="discount-amount">- ${formatCurrency(totalDiscount)}</span>
+      </div>
+    `;
+  }
+  
+  html += `
+      <div class="breakdown-row">
+        <span>Delivery Fee</span>
+        <span>${deliveryFee === 0 ? '<span class="free-delivery">FREE</span>' : formatCurrency(deliveryFee)}</span>
+      </div>
+      <div class="breakdown-row">
+        <span>Platform Fee</span>
+        <span>${formatCurrency(platformFee)}</span>
+      </div>
+      <div class="breakdown-row total">
+        <span>Total Amount</span>
+        <span>${formatCurrency(total)}</span>
+      </div>
+  `;
+  
+  if (showFreeDeliveryMessage && subtotal > 0 && subtotal < freeDeliveryThreshold) {
+    const remaining = freeDeliveryThreshold - subtotal;
+    html += `
+      <div class="breakdown-row free-delivery-note">
+        <span><i class="fas fa-truck"></i> Add ${formatCurrency(remaining)} more for FREE delivery</span>
+        <span></span>
+      </div>
+    `;
+  } else if (showFreeDeliveryMessage && subtotal >= freeDeliveryThreshold && subtotal > 0) {
+    html += `
+      <div class="breakdown-row free-delivery-note success">
+        <span><i class="fas fa-check-circle"></i> You saved ${formatCurrency(deliveryFee)} on delivery!</span>
+        <span></span>
+      </div>
+    `;
+  }
+  
+  if (totalDiscount > 0) {
+    html += `
+      <div class="breakdown-row savings-note">
+        <span><i class="fas fa-tags"></i> You saved ${discountPercent}% on this order!</span>
+        <span></span>
+      </div>
+    `;
+  }
+  
+  html += `</div>`;
+  return html;
+}
+
+/**
+ * Format currency in Indian Rupees
+ * @param {number} amount - Amount to format
+ * @returns {string} Formatted currency string
+ */
+function formatCurrency(amount) {
+  return `₹${Math.round(amount)}`;
+}
+
+/**
+ * Update cart price breakdown (existing function - keep as is)
+ */
+function updatePriceBreakdown() {
+  const subtotal = cart.reduce((sum, i) => sum + ((i.price || 0) * (i.qty || 0)), 0);
+  const originalTotal = cart.reduce((sum, i) => {
+    const oldPrice = i.oldPrice || i.price || 0;
+    return sum + (oldPrice * (i.qty || 0));
+  }, 0);
+  const totalDiscount = originalTotal - subtotal;
+  const deliveryCharge = subtotal > SITE_CONFIG.FREE_DELIVERY_THRESHOLD ? 0 : SITE_CONFIG.DELIVERY_CHARGE;
+  const platformFee = SITE_CONFIG.PLATFORM_FEE;
+  const totalPayable = subtotal + deliveryCharge + platformFee;
+  
+  const priceData = {
+    subtotal: subtotal,
+    discount: totalDiscount,
+    deliveryFee: deliveryCharge,
+    platformFee: platformFee,
+    total: totalPayable
+  };
+  
+  const breakdownBox = document.getElementById('priceBreakdownBox');
+  if (breakdownBox) {
+    breakdownBox.innerHTML = renderPriceBreakdown(priceData, true, SITE_CONFIG.FREE_DELIVERY_THRESHOLD);
+  }
+  
+  return priceData;
+}
+
 // ==================== SECTION 15: EXPOSE GLOBALS ====================
 window.SITE_CONFIG = SITE_CONFIG;
 window.cart = cart;
