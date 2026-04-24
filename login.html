@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FreshKart – Sign In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: #0a0c10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated Background Grid */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(249, 115, 22, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Animated Orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      animation: float 20s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb-1 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #f97316, transparent);
+      top: -100px;
+      right: -100px;
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, #2e7d32, transparent);
+      bottom: -80px;
+      left: -80px;
+      animation-delay: -5s;
+    }
+
+    .orb-3 {
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, #3b82f6, transparent);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -10s;
+      opacity: 0.2;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+    }
+
+    /* Login Container */
+    .login-container {
+      width: 100%;
+      max-width: 1200px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Main Card */
+    .login-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(20px);
+      border-radius: 48px;
+      border: 1px solid rgba(249, 115, 22, 0.2);
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .login-card:hover {
+      border-color: rgba(249, 115, 22, 0.4);
+      box-shadow: 0 25px 50px -12px rgba(249, 115, 22, 0.2);
+    }
+
+    /* Two Column Layout */
+    .login-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 580px;
+    }
+
+    /* Left Side - Brand Showcase */
+    .brand-showcase {
+      background: linear-gradient(135deg, rgba(46, 125, 50, 0.1), rgba(249, 115, 22, 0.1));
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      border-right: 1px solid rgba(249, 115, 22, 0.2);
+    }
+
+    /* Floating elements in brand section */
+    .floating-items {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    .float-item {
+      position: absolute;
+      font-size: 24px;
+      opacity: 0.3;
+      animation: floatItem 15s ease-in-out infinite;
+    }
+
+    .float-item:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+    .float-item:nth-child(2) { top: 60%; right: 15%; animation-delay: -3s; }
+    .float-item:nth-child(3) { bottom: 20%; left: 20%; animation-delay: -6s; }
+    .float-item:nth-child(4) { top: 40%; right: 25%; animation-delay: -9s; }
+    .float-item:nth-child(5) { top: 75%; left: 35%; animation-delay: -12s; }
+
+    @keyframes floatItem {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(10px, -15px) rotate(10deg); }
+    }
+
+    .brand-logo {
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-logo h1 {
+      font-size: 36px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f97316, #2e7d32);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .brand-logo p {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .welcome-text {
+      position: relative;
+      z-index: 1;
+      margin: 40px 0;
+    }
+
+    .welcome-text h2 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .welcome-text h2 span {
+      background: linear-gradient(135deg, #f97316, #2e7d32);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .welcome-text p {
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .stats {
+      display: flex;
+      gap: 24px;
+      margin-top: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-item {
+      flex: 1;
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 800;
+      color: #f97316;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* Right Side - Form */
+    .form-container {
+      padding: 48px 40px;
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    /* Toggle Switch */
+    .auth-toggle {
+      display: flex;
+      gap: 8px;
+      background: rgba(51, 65, 85, 0.5);
+      padding: 4px;
+      border-radius: 60px;
+      margin-bottom: 32px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 12px;
+      background: transparent;
+      border: none;
+      border-radius: 56px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-btn.active {
+      background: linear-gradient(135deg, #f97316, #e85d04);
+      color: white;
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+    }
+
+    /* Form Styles */
+    .form-panel {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .form-panel.active {
+      display: block;
+    }
+
+    .input-field {
+      margin-bottom: 20px;
+    }
+
+    .input-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #cbd5e1;
+    }
+
+    .input-field label .required {
+      color: #f97316;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i {
+      position: absolute;
+      left: 16px;
+      color: #64748b;
+      font-size: 16px;
+      transition: all 0.2s;
+      z-index: 1;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding: 14px 16px 14px 48px;
+      background: rgba(51, 65, 85, 0.5);
+      border: 1px solid #334155;
+      border-radius: 40px;
+      font-size: 14px;
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .input-wrapper input:focus {
+      outline: none;
+      border-color: #f97316;
+      background: rgba(51, 65, 85, 0.8);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    }
+
+    .input-wrapper input:focus + i {
+      color: #f97316;
+    }
+
+    /* OTP Input Group */
+    .otp-group {
+      margin-top: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .otp-inputs {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin: 16px 0;
+    }
+
+    .otp-input {
+      width: 50px;
+      height: 56px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      background: rgba(51, 65, 85, 0.5);
+      border: 1px solid #334155;
+      border-radius: 16px;
+      color: #f1f5f9;
+      transition: all 0.2s;
+    }
+
+    .otp-input:focus {
+      outline: none;
+      border-color: #f97316;
+      background: rgba(51, 65, 85, 0.8);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    }
+
+    /* Buttons */
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #f97316, #e85d04);
+      border: none;
+      border-radius: 40px;
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 12px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid #334155;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 12px;
+    }
+
+    .btn-secondary:hover {
+      border-color: #f97316;
+      color: #f97316;
+      background: rgba(249, 115, 22, 0.1);
+    }
+
+    /* Social Login */
+    .social-login {
+      margin-top: 24px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: #334155;
+    }
+
+    .divider-text {
+      padding: 0 16px;
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .social-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(51, 65, 85, 0.5);
+      border: 1px solid #334155;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #94a3b8;
+      font-size: 18px;
+    }
+
+    .social-icon:hover {
+      border-color: #f97316;
+      color: #f97316;
+      transform: translateY(-2px);
+      background: rgba(249, 115, 22, 0.1);
+    }
+
+    /* Timer & Resend */
+    .timer-info {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .resend-link {
+      color: #f97316;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .resend-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Guest Mode */
+    .guest-mode {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid #334155;
+    }
+
+    .guest-btn {
+      background: transparent;
+      border: none;
+      color: #64748b;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .guest-btn:hover {
+      color: #f97316;
+    }
+
+    /* Alert */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 12px;
+      margin-bottom: 20px;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+
+    .alert.show {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-success {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid #22c55e;
+      color: #22c55e;
+    }
+
+    .alert-error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid #ef4444;
+      color: #ef4444;
+    }
+
+    .alert-info {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid #3b82f6;
+      color: #3b82f6;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .login-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .brand-showcase {
+        border-right: none;
+        border-bottom: 1px solid rgba(249, 115, 22, 0.2);
+        padding: 32px 24px;
+      }
+      
+      .welcome-text h2 {
+        font-size: 24px;
+      }
+      
+      .stats {
+        margin-top: 24px;
+      }
+      
+      .form-container {
+        padding: 32px 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .otp-input {
+        width: 45px;
+        height: 50px;
+        font-size: 18px;
+      }
+      
+      .login-card {
+        border-radius: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-grid">
+        <!-- Left Side - Brand Showcase -->
+        <div class="brand-showcase">
+          <div class="floating-items">
+            <div class="float-item">🍎</div>
+            <div class="float-item">🥬</div>
+            <div class="float-item">🍊</div>
+            <div class="float-item">🥑</div>
+            <div class="float-item">🍓</div>
+          </div>
+          
+          <div class="brand-logo">
+            <h1>Fresh<span>Kart</span></h1>
+            <p>India's freshest grocery store</p>
+          </div>
+          
+          <div class="welcome-text">
+            <h2>Welcome to <span>FreshKart</span></h2>
+            <p>Experience the joy of fresh groceries delivered to your doorstep with love and care.</p>
+          </div>
+          
+          <div class="stats">
+            <div class="stat-item">
+              <span class="stat-number">30M+</span>
+              <span class="stat-label">Happy Customers</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">500+</span>
+              <span class="stat-label">Cities</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">10K+</span>
+              <span class="stat-label">Products</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right Side - Form -->
+        <div class="form-container">
+          <!-- Alert -->
+          <div id="alertMessage" class="alert"></div>
+          
+          <!-- Auth Toggle -->
+          <div class="auth-toggle">
+            <button class="toggle-btn active" data-form="login">Sign In</button>
+            <button class="toggle-btn" data-form="signup">Create Account</button>
+          </div>
+          
+          <!-- Login Form -->
+          <div id="loginForm" class="form-panel active">
+            <div class="input-field">
+              <label>Mobile Number <span class="required">*</span></label>
+              <div class="input-wrapper">
+                <i class="fas fa-phone"></i>
+                <input type="tel" id="loginMobile" placeholder="Enter 10-digit mobile number" maxlength="10" pattern="[0-9]{10}">
+              </div>
+            </div>
+            
+            <div id="loginOtpSection" class="otp-group" style="display: none;">
+              <div class="otp-inputs" id="loginOtpInputs">
+                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+              </div>
+              <button class="btn-primary" id="verifyLoginBtn">Verify & Sign In</button>
+              <div class="timer-info">
+                <span id="loginTimerText"></span>
+                <a id="loginResendLink" style="display: none;" onclick="resendLoginOTP()">Resend OTP</a>
+              </div>
+            </div>
+            
+            <button class="btn-primary" id="sendLoginOtpBtn">Continue with OTP →</button>
+            
+            <div class="social-login">
+              <div class="divider">
+                <div class="divider-line"></div>
+                <div class="divider-text">OR</div>
+                <div class="divider-line"></div>
+              </div>
+              <div class="social-icons">
+                <div class="social-icon" onclick="googleLogin()">
+                  <i class="fab fa-google"></i>
+                </div>
+                <div class="social-icon" onclick="facebookLogin()">
+                  <i class="fab fa-facebook-f"></i>
+                </div>
+                <div class="social-icon" onclick="appleLogin()">
+                  <i class="fab fa-apple"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Signup Form -->
+          <div id="signupForm" class="form-panel">
+            <div class="input-field">
+              <label>Full Name <span class="required">*</span></label>
+              <div class="input-wrapper">
+                <i class="fas fa-user"></i>
+                <input type="text" id="fullName" placeholder="Enter your full name">
+              </div>
+            </div>
+            
+            <div class="input-field">
+              <label>Mobile Number <span class="required">*</span></label>
+              <div class="input-wrapper">
+                <i class="fas fa-phone"></i>
+                <input type="tel" id="signupMobile" placeholder="Enter 10-digit mobile number" maxlength="10" pattern="[0-9]{10}">
+              </div>
+            </div>
+            
+            <div class="input-field">
+              <label>Email ID <span style="color:#64748b;">(Optional)</span></label>
+              <div class="input-wrapper">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="emailId" placeholder="you@example.com">
+              </div>
+            </div>
+            
+            <div id="signupOtpSection" class="otp-group" style="display: none;">
+              <div class="otp-inputs" id="signupOtpInputs">
+                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+              </div>
+              <button class="btn-primary" id="verifySignupBtn">Verify & Create Account</button>
+              <div class="timer-info">
+                <span id="signupTimerText"></span>
+                <a id="signupResendLink" style="display: none;" onclick="resendSignupOTP()">Resend OTP</a>
+              </div>
+            </div>
+            
+            <button class="btn-primary" id="sendSignupOtpBtn">Create Account →</button>
+          </div>
+          
+          <!-- Guest Mode -->
+          <div class="guest-mode">
+            <button class="guest-btn" id="guestBtn">
+              <i class="fas fa-shopping-bag"></i> Continue as Guest
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== LOGIN PAGE SCRIPT ====================
+    let loginOTP = null;
+    let signupOTP = null;
+    let loginTimer = null;
+    let signupTimer = null;
+    let loginTimeLeft = 0;
+    let signupTimeLeft = 0;
+    
+    // DOM Elements
+    const alertDiv = document.getElementById('alertMessage');
+    
+    // Toggle
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    const loginPanel = document.getElementById('loginForm');
+    const signupPanel = document.getElementById('signupForm');
+    
+    // Login elements
+    const loginMobile = document.getElementById('loginMobile');
+    const sendLoginOtpBtn = document.getElementById('sendLoginOtpBtn');
+    const loginOtpSection = document.getElementById('loginOtpSection');
+    const verifyLoginBtn = document.getElementById('verifyLoginBtn');
+    const loginOtpInputs = document.querySelectorAll('#loginOtpInputs input');
+    const loginTimerText = document.getElementById('loginTimerText');
+    const loginResendLink = document.getElementById('loginResendLink');
+    
+    // Signup elements
+    const fullName = document.getElementById('fullName');
+    const signupMobile = document.getElementById('signupMobile');
+    const emailId = document.getElementById('emailId');
+    const sendSignupOtpBtn = document.getElementById('sendSignupOtpBtn');
+    const signupOtpSection = document.getElementById('signupOtpSection');
+    const verifySignupBtn = document.getElementById('verifySignupBtn');
+    const signupOtpInputs = document.querySelectorAll('#signupOtpInputs input');
+    const signupTimerText = document.getElementById('signupTimerText');
+    const signupResendLink = document.getElementById('signupResendLink');
+    
+    // Alert function
+    function showAlert(message, type = 'error') {
+      alertDiv.className = `alert alert-${type} show`;
+      alertDiv.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> ${message}`;
+      setTimeout(() => {
+        alertDiv.classList.remove('show');
+      }, 5000);
+    }
+    
+    // Generate OTP
+    function generateOTP() {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+    }
+    
+    // Setup OTP inputs auto-tab
+    function setupOtpInputs(inputs) {
+      inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+          if (e.target.value.length === 1 && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          }
+        });
+        
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && index > 0 && !e.target.value) {
+            inputs[index - 1].focus();
+          }
+        });
+      });
+    }
+    
+    // Get OTP value
+    function getOtpValue(inputs) {
+      let otp = '';
+      inputs.forEach(input => otp += input.value);
+      return otp;
+    }
+    
+    // Start timer
+    function startTimer(type, seconds) {
+      if (type === 'login') {
+        loginTimeLeft = seconds;
+        if (loginTimer) clearInterval(loginTimer);
+        loginTimer = setInterval(() => {
+          if (loginTimeLeft <= 0) {
+            clearInterval(loginTimer);
+            loginTimerText.style.display = 'none';
+            loginResendLink.style.display = 'inline';
+          } else {
+            loginTimerText.style.display = 'inline';
+            loginResendLink.style.display = 'none';
+            loginTimerText.innerHTML = `Resend code in ${loginTimeLeft}s`;
+            loginTimeLeft--;
+          }
+        }, 1000);
+      } else {
+        signupTimeLeft = seconds;
+        if (signupTimer) clearInterval(signupTimer);
+        signupTimer = setInterval(() => {
+          if (signupTimeLeft <= 0) {
+            clearInterval(signupTimer);
+            signupTimerText.style.display = 'none';
+            signupResendLink.style.display = 'inline';
+          } else {
+            signupTimerText.style.display = 'inline';
+            signupResendLink.style.display = 'none';
+            signupTimerText.innerHTML = `Resend code in ${signupTimeLeft}s`;
+            signupTimeLeft--;
+          }
+        }, 1000);
+      }
+    }
+    
+    // Send Login OTP
+    function sendLoginOTP() {
+      const mobile = loginMobile.value.trim();
+      if (!mobile) { showAlert('Please enter mobile number', 'error'); return; }
+      if (!/^[0-9]{10}$/.test(mobile)) { showAlert('Enter valid 10-digit mobile number', 'error'); return; }
+      
+      loginOTP = generateOTP();
+      console.log('Login OTP:', loginOTP);
+      showAlert(`Demo OTP: ${loginOTP}`, 'info');
+      
+      loginOtpSection.style.display = 'block';
+      sendLoginOtpBtn.style.display = 'none';
+      verifyLoginBtn.style.display = 'block';
+      startTimer('login', 60);
+    }
+    
+    // Verify Login
+    function verifyLogin() {
+      const otp = getOtpValue(loginOtpInputs);
+      if (!otp || otp.length !== 6) { showAlert('Enter 6-digit OTP', 'error'); return; }
+      if (otp !== loginOTP) { showAlert('Invalid OTP', 'error'); return; }
+      
+      showAlert('Login successful! Redirecting...', 'success');
+      saveUserData({ name: 'User', phone: loginMobile.value.trim(), method: 'login' });
+      setTimeout(() => window.location.href = 'index.html', 1500);
+    }
+    
+    // Send Signup OTP
+    function sendSignupOTP() {
+      const name = fullName.value.trim();
+      const mobile = signupMobile.value.trim();
+      
+      if (!name) { showAlert('Please enter your name', 'error'); return; }
+      if (!mobile) { showAlert('Please enter mobile number', 'error'); return; }
+      if (!/^[0-9]{10}$/.test(mobile)) { showAlert('Enter valid 10-digit mobile number', 'error'); return; }
+      
+      signupOTP = generateOTP();
+      console.log('Signup OTP:', signupOTP);
+      showAlert(`Demo OTP: ${signupOTP}`, 'info');
+      
+      signupOtpSection.style.display = 'block';
+      sendSignupOtpBtn.style.display = 'none';
+      verifySignupBtn.style.display = 'block';
+      startTimer('signup', 60);
+    }
+    
+    // Verify Signup
+    function verifySignup() {
+      const otp = getOtpValue(signupOtpInputs);
+      const name = fullName.value.trim();
+      const mobile = signupMobile.value.trim();
+      const email = emailId.value.trim();
+      
+      if (!otp || otp.length !== 6) { showAlert('Enter 6-digit OTP', 'error'); return; }
+      if (otp !== signupOTP) { showAlert('Invalid OTP', 'error'); return; }
+      
+      showAlert('Account created! Redirecting...', 'success');
+      saveUserData({ name, phone: mobile, email: email || null, method: 'signup' });
+      setTimeout(() => window.location.href = 'index.html', 1500);
+    }
+    
+    // Save user data
+    function saveUserData(data) {
+      const userInfo = {
+        name: data.name,
+        email: data.email || null,
+        phone: data.phone,
+        loginMethod: data.method,
+        loginDate: new Date().toISOString(),
+        isLoggedIn: true
+      };
+      localStorage.setItem('freshkart_user_data', JSON.stringify(userInfo));
+      localStorage.setItem('freshkart_is_logged_in', 'true');
+    }
+    
+    // Social logins
+    function googleLogin() {
+      showAlert('Connecting to Google...', 'info');
+      setTimeout(() => {
+        const name = prompt('Enter your name:', 'Rahul Sharma') || 'Google User';
+        const email = prompt('Enter your email:', 'user@gmail.com') || 'user@gmail.com';
+        const phone = prompt('Enter mobile number:', '9876543210') || '9876543210';
+        if (name && phone) {
+          saveUserData({ name, email, phone, method: 'google' });
+          showAlert('Google login successful!', 'success');
+          setTimeout(() => window.location.href = 'index.html', 1500);
+        }
+      }, 1000);
+    }
+    
+    function facebookLogin() {
+      showAlert('Connecting to Facebook...', 'info');
+      setTimeout(() => {
+        const name = prompt('Enter your name:', 'Rahul Sharma') || 'Facebook User';
+        const phone = prompt('Enter mobile number:', '9876543210') || '9876543210';
+        if (name && phone) {
+          saveUserData({ name, phone, method: 'facebook' });
+          showAlert('Facebook login successful!', 'success');
+          setTimeout(() => window.location.href = 'index.html', 1500);
+        }
+      }, 1000);
+    }
+    
+    function appleLogin() {
+      showAlert('Connecting to Apple ID...', 'info');
+      setTimeout(() => {
+        const name = prompt('Enter your name:', 'Rahul Sharma') || 'Apple User';
+        const email = prompt('Enter your email:', 'user@icloud.com') || 'user@icloud.com';
+        if (name) {
+          saveUserData({ name, email, phone: '', method: 'apple' });
+          showAlert('Apple login successful!', 'success');
+          setTimeout(() => window.location.href = 'index.html', 1500);
+        }
+      }, 1000);
+    }
+    
+    function guestMode() {
+      if (confirm('Continue as guest? You can sign up anytime.')) {
+        localStorage.setItem('freshkart_is_guest', 'true');
+        localStorage.setItem('freshkart_is_logged_in', 'false');
+        showAlert('Continuing as guest...', 'success');
+        setTimeout(() => window.location.href = 'index.html', 1000);
+      }
+    }
+    
+    // Resend OTP
+    window.resendLoginOTP = function() {
+      loginOTP = generateOTP();
+      showAlert(`New OTP: ${loginOTP}`, 'info');
+      startTimer('login', 60);
+      loginOtpInputs.forEach(inp => inp.value = '');
+      loginOtpInputs[0].focus();
+    };
+    
+    window.resendSignupOTP = function() {
+      signupOTP = generateOTP();
+      showAlert(`New OTP: ${signupOTP}`, 'info');
+      startTimer('signup', 60);
+      signupOtpInputs.forEach(inp => inp.value = '');
+      signupOtpInputs[0].focus();
+    };
+    
+    // Mobile number validation
+    loginMobile.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10));
+    signupMobile.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10));
+    
+    // Toggle between forms
+    toggleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const formType = btn.getAttribute('data-form');
+        toggleBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        if (formType === 'login') {
+          loginPanel.classList.add('active');
+          signupPanel.classList.remove('active');
+        } else {
+          loginPanel.classList.remove('active');
+          signupPanel.classList.add('active');
+        }
+      });
+    });
+    
+    // Setup OTP inputs
+    setupOtpInputs(loginOtpInputs);
+    setupOtpInputs(signupOtpInputs);
+    
+    // Event listeners
+    sendLoginOtpBtn.addEventListener('click', sendLoginOTP);
+    verifyLoginBtn.addEventListener('click', verifyLogin);
+    sendSignupOtpBtn.addEventListener('click', sendSignupOTP);
+    verifySignupBtn.addEventListener('click', verifySignup);
+    document.getElementById('guestBtn').addEventListener('click', guestMode);
+    
+    // Check existing session
+    if (localStorage.getItem('freshkart_is_logged_in') === 'true') {
+      if (confirm('Already logged in. Continue as guest or re-login?')) {
+        localStorage.removeItem('freshkart_is_logged_in');
+        localStorage.removeItem('freshkart_is_guest');
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+  </script>
+</body>
+</html>

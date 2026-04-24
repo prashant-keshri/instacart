@@ -1,22 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>FreshKart – Fresh Grocery Delivery</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="common.css">
   <style>
-    .offer-tabs { display: flex; gap: 8px; }
-    .tab-btn { padding: 5px 14px; border-radius: 40px; border: 1px solid var(--border-light); background: var(--surface); cursor: pointer; font-size: 13px; }
-    .tab-btn.active { background: var(--green-primary); color: white; }
-    
+    .offer-tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      padding: 5px 14px;
+      border-radius: 40px;
+      border: 1px solid var(--border-light);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .tab-btn.active {
+      background: var(--green-primary);
+      color: white;
+    }
+
     /* Subscription Products Section */
     .subscription-products-section {
       margin: 40px 0;
     }
+
     .subscription-header-bar {
       display: flex;
       justify-content: space-between;
@@ -25,26 +43,31 @@
       gap: 15px;
       margin-bottom: 20px;
     }
+
     .subscription-header-bar h2 {
       font-size: 22px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
+
     .view-all-link {
       color: var(--orange-primary);
       text-decoration: none;
       font-size: 14px;
       font-weight: 500;
     }
+
     .view-all-link:hover {
       text-decoration: underline;
     }
+
     .subscription-products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
     }
+
     .subscription-home-card {
       background: var(--surface);
       border-radius: 20px;
@@ -54,24 +77,29 @@
       cursor: pointer;
       position: relative;
     }
+
     .subscription-home-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
+
     .subscription-home-card .card-image {
       position: relative;
       height: 180px;
       overflow: hidden;
     }
+
     .subscription-home-card .card-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       transition: transform 0.3s;
     }
+
     .subscription-home-card:hover .card-image img {
       transform: scale(1.05);
     }
+
     .subscription-type-tag {
       position: absolute;
       top: 10px;
@@ -84,26 +112,31 @@
       font-weight: 600;
       z-index: 2;
     }
+
     .subscription-home-card .card-content {
       padding: 15px;
     }
+
     .subscription-home-card .card-title {
       font-size: 16px;
       font-weight: 700;
       margin-bottom: 8px;
     }
+
     .subscription-home-card .card-price {
       font-size: 22px;
       font-weight: 800;
       color: var(--green-primary);
       margin-bottom: 5px;
     }
+
     .subscription-home-card .card-old-price {
       text-decoration: line-through;
       color: var(--text-muted);
       font-size: 13px;
       margin-left: 8px;
     }
+
     .subscription-home-card .card-discount {
       background: var(--red-primary);
       color: white;
@@ -112,6 +145,7 @@
       font-size: 10px;
       margin-left: 8px;
     }
+
     .subscription-home-card .card-delivery {
       font-size: 12px;
       color: var(--text-muted);
@@ -120,12 +154,14 @@
       align-items: center;
       gap: 5px;
     }
+
     .subscription-home-card .card-features {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       margin: 10px 0;
     }
+
     .subscription-home-card .feature {
       font-size: 10px;
       background: var(--bg-primary);
@@ -133,6 +169,7 @@
       border-radius: 20px;
       color: var(--text-secondary);
     }
+
     .sub-home-add-btn {
       width: 100%;
       background: var(--green-primary);
@@ -147,10 +184,12 @@
       position: relative;
       z-index: 10;
     }
+
     .sub-home-add-btn:hover {
       opacity: 0.9;
       transform: scale(0.98);
     }
+
     @media (max-width: 768px) {
       .subscription-products-grid {
         grid-template-columns: 1fr;
@@ -158,32 +197,108 @@
     }
   </style>
 </head>
+
 <body data-theme="dark">
   <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
 
   <!-- Top Bar -->
-  <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i
+            class="fas fa-leaf"></i> 100% Fresh</span></div>
+      <div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i
+            class="fas fa-download"></i> App</span></div>
+    </div>
+  </div>
 
   <!-- Header -->
-  <header class="main-header"><div class="container"><div class="logo-row"><div class="logo"><h1>Fresh<span>Kart</span></h1><p style="font-size:10px;">Grocery Delivery</p></div><div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span id="mobileCartCount">0</span></div></div><div class="search-location"><div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search fruits, veggies, juices..."></div><div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect"><option>📍 Delhi 110001</option><option>📍 Mumbai 400001</option><option>📍 Bangalore 560001</option><option>📍 Chennai 600001</option><option>📍 Kolkata 700001</option></select></div></div><div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button></div></div></header>
+  <header class="main-header">
+    <div class="container">
+      <div class="logo-row">
+        <div class="logo">
+          <h1>Fresh<span>Kart</span></h1>
+          <p style="font-size:10px;">Grocery Delivery</p>
+        </div>
+        <div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span
+            id="mobileCartCount">0</span></div>
+      </div>
+      <div class="search-location">
+        <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch"
+            placeholder="Search fruits, veggies, juices..."></div>
+        <div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect">
+            <option>📍 Delhi 110001</option>
+            <option>📍 Mumbai 400001</option>
+            <option>📍 Bangalore 560001</option>
+            <option>📍 Chennai 600001</option>
+            <option>📍 Kolkata 700001</option>
+          </select></div>
+      </div>
+      <div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i
+            class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
 
   <!-- Hero Slider -->
-  <section class="hero-section"><div class="swiper heroSwiper"><div class="swiper-wrapper" id="heroSlider"></div><div class="swiper-pagination"></div><div class="swiper-button-next"></div><div class="swiper-button-prev"></div></div></section>
+  <section class="hero-section">
+    <div class="swiper heroSwiper">
+      <div class="swiper-wrapper" id="heroSlider"></div>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+  </section>
 
   <!-- Quick Categories -->
-  <section class="quick-categories"><div class="container"><div class="category-links" id="quickCatLinks"></div></div></section>
+  <section class="quick-categories">
+    <div class="container">
+      <div class="category-links" id="quickCatLinks"></div>
+    </div>
+  </section>
 
   <!-- Recently Viewed -->
-  <section style="max-width: 1280px; margin: 0 auto; padding: 0 20px;"><div class="section-header"><h2><i class="fas fa-history"></i> Recently Viewed</h2></div><div class="swiper recentlySwiper"><div class="swiper-wrapper" id="recentlyViewed"></div></div></section>
+  <section style="max-width: 1280px; margin: 0 auto; padding: 0 20px;">
+    <div class="section-header">
+      <h2><i class="fas fa-history"></i> Recently Viewed</h2>
+    </div>
+    <div class="swiper recentlySwiper">
+      <div class="swiper-wrapper" id="recentlyViewed"></div>
+    </div>
+  </section>
 
   <!-- Festival Banner -->
-  <section><div class="container"><div class="festival-banner"><div class="festival-content"><span class="festival-tag">🎉 DIWALI MEGA SALE 🎉</span><h2>Up to 60% Off</h2><div class="countdown" id="countdown"><div class="time-box"><span id="days">00</span>d</div><div class="time-box"><span id="hours">00</span>h</div><div class="time-box"><span id="minutes">00</span>m</div><div class="time-box"><span id="seconds">00</span>s</div></div><button class="shop-festive">Shop Now →</button></div></div></div></section>
+  <section>
+    <div class="container">
+      <div class="festival-banner">
+        <div class="festival-content"><span class="festival-tag">🎉 DIWALI MEGA SALE 🎉</span>
+          <h2>Up to 60% Off</h2>
+          <div class="countdown" id="countdown">
+            <div class="time-box"><span id="days">00</span>d</div>
+            <div class="time-box"><span id="hours">00</span>h</div>
+            <div class="time-box"><span id="minutes">00</span>m</div>
+            <div class="time-box"><span id="seconds">00</span>s</div>
+          </div><button class="shop-festive">Shop Now →</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Premium Picks -->
-  <section class="our-offerings"><div class="container"><div class="section-header"><h2><i class="fas fa-leaf"></i> Premium Picks</h2><div class="offer-tabs"><button class="tab-btn active" data-tab="featured">Featured</button><button class="tab-btn" data-tab="best-selling">Best Selling</button><button class="tab-btn" data-tab="new-arrivals">New Arrivals</button></div></div><div class="products-grid" id="offeringsGrid"></div><button class="show-more-btn" id="loadMoreBtn">Show More →</button></div></section>
+  <section class="our-offerings">
+    <div class="container">
+      <div class="section-header">
+        <h2><i class="fas fa-leaf"></i> Premium Picks</h2>
+        <div class="offer-tabs"><button class="tab-btn active" data-tab="featured">Featured</button><button
+            class="tab-btn" data-tab="best-selling">Best Selling</button><button class="tab-btn"
+            data-tab="new-arrivals">New Arrivals</button></div>
+      </div>
+      <div class="products-grid" id="offeringsGrid"></div><button class="show-more-btn" id="loadMoreBtn">Show More
+        →</button>
+    </div>
+  </section>
 
-<!-- Subscription Section -->
-<div id="subscriptionModuleContainer"></div>
+  <!-- Subscription Section -->
+  <div id="subscriptionModuleContainer"></div>
 
   <!-- ==================== SUBSCRIPTION PLANS SECTION (UPDATED) ==================== -->
   <section class="subscription-products-section">
@@ -199,19 +314,65 @@
   </section>
 
   <!-- Customer Reviews -->
-  <section class="customer-feedback"><div class="container"><div class="section-header"><h2><i class="fas fa-star"></i> Customer Love</h2></div><div class="reviews-grid" id="reviewsGrid"></div></div></section>
+  <section class="customer-feedback">
+    <div class="container">
+      <div class="section-header">
+        <h2><i class="fas fa-star"></i> Customer Love</h2>
+      </div>
+      <div class="reviews-grid" id="reviewsGrid"></div>
+    </div>
+  </section>
 
   <!-- Back to Top -->
-  <div class="back-to-top-wrapper container"><button class="back-to-top" id="backToTopBtn"><i class="fas fa-arrow-up"></i> Back to Top</button></div>
+  <div class="back-to-top-wrapper container"><button class="back-to-top" id="backToTopBtn"><i
+        class="fas fa-arrow-up"></i> Back to Top</button></div>
 
   <!-- Footer -->
-  <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-col"><h4>ABOUT</h4><a href="#">Contact Us</a><a href="#">About Us</a><a href="#">Careers</a></div><div class="footer-col"><h4>POLICY</h4><a href="#">Return Policy</a><a href="#">Terms</a><a href="#">Privacy</a></div><div class="footer-col"><h4>HELP</h4><a href="#">FAQs</a><a href="#">Shipping</a><a href="#">Cancellation</a></div><div class="footer-col"><h4>SOCIAL</h4><a href="#">Instagram</a><a href="#">Facebook</a><a href="#">Twitter</a></div></div><div class="payment-icons"><i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i><i class="fab fa-cc-amex"></i><i class="fab fa-cc-paypal"></i><i class="fab fa-google-pay"></i><i class="fas fa-mobile-alt"></i><i class="fab fa-amazon-pay"></i></div><div class="footer-bottom"><span>© 2025 FreshKart — India's trusted grocery partner</span><span><i class="fas fa-shield-alt"></i> Secure payments</span></div></div></footer>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>About Us</h4><a href="info-hub.html?section=legal&tab=contact">Contact Us</a><a href="info-hub.html?section=legal&tab=about">About Us</a><a href="info-hub.html?section=careers">Careers</a><a href="info-hub.html?section=blog">Blog</a>
+        </div>
+        <div class="footer-col">
+          <h4>POLICY</h4><a href="info-hub.html?section=legal&tab=return">Return Policy</a><a href="info-hub.html?section=legal&tab=terms">Terms</a><a href="info-hub.html?section=legal&tab=privacy">Privacy</a>
+        </div>
+        <div class="footer-col">
+          <h4>HELP</h4><a href="info-hub.html?section=legal&tab=faq">FAQs</a><a href="info-hub.html?section=legal&tab=shipping">Shipping</a><a href="info-hub.html?section=legal&tab=cancellation">Cancellation</a>
+        </div>
+        <div class="footer-col">
+          <h4>SOCIAL</h4><a href="#">Instagram</a><a href="#">Facebook</a><a href="#">Twitter</a>
+        </div>
+      </div>
+      <div class="payment-icons"><i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i><i
+          class="fab fa-cc-amex"></i><i class="fab fa-cc-paypal"></i><i class="fab fa-google-pay"></i><i
+          class="fas fa-mobile-alt"></i><i class="fab fa-amazon-pay"></i></div>
+      <div class="footer-bottom"><span>© 2025 FreshKart — India's trusted grocery partner</span><span><i
+            class="fas fa-shield-alt"></i> Secure payments</span></div>
+    </div>
+  </footer>
 
   <!-- Bottom Nav -->
-  <nav class="bottom-nav"><a href="index.html" class="nav-item active"><i class="fas fa-home"></i><span>Home</span></a><a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a><a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a><a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a></nav>
+  <nav class="bottom-nav"><a href="index.html" class="nav-item active"><i
+        class="fas fa-home"></i><span>Home</span></a><a href="orders.html" class="nav-item"><i
+        class="fas fa-shopping-bag"></i><span>Orders</span></a><a href="categories.html" class="nav-item"><i
+        class="fas fa-th-large"></i><span>Category</span></a><a href="account.html" class="nav-item"><i
+        class="fas fa-user"></i><span>Account</span></a><a href="#" class="nav-item" id="bottomCartBtn">
+      <div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count"
+          id="bottomCartCount">0</span></div><span>Cart</span>
+    </a></nav>
 
   <!-- Cart Sidebar -->
-  <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div><div class="cart-items" id="cartItemsList"></div><div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItemsList"></div>
+    <div class="cart-footer">
+      <div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place
+        Order</button>
+    </div>
+  </div>
   <div class="overlay" id="overlay"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -220,12 +381,12 @@
     // ==================== INDEX PAGE SPECIFIC CODE ====================
     let pageRecentlyViewed = [];
     let showMoreManager = null;
-    
+
     // ==================== RECENTLY VIEWED ====================
     function loadRecentlyViewed() {
-      try { pageRecentlyViewed = JSON.parse(localStorage.getItem('freshkart_recently')) || []; } catch(e) { pageRecentlyViewed = []; }
+      try { pageRecentlyViewed = JSON.parse(localStorage.getItem('freshkart_recently')) || []; } catch (e) { pageRecentlyViewed = []; }
     }
-    
+
     function updateRecentlyViewed() {
       const container = document.getElementById('recentlyViewed');
       if (container) {
@@ -239,20 +400,26 @@
         if (window.recentlySwiper) window.recentlySwiper.update();
       }
     }
-    
+
+    // ==================== PRODUCT FILTERING ====================
     // ==================== PRODUCT FILTERING ====================
     function getFilteredProducts() {
       if (!window.allProducts) return [];
       let active = document.querySelector('.tab-btn.active')?.dataset.tab || 'featured';
-      return window.allProducts.filter(p => active === 'featured' ? p.isFeatured : active === 'best-selling' ? p.isBestSelling : p.isNewArrival);
+
+      return window.allProducts.filter(p => {
+        // Check if it's a subscription product (don't show in premium picks)
+        if (p.isSubscription === true || p.category === "subscription") return false;
+
+        // Filter by tab
+        if (active === 'featured') return p.isFeatured === true;
+        if (active === 'best-selling') return p.isBestSelling === true;
+        if (active === 'new-arrivals') return p.isNewArrival === true;
+        return false;
+      });
     }
-    
-    function refreshOnTabChange() {
-      if (showMoreManager) showMoreManager.refresh();
-    }
-    
     // ==================== RECENTLY VIEWED UPDATE ====================
-    window.viewProduct = function(productId) {
+    window.viewProduct = function (productId) {
       let p = window.allProducts?.find(p => p.id === productId);
       if (p) {
         let filtered = pageRecentlyViewed.filter(r => r.id !== productId);
@@ -262,123 +429,128 @@
       }
       window.location.href = `description.html?id=${productId}`;
     };
-    
+
     // ==================== HERO SLIDER ====================
     function initHeroSlider() {
       const sliderContainer = document.getElementById('heroSlider');
       if (!sliderContainer) return;
-      
+
       const slides = [
         { title: "Fresh Groceries", sub: "40% off first order", bg: "linear-gradient(135deg,#2e7d32,#f97316)" },
         { title: "Farm Fresh Veggies", sub: "Direct from farmers", bg: "linear-gradient(135deg,#1e3c72,#2a5298)" },
         { title: "Organic Fruits Sale", sub: "30% off", bg: "linear-gradient(135deg,#d4145a,#3a1c71)" }
       ];
-      
+
       sliderContainer.innerHTML = slides.map(s => `
         <div class="swiper-slide hero-slide" style="background:${s.bg}">
           <div class="hero-content"><h2>${s.title}</h2><p>${s.sub}</p><button class="order-now" onclick="alert('Explore offers!')">Order Now →</button></div>
         </div>
       `).join('');
-      
+
       if (typeof Swiper !== 'undefined') {
-        new Swiper('.heroSwiper', { 
-          loop: true, 
-          autoplay: { delay: 3500 }, 
-          pagination: { el: '.swiper-pagination' }, 
-          navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' } 
+        new Swiper('.heroSwiper', {
+          loop: true,
+          autoplay: { delay: 3500 },
+          pagination: { el: '.swiper-pagination' },
+          navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
         });
       }
     }
-    
+
     // ==================== QUICK CATEGORIES ====================
-function initQuickCategories() {
-  // Use common function to render categories
-  if (typeof renderQuickCategories === 'function') {
-    renderQuickCategories('quickCatLinks', 'home', function(category) {
-      window.location.href = `categories.html?cat=${category}`;
-    });
-  } else {
-    // Fallback categories
-    const container = document.getElementById('quickCatLinks');
-    if (container) {
-      const fallbackCategories = [
-        { name: "Fruits", icon: "🍎", cat: "fruits" },
-        { name: "Vegetables", icon: "🥬", cat: "vegetables" },
-        { name: "Beverages", icon: "🥤", cat: "beverages" },
-        { name: "Snacks", icon: "🍿", cat: "snacks" },
-        { name: "Dairy", icon: "🥛", cat: "dairy" },
-        { name: "Staples", icon: "🍚", cat: "staples" },
-        { name: "Groceries", icon: "🛒", cat: "groceries" },
-        { name: "Subscriptions", icon: "📦", cat: "subscription" }
-      ];
-      
-      container.innerHTML = fallbackCategories.map(c => `
+    function initQuickCategories() {
+      // Use common function to render categories
+      if (typeof renderQuickCategories === 'function') {
+        renderQuickCategories('quickCatLinks', 'home', function (category) {
+          window.location.href = `categories.html?cat=${category}`;
+        });
+      } else {
+        // Fallback categories
+        const container = document.getElementById('quickCatLinks');
+        if (container) {
+          const fallbackCategories = [
+            { name: "Fruits", icon: "🍎", cat: "fruits" },
+            { name: "Vegetables", icon: "🥬", cat: "vegetables" },
+            { name: "Beverages", icon: "🥤", cat: "beverages" },
+            { name: "Snacks", icon: "🍿", cat: "snacks" },
+            { name: "Dairy", icon: "🥛", cat: "dairy" },
+            { name: "Staples", icon: "🍚", cat: "staples" },
+            { name: "Groceries", icon: "🛒", cat: "groceries" },
+            { name: "Subscriptions", icon: "📦", cat: "subscription" }
+          ];
+
+          container.innerHTML = fallbackCategories.map(c => `
         <a href="categories.html?cat=${c.cat}" class="cat-link">
           <div class="cat-icon">${c.icon}</div><span>${c.name}</span>
         </a>
       `).join('');
+        }
+      }
     }
-  }
-}
-    
+
+    // ==================== LOAD SUBSCRIPTION PRODUCTS ON HOMEPAGE ====================
     // ==================== LOAD SUBSCRIPTION PRODUCTS ON HOMEPAGE ====================
     async function loadHomeSubscriptionProducts() {
       const container = document.getElementById('homeSubscriptionProducts');
       if (!container) return;
-      
+
       try {
         const response = await fetch('product.json');
         const data = await response.json();
-        // Get first 3 subscription products
-        const subscriptions = data.products.filter(p => p.category === "subscription").slice(0, 3);
-        
+        // Get first 3 subscription products - check both category and isSubscription flag
+        const subscriptions = data.products.filter(p =>
+          p.category === "subscription" ||
+          p.isSubscription === true ||
+          p.subscriptionType
+        ).slice(0, 3);
+
         if (subscriptions.length === 0) {
           container.innerHTML = '<p style="text-align:center;">No subscription plans available</p>';
           return;
         }
-        
+
         container.innerHTML = subscriptions.map(sub => {
           const discount = sub.discountPercent || Math.round(((sub.oldPrice - sub.price) / sub.oldPrice) * 100);
           const typeIcon = sub.subscriptionType === 'daily' ? 'fa-sun' : (sub.subscriptionType === 'weekly' ? 'fa-calendar-week' : 'fa-calendar-alt');
           const typeText = sub.subscriptionType === 'daily' ? 'Daily' : (sub.subscriptionType === 'weekly' ? 'Weekly' : 'Monthly');
-          
+
           return `
-            <div class="subscription-home-card" onclick="viewProduct(${sub.id})">
-              <div class="card-image">
-                <img src="${sub.image}" alt="${sub.name}" onerror="this.src='https://placehold.co/300x200'">
-                <div class="subscription-type-tag"><i class="fas ${typeIcon}"></i> ${typeText}</div>
-              </div>
-              <div class="card-content">
-                <div class="card-title">${sub.name}</div>
-                <div class="card-price">
-                  ₹${sub.price}
-                  <span class="card-old-price">₹${sub.oldPrice || sub.price + Math.round(sub.price * 0.3)}</span>
-                  <span class="card-discount">${discount}% OFF</span>
-                </div>
-                <div class="card-delivery"><i class="fas fa-truck"></i> ${sub.deliverySchedule || 'Flexible delivery'}</div>
-                <div class="card-features">
-                  ${(sub.benefits || ['Fresh delivery', 'Skip anytime', 'Easy cancellation']).slice(0, 2).map(b => `<span class="feature"><i class="fas fa-check-circle"></i> ${b.length > 20 ? b.substring(0, 20) + '...' : b}</span>`).join('')}
-                </div>
-                <button class="sub-home-add-btn" onclick="event.stopPropagation();addSubscriptionToCart(${sub.id})">
-                  <i class="fas fa-shopping-cart"></i> Subscribe Now
-                </button>
-              </div>
+        <div class="subscription-home-card" onclick="viewProduct(${sub.id})">
+          <div class="card-image">
+            <img src="${sub.image}" alt="${sub.name}" onerror="this.src='https://placehold.co/300x200'">
+            <div class="subscription-type-tag"><i class="fas ${typeIcon}"></i> ${typeText}</div>
+          </div>
+          <div class="card-content">
+            <div class="card-title">${escapeHtml(sub.name)}</div>
+            <div class="card-price">
+              ₹${sub.price}
+              <span class="card-old-price">₹${sub.oldPrice || sub.price + Math.round(sub.price * 0.3)}</span>
+              <span class="card-discount">${discount}% OFF</span>
             </div>
-          `;
+            <div class="card-delivery"><i class="fas fa-truck"></i> ${sub.deliverySchedule || 'Flexible delivery'}</div>
+            <div class="card-features">
+              ${(sub.benefits || ['Fresh delivery', 'Skip anytime', 'Easy cancellation']).slice(0, 2).map(b => `<span class="feature"><i class="fas fa-check-circle"></i> ${b.length > 20 ? b.substring(0, 20) + '...' : b}</span>`).join('')}
+            </div>
+            <button class="sub-home-add-btn" onclick="event.stopPropagation();addSubscriptionToCart(${sub.id})">
+              <i class="fas fa-shopping-cart"></i> Subscribe Now
+            </button>
+          </div>
+        </div>
+      `;
         }).join('');
-      } catch(e) {
+      } catch (e) {
         console.error('Error loading subscription products:', e);
         container.innerHTML = '<p style="text-align:center;">Unable to load subscription plans</p>';
       }
     }
-    
+
     // ==================== ADD SUBSCRIPTION TO CART ====================
     async function addSubscriptionToCart(productId) {
       try {
         const response = await fetch('product.json');
         const data = await response.json();
         const product = data.products.find(p => p.id === productId);
-        
+
         if (product) {
           const existing = cart.find(i => i.id === product.id);
           if (existing) {
@@ -401,12 +573,12 @@ function initQuickCategories() {
           updateCartUI();
           showToast(`${product.name} added to cart!`);
         }
-      } catch(e) {
+      } catch (e) {
         console.error('Error adding to cart:', e);
         alert('Error adding to cart. Please try again.');
       }
     }
-    
+
     function showToast(message) {
       let toast = document.querySelector('.home-toast');
       if (!toast) {
@@ -419,18 +591,18 @@ function initQuickCategories() {
       toast.style.opacity = '1';
       setTimeout(() => { toast.style.opacity = '0'; }, 2000);
     }
-    
+
     // ==================== CUSTOMER REVIEWS ====================
     function initCustomerReviews() {
       const container = document.getElementById('reviewsGrid');
       if (!container) return;
-      
+
       const reviews = [
         { name: "Priya Sharma", avatar: "P", rating: 5, text: "FreshKart is a game changer! Daily delivery is super reliable." },
         { name: "Rahul Verma", avatar: "R", rating: 5, text: "Best grocery app, love the dark mode and smooth cart." },
         { name: "Neha Gupta", avatar: "N", rating: 4, text: "Great discounts and fresh produce. Highly recommended!" }
       ];
-      
+
       container.innerHTML = reviews.map(r => `
         <div class="review-card">
           <div class="review-header"><div class="review-avatar">${r.avatar}</div><div><strong>${r.name}</strong><div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div></div></div>
@@ -438,7 +610,7 @@ function initQuickCategories() {
         </div>
       `).join('');
     }
-    
+
     // ==================== COUNTDOWN TIMER ====================
     function initCountdownTimer() {
       const target = new Date();
@@ -456,7 +628,7 @@ function initQuickCategories() {
         if (seconds) seconds.innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
       }, 1000);
     }
-    
+
     // ==================== BACK TO TOP ====================
     function initBackToTop() {
       const backBtn = document.getElementById('backToTopBtn');
@@ -464,7 +636,7 @@ function initQuickCategories() {
         backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
       }
     }
-    
+
     // ==================== SKELETONS ====================
     function showAllSkeletons() {
       showHeroSkeleton();
@@ -472,21 +644,21 @@ function initQuickCategories() {
       showProductsSkeleton('offeringsGrid', 12);
     }
 
-         // ==================== RENDER SUBSCRIPTION SECTION ON HOME PAGE ====================
-async function renderHomeSubscriptionSection() {
-  if (typeof renderSubscriptionSection === 'function') {
-    await renderSubscriptionSection('subscriptionModuleContainer', 'home', function(category) {
-      if (category && category !== 'all') {
-        window.location.href = `subscription.html?cat=${category}`;
+    // ==================== RENDER SUBSCRIPTION SECTION ON HOME PAGE ====================
+    async function renderHomeSubscriptionSection() {
+      if (typeof renderSubscriptionSection === 'function') {
+        await renderSubscriptionSection('subscriptionModuleContainer', 'home', function (category) {
+          if (category && category !== 'all') {
+            window.location.href = `subscription.html?cat=${category}`;
+          } else {
+            window.location.href = 'subscription.html';
+          }
+        });
       } else {
-        window.location.href = 'subscription.html';
-      }
-    });
-  } else {
-    // Fallback subscription section
-    const container = document.getElementById('subscriptionModuleContainer');
-    if (container) {
-      container.innerHTML = `
+        // Fallback subscription section
+        const container = document.getElementById('subscriptionModuleContainer');
+        if (container) {
+          container.innerHTML = `
         <div class="subscription-module">
           <div class="subscription-module-header">
             <h2 class="subscription-module-title"><i class="fas fa-calendar-check"></i> Popular Subscription Plans</h2>
@@ -503,37 +675,37 @@ async function renderHomeSubscriptionSection() {
           <div class="subscription-products-row" id="fallbackSubProducts"></div>
         </div>
       `;
-      
-      // Load fallback products
-      try {
-        const response = await fetch('product.json');
-        const data = await response.json();
-        const subscriptions = data.products.filter(p => p.category === "subscription").slice(0, 6);
-        const productsContainer = document.getElementById('fallbackSubProducts');
-        if (productsContainer) {
-          productsContainer.innerHTML = subscriptions.map(sub => `
+
+          // Load fallback products
+          try {
+            const response = await fetch('product.json');
+            const data = await response.json();
+            const subscriptions = data.products.filter(p => p.category === "subscription").slice(0, 6);
+            const productsContainer = document.getElementById('fallbackSubProducts');
+            if (productsContainer) {
+              productsContainer.innerHTML = subscriptions.map(sub => `
             <div class="subscription-product-card" onclick="location.href='description.html?id=${sub.id}'">
               <div class="subscription-product-image"><img src="${sub.image}"><div class="subscription-product-badge">${sub.subscriptionType || 'Monthly'}</div></div>
               <div class="subscription-product-info"><div class="subscription-product-name">${sub.name}</div><div class="subscription-product-price"><span class="current-price">₹${sub.price}</span></div><button class="add-to-cart-btn" onclick="event.stopPropagation();addToCart(${JSON.stringify(sub).replace(/"/g, '&quot;')})">Subscribe</button></div>
             </div>
           `).join('');
+            }
+          } catch (e) { }
         }
-      } catch(e) {}
+      }
     }
-  }
-}
 
-// Call this function after initCommon
-// Add this line in your initPage function:
-// await renderHomeSubscriptionSection();
+    // Call this function after initCommon
+    // Add this line in your initPage function:
+    // await renderHomeSubscriptionSection();
 
-    
+
     // ==================== PAGE INITIALIZATION ====================
     async function initPage() {
       showAllSkeletons();
-      
-      await initCommon(() => {});
-      
+
+      await initCommon(() => { });
+
       loadRecentlyViewed();
       initHeroSlider();
       initQuickCategories();
@@ -542,10 +714,10 @@ async function renderHomeSubscriptionSection() {
       initBackToTop();
       updateRecentlyViewed();
       await renderHomeSubscriptionSection();
-      
+
       // Load subscription products on homepage
       await loadHomeSubscriptionProducts();
-      
+
       showMoreManager = createShowMoreManager('premiumPicks', 'offeringsGrid', 'loadMoreBtn', getFilteredProducts, {
         initialItems: SITE_CONFIG.DEFAULT_INITIAL_ITEMS,
         loadMoreItems: SITE_CONFIG.DEFAULT_LOAD_MORE_ITEMS,
@@ -553,22 +725,23 @@ async function renderHomeSubscriptionSection() {
         showCycleNotification: true
       });
       showMoreManager.init();
-      
-      window.recentlySwiper = new Swiper('.recentlySwiper', { 
+
+      window.recentlySwiper = new Swiper('.recentlySwiper', {
         slidesPerView: 2.5, spaceBetween: 12, breakpoints: { 640: { slidesPerView: 4 }, 1024: { slidesPerView: 6 } }
       });
-      
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', function() {
+
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', function () {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
         refreshOnTabChange();
       }));
     }
-    
+
     // Make functions available globally
     window.addSubscriptionToCart = addSubscriptionToCart;
-    
+
     initPage();
   </script>
 </body>
+
 </html>

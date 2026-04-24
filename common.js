@@ -236,22 +236,33 @@ async function loadProductsFromJSON() {
   try {
     const response = await fetch('product.json');
     const data = await response.json();
+    
+    // Process ALL products (both regular and subscription)
     allProductsData = data.products.map(p => ({
-      id: p.id, name: p.name, price: p.price, oldPrice: p.oldPrice,
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      oldPrice: p.oldPrice,
       discountPercent: p.discountPercent || Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100),
-      image: p.image, category: p.category, rating: p.rating,
-      isFeatured: p.isFeatured || false, isBestSelling: p.isBestSelling || false,
-      isNewArrival: p.isNewArrival || false, unit: p.unit, brand: p.brand
+      image: p.image,
+      primaryCategory: p.primaryCategory,
+      category: p.category,
+      categories: p.categories || [p.primaryCategory || p.category],
+      isSubscription: p.isSubscription || false,
+      subscriptionType: p.subscriptionType,
+      rating: p.rating,
+      isFeatured: p.isFeatured || false,
+      isBestSelling: p.isBestSelling || false,
+      isNewArrival: p.isNewArrival || false,
+      unit: p.unit,
+      brand: p.brand,
+      deliverySchedule: p.deliverySchedule
     }));
+    
     window.allProducts = allProductsData;
     return true;
   } catch(e) {
-    console.log('Using fallback products');
-    allProductsData = [
-      { id: 1, name: "Organic Apples", price: 120, oldPrice: 150, discountPercent: 20, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200", category: "fruits", isFeatured: true, isBestSelling: true },
-      { id: 2, name: "Fresh Bananas", price: 49, oldPrice: 60, discountPercent: 18, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200", category: "fruits", isFeatured: true, isBestSelling: true }
-    ];
-    window.allProducts = allProductsData;
+    console.error('Error loading products:', e);
     return false;
   }
 }
@@ -524,61 +535,73 @@ function bindCartEvents() {
     overlay.parentNode.replaceChild(newOverlay, overlay);
     newOverlay.addEventListener('click', closeCart);
   }
-  if (checkoutBtn) {
-    const newCheckoutBtn = checkoutBtn.cloneNode(true);
-    checkoutBtn.parentNode.replaceChild(newCheckoutBtn, checkoutBtn);
-    newCheckoutBtn.addEventListener('click', () => {
-      if (cart.length) {
-        const subtotal = cart.reduce((s, i) => s + ((i.price || 0) * (i.qty || 0)), 0);
-        const deliveryCharge = subtotal > SITE_CONFIG.FREE_DELIVERY_THRESHOLD ? 0 : SITE_CONFIG.DELIVERY_CHARGE;
-        const total = subtotal + deliveryCharge + SITE_CONFIG.PLATFORM_FEE;
-        
-        // Create order object
-        const order = {
-          id: "ORD-" + Date.now(),
-          date: new Date().toISOString().split('T')[0],
-          status: "processing",
-          subtotal: subtotal,
-          deliveryFee: deliveryCharge,
-          platformFee: SITE_CONFIG.PLATFORM_FEE,
-          discount: subtotal - cart.reduce((s, i) => s + ((i.price || 0) * (i.qty || 0)), 0),
-          total: total,
-          items: cart.map(item => ({
-            productId: item.id,
-            name: item.name,
-            price: item.price,
-            oldPrice: item.oldPrice,
-            quantity: item.qty,
-            image: item.image
-          })),
-          address: "Default Address"
-        };
-        
-        // Save order to localStorage
-        let existingOrders = [];
-        try {
-          existingOrders = JSON.parse(localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.ORDERS)) || [];
-        } catch(e) { existingOrders = []; }
-        existingOrders.unshift(order);
-        localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.ORDERS, JSON.stringify(existingOrders));
-        
-        alert(`✅ Order placed successfully!\n\nOrder ID: ${order.id}\nTotal Amount: ₹${Math.round(total)}`);
-        
-        // Clear cart
-        cart = [];
-        saveCart();
-        updateCartUI();
-        closeCart();
-        
-        // Refresh if on orders page
-        if (window.location.pathname.includes('orders.html')) {
-          location.reload();
-        }
-      } else {
-        alert('Your cart is empty!');
-      }
-    });
-  }
+  // In common.js - Update the checkout button handler
+
+// In common.js - Update the checkout button handler
+if (checkoutBtn) {
+  const newCheckoutBtn = checkoutBtn.cloneNode(true);
+  checkoutBtn.parentNode.replaceChild(newCheckoutBtn, checkoutBtn);
+  newCheckoutBtn.addEventListener('click', () => {
+    if (cart.length) {
+      // Calculate all price details properly
+      const subtotal = cart.reduce((s, i) => s + ((i.price || 0) * (i.qty || 0)), 0);
+      const originalTotal = cart.reduce((s, i) => {
+        const oldPrice = i.oldPrice || i.price || 0;
+        return s + (oldPrice * (i.qty || 0));
+      }, 0);
+      const totalDiscountAmount = originalTotal - subtotal;
+      const totalDiscountPercent = originalTotal > 0 ? Math.round((totalDiscountAmount / originalTotal) * 100) : 0;
+      const deliveryCharge = subtotal > SITE_CONFIG.FREE_DELIVERY_THRESHOLD ? 0 : SITE_CONFIG.DELIVERY_CHARGE;
+      const platformFee = SITE_CONFIG.PLATFORM_FEE;
+      const totalPayable = subtotal + deliveryCharge + platformFee;
+      const totalItems = cart.reduce((s, i) => s + (i.qty || 0), 0);
+      
+      // Save checkout data to sessionStorage for the checkout page
+      const checkoutData = {
+        cart: cart,
+        subtotal: subtotal,
+        originalTotal: originalTotal,
+        totalDiscount: totalDiscountAmount,
+        discountPercent: totalDiscountPercent,
+        deliveryCharge: deliveryCharge,
+        platformFee: platformFee,
+        totalPayable: totalPayable,
+        totalItems: totalItems
+      };
+      sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+      
+      // Redirect to checkout page
+      window.location.href = 'checkout.html';
+      
+    } else {
+      alert('Your cart is empty!');
+    }
+  });
+}
+
+// Helper function to get default address string
+function getDefaultAddressString() {
+  try {
+    const addresses = JSON.parse(localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.ADDRESSES) || '[]');
+    const defaultAddr = addresses.find(a => a.isDefault);
+    if (defaultAddr) {
+      return `${defaultAddr.name}, ${defaultAddr.building}, ${defaultAddr.address}, ${defaultAddr.landmark ? defaultAddr.landmark + ', ' : ''}${defaultAddr.pincode} | 📞 ${defaultAddr.phone}`;
+    }
+  } catch(e) {}
+  return "Default Address";
+}
+
+// Helper function to get default address string
+function getDefaultAddressString() {
+  try {
+    const addresses = JSON.parse(localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.ADDRESSES) || '[]');
+    const defaultAddr = addresses.find(a => a.isDefault);
+    if (defaultAddr) {
+      return `${defaultAddr.name}, ${defaultAddr.building}, ${defaultAddr.address}, ${defaultAddr.landmark ? defaultAddr.landmark + ', ' : ''}${defaultAddr.pincode} | 📞 ${defaultAddr.phone}`;
+    }
+  } catch(e) {}
+  return "Default Address";
+}
 }
 
 // ==================== SECTION 7: WISHLIST FUNCTIONS ====================
@@ -732,8 +755,6 @@ function viewProduct(productId) {
   window.location.href = `description.html?id=${productId}`;
 }
 
-// ==================== SECTION 10: SHOW MORE MANAGER CLASS (INFINITE LOADING) ====================
-// ==================== SECTION 10: SHOW MORE MANAGER CLASS (ENHANCED INFINITE RANDOM CYCLING) ====================
 // ==================== SECTION 10: SHOW MORE MANAGER CLASS (PRIORITIZE UNSHOWN PRODUCTS) ====================
 class ShowMoreManager {
   constructor(containerId, buttonId, getFilteredProducts, options = {}) {
@@ -1334,9 +1355,9 @@ window.updateCartUI = updateCartUIClickable;
 // ==================== SECTION 17: SUBSCRIPTION CATEGORY FUNCTIONS ====================
 const SUBSCRIPTION_CATEGORIES = [
   { id: "all", name: "All Plans", icon: "fa-th-large", emoji: "📦" },
-  { id: "daily", name: "Daily Delivery", icon: "fa-sun", emoji: "🌅" },
-  { id: "weekly", name: "Weekly Delivery", icon: "fa-calendar-week", emoji: "📅" },
-  { id: "monthly", name: "Monthly Delivery", icon: "fa-calendar-alt", emoji: "🗓️" },
+  // { id: "daily", name: "Daily Delivery", icon: "fa-sun", emoji: "🌅" },
+  // { id: "weekly", name: "Weekly Delivery", icon: "fa-calendar-week", emoji: "📅" },
+  // { id: "monthly", name: "Monthly Delivery", icon: "fa-calendar-alt", emoji: "🗓️" },
   { id: "meal", name: "Meal Plans", icon: "fa-utensils", emoji: "🍽️" },
   { id: "grocery", name: "Grocery", icon: "fa-basket-shopping", emoji: "🛒" },
   { id: "dairy", name: "Dairy", icon: "fa-cheese", emoji: "🥛" },
@@ -1463,23 +1484,25 @@ const MASTER_CATEGORIES = {
     { id: "dairy", name: "Dairy", icon: "fa-cheese", emoji: "🥛", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 9 },
     { id: "bakery", name: "Bakery", icon: "fa-bread-slice", emoji: "🥖", type: "product", showInNav: true, showInHome: false, showInOrders: true, order: 10 },
     { id: "staples", name: "Staples", icon: "fa-box", emoji: "🍚", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 11 },
-    { id: "groceries", name: "Groceries", icon: "fa-basket-shopping", emoji: "🛒", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 12 }
+    { id: "groceries", name: "Grocery", icon: "fa-basket-shopping", emoji: "🛒", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 12 }
   ],
   
   // Subscription categories (used on subscription page)
   subscriptionCategories: [
     { id: "all", name: "All Plans", icon: "fa-th-large", emoji: "📦", type: "subscription", order: 0 },
-    { id: "daily", name: "Daily Delivery", icon: "fa-sun", emoji: "🌅", type: "subscription", order: 1 },
-    { id: "weekly", name: "Weekly Delivery", icon: "fa-calendar-week", emoji: "📅", type: "subscription", order: 2 },
-    { id: "monthly", name: "Monthly Delivery", icon: "fa-calendar-alt", emoji: "🗓️", type: "subscription", order: 3 },
-    { id: "meal", name: "Meal Plans", icon: "fa-utensils", emoji: "🍽️", type: "subscription", order: 4 },
-    { id: "grocery", name: "Grocery", icon: "fa-basket-shopping", emoji: "🛒", type: "subscription", order: 5 },
+    // { id: "daily", name: "Daily Delivery", icon: "fa-sun", emoji: "🌅", type: "subscription", order: 1 },
+    // { id: "weekly", name: "Weekly Delivery", icon: "fa-calendar-week", emoji: "📅", type: "subscription", order: 2 },
+    // { id: "monthly", name: "Monthly Delivery", icon: "fa-calendar-alt", emoji: "🗓️", type: "subscription", order: 3 },
+    { id: "meals", name: "Meal Plans", icon: "fa-utensils", emoji: "🍽️", type: "subscription", order: 4 },
+    { id: "groceries", name: "Grocery", icon: "fa-basket-shopping", emoji: "🛒", type: "subscription", order: 5 },
     { id: "dairy", name: "Dairy", icon: "fa-cheese", emoji: "🥛", type: "subscription", order: 6 },
-    { id: "organic", name: "Organic", icon: "fa-leaf", emoji: "🌿", type: "subscription", order: 7 },
-    { id: "fitness", name: "Fitness", icon: "fa-dumbbell", emoji: "💪", type: "subscription", order: 8 },
-    { id: "pet", name: "Pet", icon: "fa-paw", emoji: "🐾", type: "subscription", order: 9 },
-    { id: "baby", name: "Baby", icon: "fa-baby", emoji: "👶", type: "subscription", order: 10 },
-    { id: "senior", name: "Senior Care", icon: "fa-heartbeat", emoji: "❤️", type: "subscription", order: 11 }
+    { id: "fruits", name: "Fruits", icon: "fa-apple", emoji: "🍎", type: "subscription", order: 7 },
+    { id: "juice", name: "Juice", icon: "fa-mug-saucer", emoji: "🥤", type: "subscription", order: 8 },
+    { id: "vegetables", name: "Vegetables", icon: "fa-carrot", emoji: "🥬", type: "subscription", order: 9 },
+    { id: "fitness", name: "Fitness", icon: "fa-dumbbell", emoji: "💪", type: "subscription", order: 10 },
+    { id: "pet", name: "Pet", icon: "fa-paw", emoji: "🐾", type: "subscription", order: 11 },
+    { id: "baby", name: "Baby", icon: "fa-baby", emoji: "👶", type: "subscription", order: 12 },
+    { id: "senior", name: "Senior Care", icon: "fa-heartbeat", emoji: "❤️", type: "subscription", order: 13 }
   ],
   
   // Timeline options (for subscription page)
@@ -1487,9 +1510,9 @@ const MASTER_CATEGORIES = {
     { id: "all", name: "All Timelines", icon: "fa-calendar", emoji: "📅", order: 0 },
     { id: "daily", name: "Daily", icon: "fa-sun", emoji: "🌅", order: 1 },
     { id: "weekly", name: "Weekly", icon: "fa-calendar-week", emoji: "📅", order: 2 },
-    { id: "biweekly", name: "Bi-Weekly", icon: "fa-calendar-alt", emoji: "📆", order: 3 },
+    // { id: "biweekly", name: "Bi-Weekly", icon: "fa-calendar-alt", emoji: "📆", order: 3 },
     { id: "monthly", name: "Monthly", icon: "fa-calendar-alt", emoji: "📅", order: 4 },
-    { id: "quarterly", name: "Quarterly", icon: "fa-calendar-check", emoji: "📊", order: 5 }
+    // { id: "quarterly", name: "Quarterly", icon: "fa-calendar-check", emoji: "📊", order: 5 }
   ],
   
   // Page-specific limits (how many categories to show on each page)
@@ -1697,11 +1720,14 @@ const SUBSCRIPTION_SECTION_CONFIG = {
   
   // Category cards to show in the subscription section
   categoryCards: [
+    { id: "all", name: "All Plans", icon: "fa-th-large", emoji: "📦", color: "#22c55e" },
     { id: "daily", name: "Daily", icon: "fa-sun", emoji: "🌅", color: "#f97316" },
-    { id: "weekly", name: "Weekly", icon: "fa-calendar-week", emoji: "📅", color: "#3b82f6" },
     { id: "monthly", name: "Monthly", icon: "fa-calendar-alt", emoji: "🗓️", color: "#8b5cf6" },
     { id: "meal", name: "Meals", icon: "fa-utensils", emoji: "🍽️", color: "#ef4444" },
     { id: "grocery", name: "Grocery", icon: "fa-basket-shopping", emoji: "🛒", color: "#10b981" },
+    { id: "dairy", name: "Dairy", icon: "fa-cheese", emoji: "🥛", color: "#ef4444" },
+    { id: "fruits", name: "Fruits", icon: "fa-apple", emoji: "🍎", color: "#8b5cf6" },
+    { id: "Juice", name: "Juice", icon: "fa-mug-saucer", emoji: "🥤", color: "#3b82f6" },
     { id: "organic", name: "Organic", icon: "fa-leaf", emoji: "🌿", color: "#22c55e" }
   ],
   
@@ -1965,10 +1991,10 @@ function renderPriceBreakdown(priceData, showFreeDeliveryMessage = false, freeDe
         <span></span>
       </div>
     `;
-  } else if (showFreeDeliveryMessage && subtotal >= freeDeliveryThreshold && subtotal > 0) {
+  } else if (showFreeDeliveryMessage && subtotal >= freeDeliveryThreshold && subtotal > 0 && deliveryFee === 0) {
     html += `
       <div class="breakdown-row free-delivery-note success">
-        <span><i class="fas fa-check-circle"></i> You saved ${formatCurrency(deliveryFee)} on delivery!</span>
+        <span><i class="fas fa-check-circle"></i> You saved ${formatCurrency(SITE_CONFIG.DELIVERY_CHARGE)} on delivery!</span>
         <span></span>
       </div>
     `;
@@ -1986,7 +2012,6 @@ function renderPriceBreakdown(priceData, showFreeDeliveryMessage = false, freeDe
   html += `</div>`;
   return html;
 }
-
 /**
  * Format currency in Indian Rupees
  * @param {number} amount - Amount to format
@@ -2026,6 +2051,10 @@ function updatePriceBreakdown() {
   return priceData;
 }
 
+
+
+
+
 // ==================== SECTION 15: EXPOSE GLOBALS ====================
 window.SITE_CONFIG = SITE_CONFIG;
 window.cart = cart;
@@ -2058,41 +2087,3 @@ window.renderCategoryPills = renderCategoryPills;
 window.renderCategoryCards = renderCategoryCards;
 window.COMMON_CATEGORIES = COMMON_CATEGORIES;
 
-
-
-
-
-// // ==================== SECTION 17: EXPOSE GLOBALS ====================
-// window.SITE_CONFIG = SITE_CONFIG;
-// window.cart = cart;
-// window.wishlist = wishlist;
-// window.allProductsData = allProductsData;
-// window.loadAllData = loadAllData;
-// window.saveCart = saveCart;
-// window.saveWishlist = saveWishlist;
-// window.updateCartUI = updateCartUI;
-// window.updateQty = updateQty;
-// window.removeItem = removeItem;
-// window.addToCart = addToCart;
-// window.toggleWishlist = toggleWishlist;
-// window.isInWishlist = isInWishlist;
-// window.getWishlistProducts = getWishlistProducts;
-// window.viewProduct = viewProduct;
-// window.openCart = openCart;
-// window.closeCart = closeCart;
-// window.renderProductCard = renderProductCard;
-// window.createShowMoreManager = createShowMoreManager;
-// window.showProductsSkeleton = showProductsSkeleton;
-// window.showHeroSkeleton = showHeroSkeleton;
-// window.showCategoriesSkeleton = showCategoriesSkeleton;
-// window.initCommon = initCommon;
-// window.initDarkMode = initDarkMode;
-// window.toggleDarkMode = toggleDarkMode;
-// window.bindCartEvents = bindCartEvents;
-// window.COMMON_CATEGORIES = COMMON_CATEGORIES;
-// window.renderCategoryPills = renderCategoryPills;
-// window.renderCategoryCards = renderCategoryCards;
-// window.renderCompactCategories = renderCompactCategories;
-// window.getCategoryName = getCategoryName;
-// window.getCategoryIcon = getCategoryIcon;
-// window.viewProductFromCart = viewProductFromCart;

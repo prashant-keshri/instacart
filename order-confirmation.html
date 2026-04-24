@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FreshKart – Order Confirmed!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .confirmation-container {
+      max-width: 600px;
+      margin: 40px auto;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* Ribbon Animation Background */
+    .confetti-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .ribbon {
+      position: absolute;
+      font-size: 40px;
+      animation: floatRibbon 4s ease-out forwards;
+      opacity: 0;
+    }
+    @keyframes floatRibbon {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+    
+    /* Main Card */
+    .success-card {
+      background: var(--surface);
+      border-radius: 40px;
+      padding: 40px 30px;
+      border: 1px solid var(--border-light);
+      position: relative;
+      z-index: 10;
+      animation: slideUpPop 0.5s ease-out;
+    }
+    @keyframes slideUpPop {
+      0% { opacity: 0; transform: translateY(50px) scale(0.9); }
+      70% { transform: translateY(-10px) scale(1.02); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    .success-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--green-primary), #4caf50);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 25px;
+      animation: pulseCheck 0.6s ease-out 2;
+    }
+    @keyframes pulseCheck {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .success-icon i {
+      font-size: 50px;
+      color: white;
+    }
+    
+    .hurray-text {
+      font-size: 36px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--orange-primary), var(--green-primary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 10px;
+    }
+    
+    .savings-badge {
+      background: linear-gradient(135deg, rgba(249,115,22,0.2), rgba(46,125,50,0.2));
+      border-radius: 60px;
+      padding: 12px 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      animation: bounce 1s ease;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .savings-number {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--green-primary);
+    }
+    
+    .order-details-box {
+      background: var(--bg-primary);
+      border-radius: 20px;
+      padding: 20px;
+      margin: 25px 0;
+      text-align: left;
+    }
+    .order-detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .order-detail-row:last-child {
+      border-bottom: none;
+    }
+    
+    .redirect-timer {
+      margin-top: 25px;
+      padding: 12px;
+      background: rgba(249,115,22,0.1);
+      border-radius: 60px;
+      font-size: 14px;
+    }
+    .timer-number {
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--orange-primary);
+    }
+    
+    .order-link {
+      color: var(--orange-primary);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <div class="confetti-bg" id="confettiBg"></div>
+
+  <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
+
+  <header class="main-header"><div class="container"><div class="logo-row"><div class="logo"><h1>Fresh<span>Kart</span></h1><p style="font-size:10px;">Grocery Delivery</p></div><div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span id="mobileCartCount">0</span></div></div><div class="search-location"><div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search..."></div><div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect"><option>📍 Delhi 110001</option></select></div></div><div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button></div></div></header>
+
+  <main class="container">
+    <div class="confirmation-container">
+      <div class="success-card">
+        <div class="success-icon">
+          <i class="fas fa-check"></i>
+        </div>
+        <div class="hurray-text">HURRAY! 🎉</div>
+        <h2>Order Confirmed!</h2>
+        <p style="color: var(--text-muted); margin-top: 8px;">Your order has been placed successfully</p>
+
+        <div class="savings-badge" id="savingsBadge">
+          <i class="fas fa-tags" style="font-size: 24px;"></i>
+          <div>
+            <div style="font-size: 12px;">You saved</div>
+            <div class="savings-number" id="savingsAmount">₹0</div>
+          </div>
+          <div>
+            <div style="font-size: 12px;">Discount</div>
+            <div class="savings-number" id="savingsPercent">0%</div>
+          </div>
+        </div>
+
+        <div class="order-details-box">
+          <div class="order-detail-row">
+            <span><i class="fas fa-receipt"></i> Order ID</span>
+            <span><strong id="orderId">-</strong></span>
+          </div>
+          <div class="order-detail-row">
+            <span><i class="fas fa-calendar"></i> Date & Time</span>
+            <span id="orderDateTime">-</span>
+          </div>
+          <div class="order-detail-row">
+            <span><i class="fas fa-credit-card"></i> Payment Method</span>
+            <span id="paymentMethod">-</span>
+          </div>
+          <div class="order-detail-row">
+            <span><i class="fas fa-shopping-bag"></i> Total Items</span>
+            <span id="totalItems">-</span>
+          </div>
+          <div class="order-detail-row">
+            <span><i class="fas fa-rupee-sign"></i> Total Amount</span>
+            <span><strong id="totalAmount" style="color: var(--green-primary); font-size: 18px;">-</strong></span>
+          </div>
+        </div>
+
+        <div class="redirect-timer">
+          <i class="fas fa-hourglass-half"></i> Redirecting to <a href="orders.html" class="order-link" id="orderLink">Your Orders</a> in 
+          <span class="timer-number" id="timerCount">10</span> seconds
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav"><a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a><a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a><a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a><a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a></nav>
+
+  <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div><div class="cart-items" id="cartItemsList"></div><div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div></div>
+  <div class="overlay" id="overlay"></div>
+
+  <script src="common.js"></script>
+  <script>
+    let order = null;
+    let timerSeconds = 10;
+    
+    function createRibbons() {
+      const container = document.getElementById('confettiBg');
+      const ribbons = ['🎉', '🎊', '✨', '🌟', '💫', '⭐', '🪄', '🎈', '🏆', '🎯', '🤩', '🥳'];
+      
+      for (let i = 0; i < 50; i++) {
+        const ribbon = document.createElement('div');
+        ribbon.className = 'ribbon';
+        ribbon.textContent = ribbons[Math.floor(Math.random() * ribbons.length)];
+        ribbon.style.left = Math.random() * 100 + '%';
+        ribbon.style.fontSize = (Math.random() * 30 + 20) + 'px';
+        ribbon.style.animationDelay = Math.random() * 2 + 's';
+        ribbon.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        container.appendChild(ribbon);
+      }
+    }
+    
+    function loadConfirmation() {
+      const savedOrder = sessionStorage.getItem('completedOrder');
+      if (savedOrder) {
+        order = JSON.parse(savedOrder);
+        sessionStorage.removeItem('checkoutData');
+        sessionStorage.removeItem('completedOrder');
+        
+        // Store order ID for highlighting
+        sessionStorage.setItem('highlightOrderId', order.id);
+        
+        displayOrderDetails();
+      } else {
+        // Try to get latest order from localStorage
+        const orders = JSON.parse(localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.ORDERS) || '[]');
+        if (orders.length > 0) {
+          order = orders[0];
+          sessionStorage.setItem('highlightOrderId', order.id);
+          displayOrderDetails();
+        } else {
+          window.location.href = 'orders.html';
+        }
+      }
+      
+      startTimer();
+      createRibbons();
+      
+      // Clear cart from display
+      cart = [];
+      saveCart();
+      updateCartUI();
+    }
+    
+    function displayOrderDetails() {
+      if (!order) return;
+      
+      document.getElementById('orderId').innerText = order.id;
+      document.getElementById('orderDateTime').innerText = `${order.date} at ${order.time || 'Just now'}`;
+      document.getElementById('paymentMethod').innerHTML = order.paymentMethod === 'Cash on Delivery' 
+        ? '<i class="fas fa-money-bill-wave"></i> Cash on Delivery' 
+        : `<i class="${order.paymentMethod === 'UPI' ? 'fab fa-google-pay' : 'fas fa-credit-card'}"></i> ${order.paymentMethod}`;
+      
+      const totalItems = order.items?.reduce((s, i) => s + i.quantity, 0) || 0;
+      document.getElementById('totalItems').innerText = totalItems;
+      document.getElementById('totalAmount').innerText = `₹${Math.round(order.total)}`;
+      
+      const discountAmount = Math.round(order.discount || 0);
+      const discountPercent = order.discountPercent || 0;
+      document.getElementById('savingsAmount').innerText = `₹${discountAmount}`;
+      document.getElementById('savingsPercent').innerText = `${discountPercent}%`;
+      
+      // Update order link
+      const orderLink = document.getElementById('orderLink');
+      orderLink.href = `orders.html`;
+      orderLink.onclick = function(e) {
+        e.preventDefault();
+        sessionStorage.setItem('highlightOrderId', order.id);
+        window.location.href = 'orders.html';
+      };
+    }
+    
+    function startTimer() {
+      const timerElement = document.getElementById('timerCount');
+      const interval = setInterval(() => {
+        timerSeconds--;
+        if (timerElement) timerElement.innerText = timerSeconds;
+        
+        if (timerSeconds <= 0) {
+          clearInterval(interval);
+          sessionStorage.setItem('highlightOrderId', order.id);
+          window.location.href = 'orders.html';
+        }
+      }, 1000);
+    }
+    
+    async function initConfirmation() {
+      await initCommon(() => {});
+      loadConfirmation();
+      updateCartUI();
+    }
+    
+    initConfirmation();
+  </script>
+</body>
+</html>

@@ -226,3 +226,115 @@ This JSON file is now fully compatible with the description.html expandable feat
 
 
 C:\Users\prakeshr\OneDrive - Metso\RML K\RML Kamanda\New folder\Learnin\realro\reaprosite\food progress\mak chng - Copy\New folder\account.html
+
+
+3. How to use the Order List Component anywhere on any page
+Now you can use this component on any page (account.html, dashboard.html, etc.) like this:
+
+javascript
+// Example usage on any page
+
+// 1. Load orders from localStorage
+function loadOrders() {
+  const savedOrders = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.ORDERS);
+  return savedOrders ? JSON.parse(savedOrders) : [];
+}
+
+// 2. Initialize the order list component
+function initOrderList() {
+  const orders = loadOrders();
+  
+  // Create order list component
+  const orderList = new OrderListComponent('ordersContainer', {
+    showDeliveryDetails: true,
+    showContactLinks: true,
+    showTimeline: true,
+    showUpdates: true,
+    allowCancel: true,
+    allowReorder: true,
+    allowEditAddress: true,
+    itemsPerPage: 5,
+    showLoadMore: true,
+    // Callbacks for actions
+    onReorder: (items) => {
+      console.log('Reorder items:', items);
+      // Add to cart logic here
+      items.forEach(item => {
+        const product = {
+          id: item.productId,
+          name: item.name,
+          price: item.price,
+          image: item.image
+        };
+        addToCart(product, item.quantity);
+      });
+    },
+    onCancel: (orderId) => {
+      console.log('Cancel order:', orderId);
+      // Cancel order logic here
+      let orders = loadOrders();
+      const order = orders.find(o => o.id === orderId);
+      if (order && order.status !== 'delivered') {
+        order.status = 'cancelled';
+        localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.ORDERS, JSON.stringify(orders));
+        orderList.refresh(orders);
+        showToast('Order cancelled');
+      }
+    },
+    onEditAddress: (orderId) => {
+      console.log('Edit address for order:', orderId);
+      // Edit address logic here
+      openAddressEditModal(orderId);
+    },
+    onViewProduct: (productId) => {
+      window.location.href = `description.html?id=${productId}`;
+    }
+  });
+  
+  orderList.render(orders);
+  
+  // Store globally for callbacks
+  window.orderListComponent = orderList;
+  window.onOrderCancel = (orderId) => {
+    let orders = loadOrders();
+    const order = orders.find(o => o.id === orderId);
+    if (order && order.status !== 'delivered') {
+      order.status = 'cancelled';
+      localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.ORDERS, JSON.stringify(orders));
+      orderList.refresh(orders);
+      showToast('Order cancelled');
+    }
+  };
+  window.onOrderReorder = (items) => {
+    items.forEach(item => {
+      const product = {
+        id: item.productId,
+        name: item.name,
+        price: item.price,
+        oldPrice: item.oldPrice,
+        image: item.image,
+        qty: item.quantity
+      };
+      const existing = cart.find(i => i.id === product.id);
+      if (existing) {
+        existing.qty = (existing.qty || 0) + item.quantity;
+      } else {
+        cart.push(product);
+      }
+    });
+    saveCart();
+    updateCartUI();
+    showToast('Items added to cart!');
+    openCart();
+  };
+}
+
+// 3. Call init when page loads
+document.addEventListener('DOMContentLoaded', initOrderList);
+4. Simple HTML container for any page
+Just add this div anywhere on any page:
+
+html
+<!-- Order List Container - Reusable component -->
+<div id="ordersContainer" class="order-list-container"></div>
+This component is now fully reusable across your entire website!

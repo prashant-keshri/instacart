@@ -5,603 +5,189 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>FreshKart – Product Details</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="common.css">
   <style>
-    .breadcrumb {
-      margin: 20px 0;
-      font-size: 13px;
-    }
-
-    .breadcrumb a {
-      color: var(--orange-primary);
-      text-decoration: none;
-    }
-
-    .product-detail-wrapper {
-      background: var(--surface);
-      border-radius: 24px;
-      padding: 24px;
-      margin: 20px 0;
-      border: 1px solid var(--border-light);
-    }
-
-    .detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-    }
-
-    @media (max-width: 900px) {
-      .detail-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
-      }
-
-      .product-detail-wrapper {
-        padding: 16px;
-      }
-    }
-
-    .product-gallery {
-      position: sticky;
-      top: 100px;
-    }
-
-    @media (max-width: 900px) {
-      .product-gallery {
-        position: relative;
-        top: 0;
-      }
-    }
-
-    .main-image-container {
-      background: var(--bg-primary);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--border-light);
-    }
-
-    .main-image-container img {
-      width: 100%;
-      height: auto;
-      display: block;
-      aspect-ratio: 1 / 1;
-    }
-
-    .thumbnail-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
-
-    .thumb {
-      width: 70px;
-      height: 70px;
-      border-radius: 10px;
-      overflow: hidden;
-      cursor: pointer;
-      border: 2px solid transparent;
-      background: var(--bg-primary);
-    }
-
-    .thumb.active {
-      border-color: var(--orange-primary);
-    }
-
-    .thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .product-info-detail h1 {
-      font-size: 22px;
-      margin-bottom: 8px;
-    }
-
-    @media (max-width: 600px) {
-      .product-info-detail h1 {
-        font-size: 18px;
-      }
-    }
-
-    .rating-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .stars {
-      color: #fbbf24;
-      letter-spacing: 1px;
-      font-size: 14px;
-    }
-
-    .price-row {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .current-price {
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--green-primary);
-    }
-
-    .old-price {
-      text-decoration: line-through;
-      color: var(--text-muted);
-      font-size: 16px;
-    }
-
-    .discount-badge {
-      background: var(--red-primary);
-      color: white;
-      padding: 3px 8px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .stock-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #e8f5e9;
-      color: #2e7d32;
-      padding: 4px 10px;
-      border-radius: 30px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .key-highlights {
-      background: var(--bg-primary);
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin: 16px 0;
-    }
-
-    .key-highlights h4 {
-      font-size: 13px;
-      margin-bottom: 10px;
-      color: var(--text-muted);
-    }
-
-    .highlight-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .highlight-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      background: var(--surface);
-      padding: 6px 12px;
-      border-radius: 30px;
-    }
-
-    .highlight-item i {
-      color: var(--green-primary);
-      font-size: 12px;
-    }
-
-    .short-description {
-      line-height: 1.5;
-      color: var(--text-secondary);
-      font-size: 14px;
-      margin: 12px 0;
-    }
-
-    .variant-selector {
-      margin: 12px 0;
-    }
-
-    .variant-selector select {
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 30px;
-      border: 1px solid var(--border-light);
-      background: var(--surface);
-      color: var(--text-primary);
-      font-size: 14px;
-    }
-
-    .quantity-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 12px 0;
-    }
-
-    .qty-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: 1px solid var(--border-light);
-      background: var(--bg-primary);
-      cursor: pointer;
-      font-size: 20px;
-      color: var(--text-primary);
-    }
-
-    .qty-input {
-      width: 50px;
-      text-align: center;
-      font-size: 16px;
-      font-weight: 600;
-      background: transparent;
-      border: none;
-      color: var(--text-primary);
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 12px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
-
-    .buy-now {
-      flex: 1;
-      background: var(--orange-primary);
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 40px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .add-to-cart-detail {
-      flex: 1;
-      background: var(--green-primary);
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 40px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .wishlist-detail {
-      width: 44px;
-      background: var(--surface);
-      border: 1px solid var(--border-light);
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 18px;
-      color: #ff6b6b;
-    }
-
-    .expandable-box {
-      background: var(--surface);
-      border: 1px solid var(--border-light);
-      border-radius: 12px;
-      margin-bottom: 12px;
-      overflow: hidden;
-    }
-
-    .expandable-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 18px;
-      cursor: pointer;
-      background: var(--bg-primary);
-      transition: background 0.2s;
-    }
-
-    .expandable-header:hover {
-      background: var(--border-light);
-    }
-
-    .expandable-header h3 {
-      font-size: 15px;
-      font-weight: 600;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .expandable-header i {
-      color: var(--orange-primary);
-    }
-
-    .expand-icon {
-      transition: transform 0.2s;
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    .expandable-box.open .expand-icon {
-      transform: rotate(180deg);
-    }
-
-    .expandable-content {
-      display: none;
-      padding: 16px 18px;
-      border-top: 1px solid var(--border-light);
-    }
-
-    .expandable-box.open .expandable-content {
-      display: block;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .specs-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .specs-table tr {
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .specs-table tr:last-child {
-      border-bottom: none;
-    }
-
-    .specs-table td {
-      padding: 10px 6px;
-      font-size: 13px;
-    }
-
-    .specs-table td:first-child {
-      font-weight: 600;
-      width: 35%;
-      color: var(--text-primary);
-    }
-
-    .specs-table td:last-child {
-      color: var(--text-secondary);
-    }
-
-    .benefits-list {
-      list-style: none;
-      margin: 0;
-    }
-
-    .benefits-list li {
-      padding: 8px 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid var(--border-light);
-      font-size: 13px;
-    }
-
-    .benefits-list li:last-child {
-      border-bottom: none;
-    }
-
-    .benefits-list li i {
-      color: var(--green-primary);
-      width: 18px;
-      font-size: 12px;
-    }
-
-    .info-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-
-    .info-card-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border-light);
-      font-size: 13px;
-    }
-
-    .info-card-item:last-child {
-      border-bottom: none;
-    }
-
-    .info-label {
-      color: var(--text-muted);
-    }
-
-    .info-value {
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-
-    .full-description-text {
-      line-height: 1.6;
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-
-    .category-boxes-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      margin: 20px 0;
-    }
-
-    .cat-box {
-      padding: 2px 12px 12px;
-      width: 80px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: var(--surface);
-      border-radius: 12px;
-      cursor: pointer;
-      border: 1px solid var(--border-light);
-      transition: transform 0.2s;
-    }
-
-    .cat-box:hover {
-      transform: translateY(-3px);
-    }
-
-    .cat-box-icon {
-      width: 50px;
-      height: 50px;
-      background: var(--bg-primary);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      margin-bottom: 6px;
-      margin-top: 8px;
-    }
-
-    .cat-box span {
-      font-size: 11px;
-      font-weight: 500;
-    }
-
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 18px;
-      margin-bottom: 20px;
-    }
-
-    @media (max-width: 768px) {
-      .products-grid {
-        gap: 12px;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      }
-
-      .show-more-btn {
-        display: block;
-        margin: 20px auto;
-        background: var(--blue-primary);
-        color: white;
-        border: none;
-        padding: 8px 24px;
-        border-radius: 40px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-size: 13px;
-      }
-
-      .section-header {
-        margin: 24px 0 16px;
-      }
-
-      .section-header h2 {
-        font-size: 18px;
-      }
-
-      .loading {
-        text-align: center;
-        padding: 40px;
-      }
-
-      .cycle-info-banner {
-        background: var(--orange-primary);
-        color: white;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 11px;
-        display: inline-block;
-        margin-bottom: 12px;
-      }
+    .breadcrumb { margin: 20px 0; font-size: 13px; }
+    .breadcrumb a { color: var(--orange-primary); text-decoration: none; }
+    .product-detail-wrapper { background: var(--surface); border-radius: 24px; padding: 24px; margin: 20px 0; border: 1px solid var(--border-light); }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    @media (max-width: 900px) { .detail-grid { grid-template-columns: 1fr; gap: 24px; } .product-detail-wrapper { padding: 16px; } }
+    .product-gallery { position: sticky; top: 100px; }
+    @media (max-width: 900px) { .product-gallery { position: relative; top: 0; } }
+    .main-image-container { background: var(--bg-primary); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-light); }
+    .main-image-container img { width: 100%; height: auto; display: block; aspect-ratio: 1 / 1; }
+    .thumbnail-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .thumb { width: 70px; height: 70px; border-radius: 10px; overflow: hidden; cursor: pointer; border: 2px solid transparent; background: var(--bg-primary); }
+    .thumb.active { border-color: var(--orange-primary); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .product-info-detail h1 { font-size: 22px; margin-bottom: 8px; }
+    @media (max-width: 600px) { .product-info-detail h1 { font-size: 18px; } }
+    .rating-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .stars { color: #fbbf24; letter-spacing: 1px; font-size: 14px; }
+    .price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .current-price { font-size: 28px; font-weight: 800; color: var(--green-primary); }
+    .old-price { text-decoration: line-through; color: var(--text-muted); font-size: 16px; }
+    .discount-badge { background: var(--red-primary); color: white; padding: 3px 8px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .stock-status { display: inline-flex; align-items: center; gap: 6px; background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 30px; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+    .key-highlights { background: var(--bg-primary); border-radius: 12px; padding: 12px 16px; margin: 16px 0; }
+    .key-highlights h4 { font-size: 13px; margin-bottom: 10px; color: var(--text-muted); }
+    .highlight-list { display: flex; flex-wrap: wrap; gap: 12px; }
+    .highlight-item { display: flex; align-items: center; gap: 8px; font-size: 12px; background: var(--surface); padding: 6px 12px; border-radius: 30px; }
+    .highlight-item i { color: var(--green-primary); font-size: 12px; }
+    .short-description { line-height: 1.5; color: var(--text-secondary); font-size: 14px; margin: 12px 0; }
+    .variant-selector { margin: 12px 0; }
+    .variant-selector select { width: 100%; padding: 10px 14px; border-radius: 30px; border: 1px solid var(--border-light); background: var(--surface); color: var(--text-primary); font-size: 14px; }
+    .quantity-wrapper { display: flex; align-items: center; gap: 12px; margin: 12px 0; }
+    .qty-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border-light); background: var(--bg-primary); cursor: pointer; font-size: 20px; color: var(--text-primary); }
+    .qty-input { width: 50px; text-align: center; font-size: 16px; font-weight: 600; background: transparent; border: none; color: var(--text-primary); }
+    .action-buttons { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+    .buy-now { flex: 1; background: var(--orange-primary); color: white; border: none; padding: 12px; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 14px; }
+    .add-to-cart-detail { flex: 1; background: var(--green-primary); color: white; border: none; padding: 12px; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 14px; }
+    .wishlist-detail { width: 44px; background: var(--surface); border: 1px solid var(--border-light); border-radius: 50%; cursor: pointer; font-size: 18px; color: #ff6b6b; }
+    .expandable-box { background: var(--surface); border: 1px solid var(--border-light); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+    .expandable-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; cursor: pointer; background: var(--bg-primary); transition: background 0.2s; }
+    .expandable-header:hover { background: var(--border-light); }
+    .expandable-header h3 { font-size: 15px; font-weight: 600; margin: 0; display: flex; align-items: center; gap: 10px; }
+    .expandable-header i { color: var(--orange-primary); }
+    .expand-icon { transition: transform 0.2s; font-size: 14px; color: var(--text-muted); }
+    .expandable-box.open .expand-icon { transform: rotate(180deg); }
+    .expandable-content { display: none; padding: 16px 18px; border-top: 1px solid var(--border-light); }
+    .expandable-box.open .expandable-content { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .specs-table { width: 100%; border-collapse: collapse; }
+    .specs-table tr { border-bottom: 1px solid var(--border-light); }
+    .specs-table tr:last-child { border-bottom: none; }
+    .specs-table td { padding: 10px 6px; font-size: 13px; }
+    .specs-table td:first-child { font-weight: 600; width: 35%; color: var(--text-primary); }
+    .specs-table td:last-child { color: var(--text-secondary); }
+    .benefits-list { list-style: none; margin: 0; }
+    .benefits-list li { padding: 8px 0; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-light); font-size: 13px; }
+    .benefits-list li:last-child { border-bottom: none; }
+    .benefits-list li i { color: var(--green-primary); width: 18px; font-size: 12px; }
+    .info-cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .info-card-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-light); font-size: 13px; }
+    .info-card-item:last-child { border-bottom: none; }
+    .info-label { color: var(--text-muted); }
+    .info-value { font-weight: 500; color: var(--text-primary); }
+    .full-description-text { line-height: 1.6; font-size: 14px; color: var(--text-secondary); }
+    .category-boxes-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 20px 0; }
+    .cat-box { padding: 2px 12px 12px; width: 80px; display: flex; flex-direction: column; align-items: center; background: var(--surface); border-radius: 12px; cursor: pointer; border: 1px solid var(--border-light); transition: transform 0.2s; }
+    .cat-box:hover { transform: translateY(-3px); }
+    .cat-box-icon { width: 50px; height: 50px; background: var(--bg-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 6px; margin-top: 8px; }
+    .cat-box span { font-size: 11px; font-weight: 500; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; margin-bottom: 20px; }
+    @media (max-width: 768px) { .products-grid { gap: 12px; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); } .show-more-btn { display: block; margin: 20px auto; background: var(--blue-primary); color: white; border: none; padding: 8px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 13px; } .section-header { margin: 24px 0 16px; } .section-header h2 { font-size: 18px; } .loading { text-align: center; padding: 40px; } .cycle-info-banner { background: var(--orange-primary); color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; display: inline-block; margin-bottom: 12px; } }
+
+    /* ==================== MODULAR SUBSCRIPTION DETAILS STYLES ==================== */
+    .subscription-details-module { background: var(--surface); border-radius: 24px; margin: 20px 0; border: 1px solid var(--border-light); overflow: hidden; }
+    .subscription-details-header { background: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(46,125,50,0.1)); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--border-light); }
+    .subscription-details-header h3 { font-size: 18px; margin: 0; display: flex; align-items: center; gap: 10px; }
+    .subscription-details-header h3 i { color: var(--orange-primary); }
+    .subscription-type-tag-large { background: var(--orange-primary); color: white; padding: 6px 16px; border-radius: 30px; font-size: 12px; font-weight: 600; }
+    .subscription-details-content { padding: 24px; }
+    .details-grid-2col { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+    .detail-card { display: flex; align-items: center; gap: 14px; background: var(--bg-primary); padding: 14px 18px; border-radius: 16px; border: 1px solid var(--border-light); transition: transform 0.2s; }
+    .detail-card:hover { transform: translateY(-2px); border-color: var(--orange-primary); }
+    .detail-icon { width: 44px; height: 44px; background: var(--surface); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--orange-primary); }
+    .detail-info { flex: 1; }
+    .detail-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .detail-value { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .detail-value.highlight { color: var(--green-primary); }
+    .details-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-light); }
+    .details-section:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+    .details-section h4 { font-size: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: var(--orange-primary); }
+    .meal-timings-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+    .timing-card { flex: 1; min-width: 120px; display: flex; align-items: center; gap: 12px; background: var(--bg-primary); padding: 12px 16px; border-radius: 16px; border: 1px solid var(--border-light); }
+    .timing-icon { font-size: 28px; }
+    .timing-info { flex: 1; }
+    .timing-meal { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+    .timing-time { font-size: 14px; font-weight: 700; color: var(--orange-primary); }
+    .meal-routine-tabs { margin-top: 8px; }
+    .tab-buttons { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab-btn { background: var(--bg-primary); border: 1px solid var(--border-light); padding: 8px 20px; border-radius: 30px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; color: var(--text-secondary); }
+    .tab-btn:hover { background: var(--surface); transform: translateY(-2px); }
+    .tab-btn.active { background: var(--orange-primary); color: white; border-color: var(--orange-primary); }
+    .tab-content { display: none; animation: fadeIn 0.3s ease; }
+    .tab-content.active { display: block; }
+    .meal-table-wrapper { overflow-x: auto; border-radius: 16px; }
+    .meal-routine-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .meal-routine-table th, .meal-routine-table td { border: 1px solid var(--border-light); padding: 12px 14px; text-align: left; vertical-align: top; }
+    .meal-routine-table th { background: var(--bg-primary); font-weight: 600; color: var(--orange-primary); }
+    .meal-routine-table .day-column { font-weight: 700; background: var(--bg-primary); width: 100px; }
+    .meal-routine-table tr:hover { background: rgba(249,115,22,0.05); }
+    .week-theme-badge { display: inline-block; background: linear-gradient(135deg, var(--orange-primary), var(--green-primary)); color: white; padding: 6px 16px; border-radius: 30px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
+    .simple-meal-list { display: flex; flex-wrap: wrap; gap: 12px; }
+    .meal-item { background: var(--bg-primary); padding: 10px 16px; border-radius: 30px; display: flex; align-items: center; gap: 8px; font-size: 13px; border: 1px solid var(--border-light); }
+    .meal-item i { color: var(--orange-primary); }
+    .simple-day-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    .day-meal-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-primary); padding: 10px 16px; border-radius: 12px; border: 1px solid var(--border-light); }
+    .day-name { font-weight: 700; color: var(--orange-primary); }
+    .meal-name { font-size: 13px; }
+    .specs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+    .spec-item { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0; border-bottom: 1px dashed var(--border-light); }
+    .spec-key { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+    .spec-value { font-size: 13px; font-weight: 600; color: var(--text-primary); text-align: right; }
+    .additional-info-grid { display: flex; flex-direction: column; gap: 12px; }
+    .info-row { display: flex; align-items: flex-start; gap: 14px; background: var(--bg-primary); padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border-light); }
+    .info-row-icon { width: 36px; height: 36px; background: var(--surface); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--orange-primary); }
+    .info-row-content { flex: 1; }
+    .info-row-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+    .info-row-value { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+    .features-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+    .feature-chip { background: var(--bg-primary); padding: 6px 14px; border-radius: 30px; font-size: 12px; display: flex; align-items: center; gap: 6px; border: 1px solid var(--border-light); }
+    .feature-chip i { color: var(--green-primary); font-size: 11px; }
+    .weekly-specials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+    .special-card { background: var(--bg-primary); padding: 14px; border-radius: 16px; text-align: center; border: 1px solid var(--border-light); transition: all 0.2s; }
+    .special-card:hover { transform: translateY(-3px); border-color: var(--orange-primary); }
+    .special-day { font-weight: 700; color: var(--orange-primary); margin-bottom: 8px; font-size: 14px; }
+    .special-item { font-size: 12px; color: var(--text-secondary); }
+    @media (max-width: 768px) { .subscription-details-content { padding: 16px; } .details-grid-2col { grid-template-columns: 1fr; gap: 12px; } .specs-grid { grid-template-columns: 1fr; } .spec-item { flex-direction: column; gap: 4px; } .spec-value { text-align: left; } .meal-timings-grid { flex-direction: column; } .simple-day-list { grid-template-columns: 1fr; } .weekly-specials-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 
 <body data-theme="dark">
   <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
 
-  <!-- Top Bar -->
   <div class="top-bar">
     <div class="container">
-      <div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i
-            class="fas fa-leaf"></i> 100% Fresh</span></div>
-      <div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i
-            class="fas fa-download"></i> App</span></div>
+      <div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div>
+      <div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div>
     </div>
   </div>
 
-  <!-- Header -->
   <header class="main-header">
     <div class="container">
       <div class="logo-row">
-        <div class="logo">
-          <h1>Fresh<span>Kart</span></h1>
-          <p style="font-size:10px;">Grocery Delivery</p>
-        </div>
-        <div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span
-            id="mobileCartCount">0</span></div>
+        <div class="logo"><h1>Fresh<span>Kart</span></h1><p style="font-size:10px;">Grocery Delivery</p></div>
+        <div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span id="mobileCartCount">0</span></div>
       </div>
       <div class="search-location">
-        <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch"
-            placeholder="Search fruits, veggies, juices..."></div>
-        <div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect">
-            <option>📍 Delhi 110001</option>
-            <option>📍 Mumbai 400001</option>
-            <option>📍 Bangalore 560001</option>
-          </select></div>
+        <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search fruits, veggies, juices..."></div>
+        <div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect"><option>📍 Delhi 110001</option><option>📍 Mumbai 400001</option><option>📍 Bangalore 560001</option></select></div>
       </div>
-      <div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i
-            class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button>
-      </div>
+      <div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button></div>
     </div>
   </header>
 
-  <!-- Main Content -->
   <main class="container" id="productDetailContainer">
     <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading product details...</div>
   </main>
 
-  <!-- Bottom Nav -->
-  <nav class="bottom-nav"><a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a><a
-      href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a
-      href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a><a
-      href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a><a href="#"
-      class="nav-item" id="bottomCartBtn">
-      <div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count"
-          id="bottomCartCount">0</span></div><span>Cart</span>
-    </a></nav>
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a>
+    <a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a>
+    <a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a>
+    <a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a>
+  </nav>
 
-  <!-- Cart Sidebar -->
   <div class="cart-sidebar" id="cartSidebar">
-    <div class="cart-header">
-      <h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button>
-    </div>
+    <div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div>
     <div class="cart-items" id="cartItemsList"></div>
-    <div class="cart-footer">
-      <div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place
-        Order</button>
-    </div>
+    <div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div>
   </div>
   <div class="overlay" id="overlay"></div>
 
@@ -618,83 +204,227 @@
       { name: "Ice Cream", icon: "🍦", cat: "icecream" }, { name: "Snacks", icon: "🍿", cat: "snacks" }
     ];
 
-    async function loadProductData() {
-      try {
-        const response = await fetch('product.json');
-        productData = await response.json();
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = parseInt(urlParams.get('id'));
-        currentProduct = productData.products.find(p => p.id === productId);
-        currentProduct ? renderProductDetail() : document.getElementById('productDetailContainer').innerHTML = '<div class="loading">Product not found</div>';
-      } catch (e) { document.getElementById('productDetailContainer').innerHTML = '<div class="loading">Error loading product</div>'; }
+    // ==================== HELPER FUNCTIONS ====================
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+    
+    function showToast(message) {
+      let toast = document.querySelector('.desc-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'desc-toast';
+        toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green-primary);color:white;padding:10px 20px;border-radius:40px;z-index:2000;font-size:13px;opacity:0;transition:opacity 0.3s;';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
     }
 
+    function toggleExpandable(boxId) { const element = document.getElementById(boxId); if (element) element.classList.toggle('open'); }
+
+    // ==================== SUBSCRIPTION DETAILS MODULAR COMPONENT ====================
+    function getSubscriptionTypeLabel(type) {
+      switch(type) {
+        case 'daily': return 'Daily Delivery';
+        case 'weekly': return 'Weekly Delivery';
+        case 'monthly': return 'Monthly Delivery';
+        default: return 'Subscription Plan';
+      }
+    }
+
+    function calculateDiscount(oldPrice, price) {
+      if (!oldPrice || oldPrice <= price) return 0;
+      return Math.round(((oldPrice - price) / oldPrice) * 100);
+    }
+
+    function generateWeeklyMealRoutine(mealRoutine) {
+      let html = `
+        <div class="details-section meal-routine-section">
+          <h4><i class="fas fa-utensils"></i> Weekly Meal Routine</h4>
+          <div class="meal-routine-tabs">
+      `;
+      
+      const weeks = [];
+      if (mealRoutine.week1) weeks.push({ week: 1, data: mealRoutine.week1 });
+      if (mealRoutine.week2) weeks.push({ week: 2, data: mealRoutine.week2 });
+      if (mealRoutine.week3) weeks.push({ week: 3, data: mealRoutine.week3 });
+      if (mealRoutine.week4) weeks.push({ week: 4, data: mealRoutine.week4 });
+      
+      if (weeks.length > 0) {
+        html += `<div class="tab-buttons">`;
+        weeks.forEach((week, index) => {
+          html += `<button class="tab-btn ${index === 0 ? 'active' : ''}" data-week="${week.week}">Week ${week.week}</button>`;
+        });
+        html += `</div>`;
+        
+        weeks.forEach((week, index) => {
+          const weekData = week.data;
+          const hasTheme = weekData.theme;
+          const isSimpleFormat = typeof weekData.Monday === 'string' || (weekData.meals && Array.isArray(weekData.meals));
+          
+          html += `<div class="tab-content ${index === 0 ? 'active' : ''}" data-week-content="${week.week}">`;
+          
+          if (hasTheme) {
+            html += `<div class="week-theme-badge"><i class="fas fa-globe"></i> Theme: ${weekData.theme}</div>`;
+          }
+          
+          if (isSimpleFormat && weekData.meals && Array.isArray(weekData.meals)) {
+            html += `<div class="simple-meal-list">${weekData.meals.map(meal => `<div class="meal-item"><i class="fas fa-utensil-spoon"></i><span>${meal}</span></div>`).join('')}</div>`;
+          } else if (isSimpleFormat && typeof weekData.Monday === 'string') {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            html += `<div class="simple-day-list">${days.map(day => weekData[day] ? `<div class="day-meal-item"><div class="day-name">${day}</div><div class="meal-name">${weekData[day]}</div></div>` : '').join('')}</div>`;
+          } else {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            html += `<div class="meal-table-wrapper"><table class="meal-routine-table"><thead><tr><th>Day</th><th>Breakfast</th><th>Lunch</th><th>Dinner</th></tr></thead><tbody>`;
+            days.forEach(day => {
+              const dayData = weekData[day];
+              if (dayData) {
+                html += `<tr><td class="day-column">${day}</td><td>${dayData.breakfast || '-'}</td><td>${dayData.lunch || '-'}</td><td>${dayData.dinner || '-'}</td></tr>`;
+              }
+            });
+            html += `</tbody></table></div>`;
+          }
+          html += `</div>`;
+        });
+      }
+      
+      html += `</div></div>`;
+      return html;
+    }
+
+    function generateSubscriptionDetailsHTML(product) {
+      if (!product.isSubscription && product.category !== 'subscription' && !product.subscriptionType) {
+        return '';
+      }
+      
+      let html = `
+        <div class="subscription-details-module">
+          <div class="subscription-details-header">
+            <h3><i class="fas fa-calendar-check"></i> Subscription Details</h3>
+            <span class="subscription-type-tag-large">${getSubscriptionTypeLabel(product.subscriptionType)}</span>
+          </div>
+          <div class="subscription-details-content">
+            <div class="details-grid-2col">
+              <div class="detail-card"><div class="detail-icon"><i class="fas fa-truck"></i></div><div class="detail-info"><div class="detail-label">Delivery Schedule</div><div class="detail-value">${product.deliverySchedule || 'Flexible delivery'}</div></div></div>
+              <div class="detail-card"><div class="detail-icon"><i class="fas fa-calendar-alt"></i></div><div class="detail-info"><div class="detail-label">Plan Duration</div><div class="detail-value">${product.planDuration || product.unit || 'Monthly'}</div></div></div>
+              <div class="detail-card"><div class="detail-icon"><i class="fas fa-chart-line"></i></div><div class="detail-info"><div class="detail-label">Savings</div><div class="detail-value highlight">Save ${product.discountPercent || calculateDiscount(product.oldPrice, product.price)}% vs Retail</div></div></div>
+              <div class="detail-card"><div class="detail-icon"><i class="fas fa-ban"></i></div><div class="detail-info"><div class="detail-label">Cancellation</div><div class="detail-value">Anytime with prorated refund</div></div></div>
+            </div>
+      `;
+      
+      if (product.mealRoutine && product.mealRoutine.schedule) {
+        html += `
+          <div class="details-section">
+            <h4><i class="fas fa-clock"></i> Meal Timings</h4>
+            <div class="meal-timings-grid">
+              ${product.mealRoutine.schedule.breakfast ? `<div class="timing-card"><div class="timing-icon">🌅</div><div class="timing-info"><div class="timing-meal">Breakfast</div><div class="timing-time">${product.mealRoutine.schedule.breakfast}</div></div></div>` : ''}
+              ${product.mealRoutine.schedule.lunch ? `<div class="timing-card"><div class="timing-icon">☀️</div><div class="timing-info"><div class="timing-meal">Lunch</div><div class="timing-time">${product.mealRoutine.schedule.lunch}</div></div></div>` : ''}
+              ${product.mealRoutine.schedule.dinner ? `<div class="timing-card"><div class="timing-icon">🌙</div><div class="timing-info"><div class="timing-meal">Dinner</div><div class="timing-time">${product.mealRoutine.schedule.dinner}</div></div></div>` : ''}
+            </div>
+          </div>
+        `;
+      }
+      
+      if (product.mealRoutine && (product.mealRoutine.week1 || product.mealRoutine.weeks)) {
+        html += generateWeeklyMealRoutine(product.mealRoutine);
+      }
+      
+      if (product.specifications && Object.keys(product.specifications).length > 0) {
+        html += `<div class="details-section"><h4><i class="fas fa-chart-bar"></i> Nutritional & Specifications</h4><div class="specs-grid">`;
+        Object.entries(product.specifications).forEach(([key, value]) => {
+          html += `<div class="spec-item"><span class="spec-key">${key.replace(/([A-Z])/g, ' $1').trim()}:</span><span class="spec-value">${value}</span></div>`;
+        });
+        html += `</div></div>`;
+      }
+      
+      const additionalInfo = [];
+      if (product.suitableFor) additionalInfo.push({ icon: "fa-users", label: "Best For", value: product.suitableFor });
+      if (product.subscriptionBadge) additionalInfo.push({ icon: "fa-award", label: "Feature", value: product.subscriptionBadge });
+      if (product.origin && product.origin !== 'India') additionalInfo.push({ icon: "fa-map-marker-alt", label: "Source", value: product.origin });
+      if (product.shelfLife) additionalInfo.push({ icon: "fa-hourglass-half", label: "Shelf Life", value: product.shelfLife });
+      if (product.storageTips) additionalInfo.push({ icon: "fa-thermometer-half", label: "Storage", value: product.storageTips });
+      if (product.usageInstructions) additionalInfo.push({ icon: "fa-info-circle", label: "Instructions", value: product.usageInstructions });
+      
+      if (additionalInfo.length > 0) {
+        html += `<div class="details-section"><h4><i class="fas fa-info-circle"></i> Additional Information</h4><div class="additional-info-grid">`;
+        additionalInfo.forEach(info => {
+          html += `<div class="info-row"><div class="info-row-icon"><i class="fas ${info.icon}"></i></div><div class="info-row-content"><div class="info-row-label">${info.label}</div><div class="info-row-value">${info.value}</div></div></div>`;
+        });
+        html += `</div></div>`;
+      }
+      
+      if (product.features || product.benefits) {
+        const featuresList = product.features || product.benefits || [];
+        html += `<div class="details-section"><h4><i class="fas fa-star"></i> Key Features</h4><div class="features-grid">`;
+        featuresList.forEach(feature => {
+          html += `<div class="feature-chip"><i class="fas fa-check-circle"></i> ${feature}</div>`;
+        });
+        html += `</div></div>`;
+      }
+      
+      html += `</div></div>`;
+      return html;
+    }
+
+    // ==================== MAIN RENDER FUNCTION ====================
     function renderProductDetail() {
+      const container = document.getElementById('productDetailContainer');
       const mainImage = currentProduct.images?.[0] || currentProduct.image;
       const isWishlisted = wishlist.includes(currentProduct.id);
       const discountValue = Math.round(((currentProduct.oldPrice - currentProduct.price) / currentProduct.oldPrice) * 100);
+      const isSubscription = currentProduct.isSubscription === true || currentProduct.category === "subscription" || currentProduct.subscriptionType;
+
       const shortDesc = (currentProduct.description || currentProduct.longDescription || '').substring(0, 120) + '...';
       const longDesc = currentProduct.longDescription || currentProduct.description || '';
-      const highlights = [
-        { icon: "fa-truck", text: "Free delivery > ₹499" }, { icon: "fa-leaf", text: "100% Fresh" },
-        { icon: "fa-shield-alt", text: "Quality Assured" }, { icon: "fa-undo", text: "Easy Returns" }
+
+      // Generate subscription details HTML using the modular component
+      const subscriptionDetailsHTML = generateSubscriptionDetailsHTML(currentProduct);
+
+      // Key highlights
+      const highlights = isSubscription ? [
+        { icon: "fa-calendar-check", text: `Delivered ${currentProduct.deliverySchedule || 'On schedule'}` },
+        { icon: "fa-tag", text: `Save ${currentProduct.discountPercent || discountValue}%` },
+        { icon: "fa-pause", text: "Pause or cancel anytime" },
+        { icon: "fa-shield-alt", text: "Quality guaranteed" }
+      ] : [
+        { icon: "fa-truck", text: "Free delivery > ₹499" },
+        { icon: "fa-leaf", text: "100% Fresh" },
+        { icon: "fa-shield-alt", text: "Quality Assured" },
+        { icon: "fa-undo", text: "Easy Returns" }
       ];
 
-      // Add this function after renderProductDetail() in description.html
+      // Build specs table
+      let specsTableHTML = '';
+      if (currentProduct.specifications) {
+        specsTableHTML = Object.entries(currentProduct.specifications).map(([k, v]) => 
+          `<tr><td>${k.replace(/([A-Z])/g, ' $1').trim()}</td><td>${v}</td></tr>`
+        ).join('');
+      }
 
-      function renderProductDetail() {
-        const container = document.getElementById('productDetailContainer');
-        const mainImage = currentProduct.images?.[0] || currentProduct.image;
-        const isWishlisted = wishlist.includes(currentProduct.id);
-        const discountValue = Math.round(((currentProduct.oldPrice - currentProduct.price) / currentProduct.oldPrice) * 100);
-        const isSubscription = currentProduct.category === "subscription" || currentProduct.subscriptionType;
-
-        const shortDesc = (currentProduct.description || currentProduct.longDescription || '').substring(0, 120) + '...';
-        const longDesc = currentProduct.longDescription || currentProduct.description || '';
-
-        // Key highlights - different for subscription products
-        const highlights = isSubscription ? [
-          { icon: "fa-calendar-check", text: `Delivered ${currentProduct.deliverySchedule || 'On schedule'}` },
-          { icon: "fa-tag", text: `Save ${currentProduct.discountPercent || discountValue}%` },
-          { icon: "fa-pause", text: "Pause or cancel anytime" },
-          { icon: "fa-shield-alt", text: "Quality guaranteed" }
-        ] : [
-          { icon: "fa-truck", text: "Free delivery > ₹499" },
-          { icon: "fa-leaf", text: "100% Fresh" },
-          { icon: "fa-shield-alt", text: "Quality Assured" },
-          { icon: "fa-undo", text: "Easy Returns" }
-        ];
-
-        // Subscription specific details
-        const subscriptionDetails = isSubscription ? `
-        <div class="subscription-details-box">
-          <h4><i class="fas fa-calendar-alt"></i> Subscription Details</h4>
-          <div class="subscription-details-grid">
-            <div class="sub-detail-item"><span class="sub-detail-label">Delivery Schedule:</span><span class="sub-detail-value">${currentProduct.deliverySchedule || 'Flexible'}</span></div>
-            <div class="sub-detail-item"><span class="sub-detail-label">Plan Duration:</span><span class="sub-detail-value">${currentProduct.planDuration || 'Monthly'}</span></div>
-            <div class="sub-detail-item"><span class="sub-detail-label">Subscription Type:</span><span class="sub-detail-value">${currentProduct.subscriptionType === 'daily' ? 'Daily Delivery' : currentProduct.subscriptionType === 'weekly' ? 'Weekly Delivery' : 'Monthly Delivery'}</span></div>
-            <div class="sub-detail-item"><span class="sub-detail-label">Cancellation:</span><span class="sub-detail-value">Anytime with prorated refund</span></div>
+      container.innerHTML = `
+        <div class="breadcrumb"><a href="index.html">Home</a> / <a href="categories.html?cat=${currentProduct.primaryCategory || currentProduct.category}">${currentProduct.primaryCategory || currentProduct.category}</a> / <span>${escapeHtml(currentProduct.name)}</span></div>
+        
+        <div class="product-detail-wrapper">
+          <div class="detail-grid">
+            <div class="product-gallery">
+              <div class="main-image-container"><img id="mainProductImage" src="${mainImage}"></div>
+              <div class="thumbnail-row" id="thumbnailList"></div>
+            </div>
+            <div class="product-info-detail">
+              ${isSubscription ? `<div class="subscription-type-badge" style="display:inline-block;background:linear-gradient(135deg,var(--orange-primary),var(--green-primary));color:white;padding:4px 12px;border-radius:20px;font-size:11px;margin-bottom:10px;"><i class="fas fa-calendar-check"></i> ${currentProduct.subscriptionType === 'daily' ? 'Daily Subscription' : currentProduct.subscriptionType === 'weekly' ? 'Weekly Subscription' : 'Monthly Subscription'}</div>` : ''}
+              <h1>${escapeHtml(currentProduct.name)}</h1>
+              <div class="rating-row"><div class="stars">${'★'.repeat(Math.floor(currentProduct.rating))}${'☆'.repeat(5 - Math.floor(currentProduct.rating))}</div><span>${currentProduct.rating} (${currentProduct.ratingCount} ratings)</span></div>
+              <div class="price-row"><span class="current-price">₹${currentProduct.price}</span><span class="old-price">₹${currentProduct.oldPrice}</span><span class="discount-badge">${discountValue}% OFF</span></div>
+              <div class="stock-status"><i class="fas fa-check-circle"></i> ${currentProduct.inStock ? (isSubscription ? 'Subscription Available' : 'In Stock') : 'Out of Stock'}</div>
+              <div class="key-highlights"><h4><i class="fas fa-star"></i> Key Highlights</h4><div class="highlight-list">${highlights.map(h => `<div class="highlight-item"><i class="fas ${h.icon}"></i> ${h.text}</div>`).join('')}</div></div>
+              <div class="short-description">${escapeHtml(shortDesc)}</div>
+              <div class="quantity-wrapper"><button class="qty-btn" id="qtyMinus">-</button><input type="number" id="qtyInput" class="qty-input" value="1" min="1" max="${currentProduct.maxQuantity || 20}"><button class="qty-btn" id="qtyPlus">+</button></div>
+              <div class="action-buttons"><button class="buy-now" id="buyNowBtn"><i class="fas fa-bolt"></i> ${isSubscription ? 'Subscribe Now' : 'Buy Now'}</button><button class="add-to-cart-detail" id="addToCartDetail"><i class="fas fa-shopping-cart"></i> ${isSubscription ? 'Add Subscription to Cart' : 'Add to Cart'}</button><button class="wishlist-detail" id="wishlistDetailBtn"><i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i></button></div>
+            </div>
           </div>
         </div>
-        ` : '';
 
-        container.innerHTML = `
-        <div class="breadcrumb"><a href="index.html">Home</a> / <a href="categories.html?cat=${currentProduct.category}">${currentProduct.category}</a> / <span>${currentProduct.name}</span></div>
-        <div class="product-detail-wrapper"><div class="detail-grid">
-          <div class="product-gallery"><div class="main-image-container"><img id="mainProductImage" src="${mainImage}"></div><div class="thumbnail-row" id="thumbnailList"></div></div>
-          <div class="product-info-detail">
-            ${isSubscription ? `<div class="subscription-type-badge"><i class="fas fa-calendar-check"></i> ${currentProduct.subscriptionType === 'daily' ? 'Daily Subscription' : currentProduct.subscriptionType === 'weekly' ? 'Weekly Subscription' : 'Monthly Subscription'}</div>` : ''}
-            <h1>${currentProduct.name}</h1>
-            <div class="rating-row"><div class="stars">${'★'.repeat(Math.floor(currentProduct.rating))}${'☆'.repeat(5 - Math.floor(currentProduct.rating))}</div><span>${currentProduct.rating} (${currentProduct.ratingCount} ratings)</span></div>
-            <div class="price-row"><span class="current-price">₹${currentProduct.price}</span><span class="old-price">₹${currentProduct.oldPrice}</span><span class="discount-badge">${discountValue}% OFF</span></div>
-            <div class="stock-status"><i class="fas fa-check-circle"></i> ${currentProduct.inStock ? (isSubscription ? 'Subscription Available' : 'In Stock') : 'Out of Stock'}</div>
-            <div class="key-highlights"><h4><i class="fas fa-star"></i> Key Highlights</h4><div class="highlight-list">${highlights.map(h => `<div class="highlight-item"><i class="fas ${h.icon}"></i> ${h.text}</div>`).join('')}</div></div>
-            <div class="short-description">${escapeHtml(shortDesc)}</div>
-            ${subscriptionDetails}
-            <div class="quantity-wrapper"><button class="qty-btn" id="qtyMinus">-</button><input type="number" id="qtyInput" class="qty-input" value="1" min="1" max="${currentProduct.maxQuantity || 20}"><button class="qty-btn" id="qtyPlus">+</button></div>
-            <div class="action-buttons"><button class="buy-now" id="buyNowBtn"><i class="fas fa-bolt"></i> ${isSubscription ? 'Subscribe Now' : 'Buy Now'}</button><button class="add-to-cart-detail" id="addToCartDetail"><i class="fas fa-shopping-cart"></i> ${isSubscription ? 'Add Subscription to Cart' : 'Add to Cart'}</button><button class="wishlist-detail" id="wishlistDetailBtn"><i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i></button></div>
-          </div>
-        </div></div>
+        ${subscriptionDetailsHTML}
 
         <div class="expandable-box" id="descBox"><div class="expandable-header" onclick="toggleExpandable('descBox')"><h3><i class="fas fa-align-left"></i> Product Description</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><div class="full-description-text">${escapeHtml(longDesc).replace(/\n/g, '<br>')}</div></div></div>
 
@@ -704,7 +434,7 @@
           <tr><td>${isSubscription ? 'Plan Duration' : 'Unit'}</td><td>${currentProduct.planDuration || currentProduct.unit || '1 kg'}</td></tr>
           <tr><td>Shelf Life</td><td>${currentProduct.shelfLife || (isSubscription ? 'Varies by delivery' : '7 days')}</td></tr>
           ${currentProduct.nutritionalInfo ? `<tr><td>Nutritional Info</td><td>${currentProduct.nutritionalInfo}</td></tr>` : ''}
-          ${currentProduct.specifications ? Object.entries(currentProduct.specifications).map(([k, v]) => `<tr><td>${k.replace(/([A-Z])/g, ' $1').trim()}</td><td>${v}</td></tr>`).join('') : ''}
+          ${specsTableHTML}
         </tbody></table></div></div>
 
         <div class="expandable-box" id="benefitsBox"><div class="expandable-header" onclick="toggleExpandable('benefitsBox')"><h3><i class="fas fa-heart"></i> Benefits & Features</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><ul class="benefits-list">${(currentProduct.benefits || ['Fresh and premium quality', 'Direct from farm', 'Best price guaranteed']).map(b => `<li><i class="fas fa-check-circle"></i> ${b}</li>`).join('')}</ul></div></div>
@@ -727,77 +457,53 @@
         <div class="section-header"><h2><i class="fas fa-fire"></i> You May Also Like</h2></div>
         <div class="products-grid" id="alsoLike"></div>
         <button class="show-more-btn" id="loadMoreAlso">Show More →</button>
-        `;
+      `;
+
+      // Render thumbnails
+      if (currentProduct.images && currentProduct.images.length > 1) {
+        const thumbnailRow = document.getElementById('thumbnailList');
+        if (thumbnailRow) {
+          thumbnailRow.innerHTML = currentProduct.images.map((img, idx) => 
+            `<div class="thumb ${idx === 0 ? 'active' : ''}" onclick="document.getElementById('mainProductImage').src='${img}'; document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active')); this.classList.add('active')"><img src="${img}"></div>`
+          ).join('');
+        }
       }
 
-      document.getElementById('productDetailContainer').innerHTML = `
-        <div class="breadcrumb"><a href="index.html">Home</a> / <a href="categories.html?cat=${currentProduct.category}">${currentProduct.category}</a> / <span>${currentProduct.name}</span></div>
-        <div class="product-detail-wrapper"><div class="detail-grid">
-          <div class="product-gallery"><div class="main-image-container"><img id="mainProductImage" src="${mainImage}"></div><div class="thumbnail-row" id="thumbnailList"></div></div>
-          <div class="product-info-detail">
-            <h1>${currentProduct.name}</h1>
-            <div class="rating-row"><div class="stars">${'★'.repeat(Math.floor(currentProduct.rating))}${'☆'.repeat(5 - Math.floor(currentProduct.rating))}</div><span>${currentProduct.rating} (${currentProduct.ratingCount} ratings)</span></div>
-            <div class="price-row"><span class="current-price">₹${currentProduct.price}</span><span class="old-price">₹${currentProduct.oldPrice}</span><span class="discount-badge">${discountValue}% OFF</span></div>
-            <div class="stock-status"><i class="fas fa-check-circle"></i> ${currentProduct.inStock ? 'In Stock' : 'Out of Stock'}</div>
-            <div class="key-highlights"><h4><i class="fas fa-star"></i> Key Highlights</h4><div class="highlight-list">${highlights.map(h => `<div class="highlight-item"><i class="fas ${h.icon}"></i> ${h.text}</div>`).join('')}</div></div>
-            <div class="short-description">${escapeHtml(shortDesc)}</div>
-            ${currentProduct.variants ? `<div class="variant-selector"><select id="variantSelect"><option value="">Select variant</option>${currentProduct.variants.map(v => `<option value='${JSON.stringify(v)}'>${v.size} - ₹${v.price}</option>`).join('')}</select></div>` : ''}
-            <div class="quantity-wrapper"><button class="qty-btn" id="qtyMinus">-</button><input type="number" id="qtyInput" class="qty-input" value="1" min="1" max="${currentProduct.maxQuantity || 20}"><button class="qty-btn" id="qtyPlus">+</button></div>
-            <div class="action-buttons"><button class="buy-now" id="buyNowBtn"><i class="fas fa-bolt"></i> Buy Now</button><button class="add-to-cart-detail" id="addToCartDetail"><i class="fas fa-shopping-cart"></i> Add to Cart</button><button class="wishlist-detail" id="wishlistDetailBtn"><i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i></button></div>
-          </div>
-        </div></div>
-
-        <div class="expandable-box" id="descBox"><div class="expandable-header" onclick="toggleExpandable('descBox')"><h3><i class="fas fa-align-left"></i> Product Description</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><div class="full-description-text">${escapeHtml(longDesc).replace(/\n/g, '<br>')}</div></div></div>
-
-        <div class="expandable-box" id="specsBox"><div class="expandable-header" onclick="toggleExpandable('specsBox')"><h3><i class="fas fa-list-ul"></i> Specifications</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><table class="specs-table"><tbody>
-          <tr><td>Brand</td><td>${currentProduct.brand || 'FreshKart'}</td></tr>
-          <tr><td>Origin</td><td>${currentProduct.origin || 'India'}</td></tr>
-          <tr><td>Unit</td><td>${currentProduct.unit || '1 kg'}</td></tr>
-          <tr><td>Shelf Life</td><td>${currentProduct.shelfLife || '7 days'}</td></tr>
-          <tr><td>Storage</td><td>${currentProduct.storageTips || 'Store in cool dry place'}</td></tr>
-          ${currentProduct.nutritionalInfo ? `<tr><td>Nutritional Info</td><td>${currentProduct.nutritionalInfo}</td></tr>` : ''}
-          ${currentProduct.specifications ? Object.entries(currentProduct.specifications).map(([k, v]) => `<tr><td>${k.replace(/([A-Z])/g, ' $1').trim()}</td><td>${v}</td></tr>`).join('') : ''}
-        </tbody></table></div></div>
-
-        <div class="expandable-box" id="benefitsBox"><div class="expandable-header" onclick="toggleExpandable('benefitsBox')"><h3><i class="fas fa-heart"></i> Benefits & Features</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><ul class="benefits-list">${(currentProduct.benefits || ['Fresh and premium quality', 'Direct from farm', 'Best price guaranteed']).map(b => `<li><i class="fas fa-check-circle"></i> ${b}</li>`).join('')}</ul></div></div>
-
-        <div class="expandable-box" id="infoBox"><div class="expandable-header" onclick="toggleExpandable('infoBox')"><h3><i class="fas fa-info-circle"></i> Additional Information</h3><i class="fas fa-chevron-down expand-icon"></i></div><div class="expandable-content"><div class="info-cards-grid">
-          <div class="info-card-item"><span class="info-label">Seller</span><span class="info-value">${currentProduct.seller || 'FreshKart Direct'}</span></div>
-          <div class="info-card-item"><span class="info-label">In Stock</span><span class="info-value">${currentProduct.stockQuantity || 500} units</span></div>
-          <div class="info-card-item"><span class="info-label">Max Quantity</span><span class="info-value">${currentProduct.maxQuantity || 20}</span></div>
-          <div class="info-card-item"><span class="info-label">Return Policy</span><span class="info-value">7 days replacement</span></div>
-          ${currentProduct.usageInstructions ? `<div class="info-card-item"><span class="info-label">Usage</span><span class="info-value">${currentProduct.usageInstructions}</span></div>` : ''}
-          ${currentProduct.warrantyInfo ? `<div class="info-card-item"><span class="info-label">Warranty</span><span class="info-value">${currentProduct.warrantyInfo}</span></div>` : ''}
-        </div></div></div>
-
-        <div class="section-header"><h2><i class="fas fa-th-large"></i> Shop by Category</h2></div>
-        <div class="category-boxes-grid" id="categoryBoxes"></div>
-
-        <div class="section-header"><h2><i class="fas fa-layer-group"></i> Related Products</h2></div>
-        <div id="relatedCycleInfo" class="cycle-info-banner" style="display: none;"></div>
-        <div class="products-grid" id="relatedProducts"></div>
-        <button class="show-more-btn" id="loadMoreRelated">Show More Related →</button>
-
-        <div class="section-header"><h2><i class="fas fa-fire"></i> You May Also Like</h2></div>
-        <div id="alsoCycleInfo" class="cycle-info-banner" style="display: none;"></div>
-        <div class="products-grid" id="alsoLike"></div>
-        <button class="show-more-btn" id="loadMoreAlso">Show More →</button>
-        `;
-
-      if (currentProduct.images?.length > 1) {
-        document.getElementById('thumbnailList').innerHTML = currentProduct.images.map((img, idx) => `<div class="thumb ${idx === 0 ? 'active' : ''}" onclick="document.getElementById('mainProductImage').src='${img}'; document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active')); this.classList.add('active')"><img src="${img}"></div>`).join('');
-      }
-
-      document.getElementById('qtyMinus').onclick = () => { if (quantity > 1) { quantity--; document.getElementById('qtyInput').value = quantity; } };
-      document.getElementById('qtyPlus').onclick = () => { if (quantity < (currentProduct.maxQuantity || 20)) { quantity++; document.getElementById('qtyInput').value = quantity; } };
-      if (currentProduct.variants) document.getElementById('variantSelect').onchange = (e) => { if (e.target.value) { selectedVariant = JSON.parse(e.target.value); document.querySelector('.current-price').innerText = `₹${selectedVariant.price}`; } };
-
-      document.getElementById('addToCartDetail').onclick = () => addToCartDetail(currentProduct.id, quantity, selectedVariant);
-      document.getElementById('buyNowBtn').onclick = () => { addToCartDetail(currentProduct.id, quantity, selectedVariant); openCart(); };
-      document.getElementById('wishlistDetailBtn').onclick = () => toggleWishlistDetail(currentProduct.id);
+      // Event listeners
+      const qtyMinus = document.getElementById('qtyMinus');
+      const qtyPlus = document.getElementById('qtyPlus');
+      const qtyInput = document.getElementById('qtyInput');
+      if (qtyMinus) qtyMinus.onclick = () => { if (quantity > 1) { quantity--; if (qtyInput) qtyInput.value = quantity; } };
+      if (qtyPlus) qtyPlus.onclick = () => { if (quantity < (currentProduct.maxQuantity || 20)) { quantity++; if (qtyInput) qtyInput.value = quantity; } };
+      
+      const addToCartBtn = document.getElementById('addToCartDetail');
+      if (addToCartBtn) addToCartBtn.onclick = () => addToCartDetail(currentProduct.id, quantity, selectedVariant);
+      
+      const buyNowBtn = document.getElementById('buyNowBtn');
+      if (buyNowBtn) buyNowBtn.onclick = () => { addToCartDetail(currentProduct.id, quantity, selectedVariant); openCart(); };
+      
+      const wishlistBtn = document.getElementById('wishlistDetailBtn');
+      if (wishlistBtn) wishlistBtn.onclick = () => toggleWishlistDetail(currentProduct.id);
 
       renderCategoryBoxes();
       setupShowMoreManagers();
+    }
+
+    async function loadProductData() {
+      try {
+        const response = await fetch('product.json');
+        productData = await response.json();
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id'));
+        currentProduct = productData.products.find(p => p.id === productId);
+        if (currentProduct) {
+          renderProductDetail();
+        } else {
+          document.getElementById('productDetailContainer').innerHTML = '<div class="loading">Product not found</div>';
+        }
+      } catch (e) { 
+        document.getElementById('productDetailContainer').innerHTML = '<div class="loading">Error loading product</div>'; 
+      }
     }
 
     function setupShowMoreManagers() {
@@ -813,125 +519,67 @@
         });
         alsoManager.init();
       }
-      updateCycleInfoDisplay();
     }
 
-    function updateCycleInfoDisplay() {
-      setInterval(() => {
-        if (relatedManager && window.showMoreManagers && window.showMoreManagers.relatedProducts) {
-          const stats = window.showMoreManagers.relatedProducts.getStats();
-          const cycleInfo = document.getElementById('relatedCycleInfo');
-          if (cycleInfo && stats) {
-            if (stats.hasCompletedFullCycle) {
-              cycleInfo.style.display = 'inline-block';
-              cycleInfo.innerHTML = `<i class="fas fa-sync-alt"></i> Round ${stats.currentCycle}/${stats.maxCycles} | Random repeats | ${stats.totalProducts} products`;
-            } else if (stats.unshownProductsCount > 0) {
-              cycleInfo.style.display = 'inline-block';
-              cycleInfo.innerHTML = `<i class="fas fa-eye"></i> Round ${stats.currentCycle}/${stats.maxCycles} | ${stats.unshownProductsCount} new left | ${stats.shownProductsCount}/${stats.totalProducts} shown`;
-            } else {
-              cycleInfo.style.display = 'none';
-            }
-          }
-        }
-      }, 500);
+    function getRelatedProducts() { 
+      return productData?.products.filter(p => {
+        const currentCategories = currentProduct?.categories || [currentProduct?.primaryCategory, currentProduct?.category];
+        const productCategories = p.categories || [p.primaryCategory, p.category];
+        const hasCommonCategory = currentCategories.some(cat => productCategories.includes(cat));
+        return hasCommonCategory && p.id !== currentProduct?.id;
+      }) || []; 
     }
-
-    function getRelatedProducts() { return productData?.products.filter(p => p.category === currentProduct?.category && p.id !== currentProduct?.id) || []; }
-    function getAlsoLikeProducts() { return productData?.products.filter(p => p.id !== currentProduct?.id) || []; }
+    
+    function getAlsoLikeProducts() { 
+      return productData?.products.filter(p => p.id !== currentProduct?.id) || []; 
+    }
 
     function addToCartDetail(id, qty, variant) {
       let p = productData.products.find(p => p.id === id);
+      if (!p) return;
       let price = variant ? variant.price : p.price;
       let name = variant ? `${p.name} (${variant.size})` : p.name;
       let existing = cart.find(i => i.id === id);
-      existing ? (existing.qty = Math.min(existing.qty + qty, 20)) : cart.push({ id, name, price, image: p.image, oldPrice: p.oldPrice, discountPercent: p.discountPercent, qty });
-      saveCart(); updateCartUI(); alert(`${name} added to cart!`);
+      if (existing) {
+        if ((existing.qty || 0) + qty > SITE_CONFIG.MAX_CART_QUANTITY) {
+          alert(`Max ${SITE_CONFIG.MAX_CART_QUANTITY} allowed`);
+          return;
+        }
+        existing.qty = (existing.qty || 0) + qty;
+      } else {
+        cart.push({ id, name, price, image: p.image, oldPrice: p.oldPrice, discountPercent: p.discountPercent, qty,
+          isSubscription: p.isSubscription, subscriptionType: p.subscriptionType, deliverySchedule: p.deliverySchedule });
+      }
+      saveCart(); updateCartUI(); showToast(`${name} added to cart!`);
     }
 
     function toggleWishlistDetail(id) {
-  let idx = wishlist.indexOf(id);
-  let isAdding = false;
-  
-  if (idx === -1) {
-    wishlist.push(id);
-    isAdding = true;
-  } else {
-    wishlist.splice(idx, 1);
-  }
-  saveWishlist();
-  
-  // Update the heart icon
-  const wishlistBtn = document.getElementById('wishlistDetailBtn');
-  if (wishlistBtn) {
-    wishlistBtn.innerHTML = `<i class="${wishlist.includes(id) ? 'fas' : 'far'} fa-heart"></i>`;
-  }
-  
-  // Show toast message
-  if (isAdding) {
-    showToast('Added to wishlist! ❤️');
-  } else {
-    showToast('Removed from wishlist 💔');
-  }
-  
-  // DO NOT refresh the managers - this causes product shuffling
-  // The product cards should remain as they are
-}
-
-// ==================== UPDATE WISHLIST ICONS WITHOUT REFRESH ====================
-function updateWishlistIcons(productId, isWishlisted) {
-  // Update all wishlist icons for this product across the page
-  const icons = document.querySelectorAll(`.wishlist-icon[data-product-id="${productId}"] i, #wishlistDetailBtn i`);
-  icons.forEach(icon => {
-    if (isWishlisted) {
-      icon.classList.remove('far');
-      icon.classList.add('fas');
-    } else {
-      icon.classList.remove('fas');
-      icon.classList.add('far');
+      let idx = wishlist.indexOf(id);
+      let isAdding = idx === -1;
+      if (isAdding) wishlist.push(id);
+      else wishlist.splice(idx, 1);
+      saveWishlist();
+      const wishlistBtn = document.getElementById('wishlistDetailBtn');
+      if (wishlistBtn) wishlistBtn.innerHTML = `<i class="${wishlist.includes(id) ? 'fas' : 'far'} fa-heart"></i>`;
+      showToast(isAdding ? 'Added to wishlist! ❤️' : 'Removed from wishlist 💔');
     }
-  });
-}
-
-// Override the toggleWishlist function to use the new update method
-const originalToggleWishlist = toggleWishlist;
-window.toggleWishlist = function(productId, event) {
-  if (event) event.stopPropagation();
-  
-  const idx = wishlist.indexOf(productId);
-  let isAdding = false;
-  
-  if (idx === -1) {
-    wishlist.push(productId);
-    isAdding = true;
-  } else {
-    wishlist.splice(idx, 1);
-  }
-  saveWishlist();
-  
-  // Update all wishlist icons for this product
-  updateWishlistIcons(productId, isAdding);
-  
-  // Show toast message
-  if (isAdding) {
-    showToast('Added to wishlist! ❤️');
-  } else {
-    showToast('Removed from wishlist 💔');
-  }
-};
-
 
     function renderCategoryBoxes() {
-      document.getElementById('categoryBoxes').innerHTML = categoryBoxes.map(c => `<div class="cat-box" onclick="window.location.href='categories.html?cat=${c.cat}'"><div class="cat-box-icon">${c.icon}</div><span>${c.name}</span></div>`).join('');
+      const container = document.getElementById('categoryBoxes');
+      if (container) {
+        container.innerHTML = categoryBoxes.map(c => 
+          `<div class="cat-box" onclick="window.location.href='categories.html?cat=${c.cat}'"><div class="cat-box-icon">${c.icon}</div><span>${c.name}</span></div>`
+        ).join('');
+      }
     }
 
-    function toggleExpandable(boxId) { document.getElementById(boxId).classList.toggle('open'); }
-    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
-
+    // Initialize page
     loadProductData();
-    initCommon(() => { });
+    initCommon(() => {});
+    
     window.toggleWishlistDetail = toggleWishlistDetail;
     window.toggleExpandable = toggleExpandable;
+    window.addToCartDetail = addToCartDetail;
   </script>
 </body>
-
 </html>

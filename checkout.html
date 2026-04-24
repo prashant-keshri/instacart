@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FreshKart – Secure Checkout</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* Checkout Page Enhanced Styles */
+    .checkout-container {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 30px;
+      margin: 30px 0;
+    }
+    @media (max-width: 1000px) {
+      .checkout-container { grid-template-columns: 1fr; gap: 24px; }
+    }
+    
+    /* Timeline */
+    .checkout-timeline {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border-light);
+    }
+    .timeline-steps-checkout {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+    }
+    .timeline-steps-checkout::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--border-light), var(--border-light), var(--border-light));
+      z-index: 0;
+    }
+    .timeline-step-checkout {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+    .step-circle {
+      width: 48px;
+      height: 48px;
+      background: var(--surface);
+      border: 2px solid var(--border-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text-muted);
+      transition: all 0.3s;
+    }
+    .timeline-step-checkout.active .step-circle {
+      border-color: var(--orange-primary);
+      background: var(--orange-primary);
+      color: white;
+      box-shadow: 0 0 0 4px rgba(249,115,22,0.2);
+    }
+    .timeline-step-checkout.completed .step-circle {
+      border-color: var(--green-primary);
+      background: var(--green-primary);
+      color: white;
+    }
+    .step-label-checkout {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .timeline-step-checkout.active .step-label-checkout {
+      color: var(--orange-primary);
+    }
+    .timeline-step-checkout.completed .step-label-checkout {
+      color: var(--green-primary);
+    }
+    
+    /* Cards */
+    .checkout-card {
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border-light);
+      transition: all 0.2s;
+    }
+    .checkout-card:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-light);
+    }
+    .card-title i {
+      color: var(--orange-primary);
+      font-size: 20px;
+    }
+    
+    /* Address Dropdown Section */
+    .address-dropdown-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .address-dropdown-btn {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 16px 18px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+    }
+    .address-dropdown-btn:hover {
+      border-color: var(--orange-primary);
+      background: rgba(249,115,22,0.05);
+    }
+    .address-dropdown-btn .selected-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .address-type-badge {
+      background: var(--orange-primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .address-name {
+      font-weight: 700;
+    }
+    .address-phone {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .dropdown-arrow {
+      transition: transform 0.2s;
+      color: var(--text-muted);
+    }
+    .address-dropdown-btn.open .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+    
+    .address-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      margin-top: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 100;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .address-dropdown-menu.show {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+    .address-dropdown-item {
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .address-dropdown-item:last-child {
+      border-bottom: none;
+    }
+    .address-dropdown-item:hover {
+      background: rgba(249,115,22,0.05);
+    }
+    .address-dropdown-item.selected {
+      background: rgba(46,125,50,0.1);
+      border-left: 3px solid var(--green-primary);
+    }
+    .address-item-info {
+      flex: 1;
+    }
+    .address-item-name {
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .address-item-detail {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .address-default-badge {
+      background: var(--green-primary);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 9px;
+      font-weight: 600;
+    }
+    
+    .selected-address-details {
+      background: linear-gradient(135deg, rgba(46,125,50,0.05), rgba(249,115,22,0.05));
+      border-radius: 16px;
+      padding: 18px;
+      margin-top: 16px;
+      border-left: 3px solid var(--green-primary);
+    }
+    .selected-address-details p {
+      margin: 6px 0;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .selected-address-details i {
+      width: 20px;
+      color: var(--orange-primary);
+    }
+    .address-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .address-action-btn {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      padding: 8px 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .address-action-btn:hover {
+      background: var(--orange-primary);
+      color: white;
+      border-color: var(--orange-primary);
+    }
+    .address-action-btn.edit:hover {
+      background: var(--blue-primary);
+      border-color: var(--blue-primary);
+    }
+    
+    /* Order Items */
+    .order-item-list {
+      max-height: 350px;
+      overflow-y: auto;
+    }
+    .checkout-item {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .checkout-item:last-child {
+      border-bottom: none;
+    }
+    .checkout-item-img {
+      width: 65px;
+      height: 65px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: var(--bg-primary);
+    }
+    .checkout-item-details {
+      flex: 1;
+    }
+    .checkout-item-name {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .checkout-item-price {
+      font-size: 13px;
+      color: var(--green-primary);
+      font-weight: 700;
+    }
+    .checkout-item-old-price {
+      font-size: 11px;
+      text-decoration: line-through;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+    .checkout-item-qty {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .checkout-item-total {
+      font-weight: 800;
+      text-align: right;
+      font-size: 15px;
+      color: var(--green-primary);
+    }
+    
+    /* GST Section */
+    .gst-toggle-btn {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .gst-toggle-btn:hover {
+      border-color: var(--orange-primary);
+    }
+    .gst-form-container {
+      display: none;
+      margin-top: 16px;
+      animation: fadeIn 0.3s ease;
+    }
+    .gst-form-container.show {
+      display: block;
+    }
+    .gst-input-group {
+      margin-bottom: 12px;
+    }
+    .gst-input-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .gst-input-group input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      background: var(--surface);
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+    
+    /* Donation Section */
+    .donation-box {
+      background: linear-gradient(135deg, rgba(249,115,22,0.08), rgba(46,125,50,0.08));
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+    .donation-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+    .donation-btn {
+      padding: 10px 22px;
+      border-radius: 40px;
+      border: 1px solid var(--border-light);
+      background: var(--surface);
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+    .donation-btn:hover, .donation-btn.active {
+      background: var(--orange-primary);
+      color: white;
+      border-color: var(--orange-primary);
+      transform: translateY(-2px);
+    }
+    .donation-custom-input {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 12px;
+    }
+    .donation-custom-input input {
+      width: 120px;
+      padding: 10px;
+      border-radius: 30px;
+      border: 1px solid var(--border-light);
+      background: var(--surface);
+      text-align: center;
+    }
+    
+    /* Sidebar Summary */
+    .checkout-sidebar {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+    .price-summary-footer {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid var(--border-light);
+      margin-top: 20px;
+    }
+    .price-row-large {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 8px 0;
+    }
+    .original-price-striked {
+      text-decoration: line-through;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    .total-payable {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--green-primary);
+    }
+    .checkout-continue-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--orange-primary), #e85d04);
+      color: white;
+      border: none;
+      padding: 18px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .checkout-continue-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(249,115,22,0.3);
+    }
+    
+    /* Address Modal */
+    .address-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 2100;
+      justify-content: center;
+      align-items: center;
+    }
+    .address-modal-container {
+      background: var(--surface);
+      border-radius: 28px;
+      width: 90%;
+      max-width: 550px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 28px;
+    }
+    .address-modal-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border-light);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--orange-primary);
+      box-shadow: 0 0 0 2px rgba(249,115,22,0.2);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 14px;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+    .btn-save {
+      background: var(--green-primary);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-cancel {
+      background: var(--red-primary);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 768px) {
+      .checkout-card { padding: 18px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+      .address-dropdown-btn .selected-info { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .donation-buttons { gap: 8px; }
+      .donation-btn { padding: 8px 16px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
+
+  <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
+
+  <header class="main-header"><div class="container"><div class="logo-row"><div class="logo"><h1>Fresh<span>Kart</span></h1><p style="font-size:10px;">Grocery Delivery</p></div><div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span id="mobileCartCount">0</span></div></div><div class="search-location"><div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search products..."></div><div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect"><option>📍 Delhi 110001</option><option>📍 Mumbai 400001</option><option>📍 Bangalore 560001</option></select></div></div><div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button></div></div></header>
+
+  <main class="container">
+    <!-- Timeline -->
+    <div class="checkout-timeline">
+      <div class="timeline-steps-checkout">
+        <div class="timeline-step-checkout active">
+          <div class="step-circle">1</div>
+          <div class="step-label-checkout">Address</div>
+        </div>
+        <div class="timeline-step-checkout">
+          <div class="step-circle">2</div>
+          <div class="step-label-checkout">Review</div>
+        </div>
+        <div class="timeline-step-checkout">
+          <div class="step-circle">3</div>
+          <div class="step-label-checkout">Payment</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="checkout-container">
+      <!-- Left Column -->
+      <div class="checkout-left">
+        <!-- Delivery Address Card -->
+        <div class="checkout-card">
+          <div class="card-title"><i class="fas fa-map-marker-alt"></i> Delivery Address</div>
+          
+          <!-- Address Dropdown -->
+          <div class="address-dropdown-container">
+            <div class="address-dropdown-btn" id="addressDropdownBtn" onclick="toggleAddressDropdown()">
+              <div class="selected-info" id="selectedAddressPreview">
+                <span class="address-type-badge" id="selectedAddressType">Home</span>
+                <span class="address-name" id="selectedAddressName">Select Address</span>
+                <span class="address-phone" id="selectedAddressPhone"></span>
+              </div>
+              <i class="fas fa-chevron-down dropdown-arrow"></i>
+            </div>
+            <div class="address-dropdown-menu" id="addressDropdownMenu"></div>
+          </div>
+          
+          <!-- Selected Address Details -->
+          <div class="selected-address-details" id="selectedAddressDetails">
+            <p><i class="fas fa-user"></i> <span id="detailName">-</span></p>
+            <p><i class="fas fa-phone"></i> <span id="detailPhone">-</span></p>
+            <p><i class="fas fa-location-dot"></i> <span id="detailAddress">-</span></p>
+            <p><i class="fas fa-tag"></i> <span id="detailType">-</span></p>
+          </div>
+          
+          <div class="address-actions">
+            <button class="address-action-btn edit" onclick="openEditAddressModal()"><i class="fas fa-edit"></i> Edit Selected</button>
+            <button class="address-action-btn" onclick="openAddAddressModal()"><i class="fas fa-plus-circle"></i> Add New Address</button>
+          </div>
+        </div>
+
+        <!-- Order Summary Card -->
+        <div class="checkout-card">
+          <div class="card-title"><i class="fas fa-shopping-bag"></i> Your Order</div>
+          <div class="order-item-list" id="checkoutItemsList"></div>
+        </div>
+
+        <!-- GST Invoice Card -->
+        <div class="checkout-card">
+          <div class="card-title"><i class="fas fa-file-invoice"></i> GST Invoice</div>
+          <div class="gst-toggle-btn" onclick="toggleGSTForm()">
+            <span><i class="fas fa-toggle-off" id="gstToggleIcon"></i> Need GST Invoice?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="gst-form-container" id="gstFormContainer">
+            <div class="gst-input-group"><label>Company Name</label><input type="text" id="companyName" placeholder="Enter company name"></div>
+            <div class="gst-input-group"><label>GST Number</label><input type="text" id="gstNumber" placeholder="Enter GST number"></div>
+            <div class="gst-input-group"><label>Company Address</label><input type="text" id="companyAddress" placeholder="Enter company address"></div>
+          </div>
+        </div>
+
+        <!-- Donation Card -->
+        <div class="checkout-card">
+          <div class="card-title"><i class="fas fa-hand-holding-heart"></i> Give Back</div>
+          <div class="donation-box">
+            <p><i class="fas fa-seedling"></i> Support local farmers & sustainable agriculture</p>
+            <div class="donation-buttons" id="donationButtons">
+              <button type="button" class="donation-btn" data-amount="10">₹10</button>
+              <button type="button" class="donation-btn" data-amount="20">₹20</button>
+              <button type="button" class="donation-btn" data-amount="50">₹50</button>
+              <button type="button" class="donation-btn" data-amount="100">₹100</button>
+            </div>
+            <div class="donation-custom-input">
+              <input type="number" id="customDonation" placeholder="Custom amount" min="1">
+              <button class="donation-btn" onclick="setCustomDonation()">Add</button>
+            </div>
+            <p style="font-size: 11px; margin-top: 12px;"><i class="fas fa-heart" style="color: var(--orange-primary);"></i> 100% goes to support farmers</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - Price Summary -->
+      <div class="checkout-sidebar">
+        <div class="checkout-card">
+          <div class="card-title"><i class="fas fa-receipt"></i> Price Details</div>
+          <div id="checkoutPriceBreakdown"></div>
+        </div>
+        <div class="price-summary-footer">
+          <div class="price-row-large">
+            <span>Original Total:</span>
+            <span class="original-price-striked" id="checkoutOriginalTotal">₹0</span>
+          </div>
+          <div class="price-row-large" style="border-top: 1px solid var(--border-light); padding-top: 12px;">
+            <span style="font-weight: 700;">To Pay:</span>
+            <span class="total-payable" id="checkoutTotalPayable">₹0</span>
+          </div>
+          <button class="checkout-continue-btn" onclick="proceedToPayment()">Proceed to Payment <i class="fas fa-arrow-right"></i></button>
+          <p style="font-size: 11px; text-align: center; margin-top: 12px; color: var(--text-muted);"><i class="fas fa-lock"></i> Secure payment gateway</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav"><a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a><a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a><a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a><a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a></nav>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div><div class="cart-items" id="cartItemsList"></div><div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div></div>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Address Modal -->
+  <div id="addressModal" class="address-modal">
+    <div class="address-modal-container">
+      <div class="address-modal-title">
+        <span id="addressModalTitle"><i class="fas fa-plus-circle"></i> Add New Address</span>
+        <button onclick="closeAddressModal()" style="background:none;border:none;font-size:24px;cursor:pointer;">&times;</button>
+      </div>
+      <form id="addressFormModal">
+        <input type="hidden" id="addressId" value="">
+        <div class="form-row">
+          <div class="form-group"><label>Full Name *</label><input type="text" id="addrFullName" required></div>
+          <div class="form-group"><label>Phone Number *</label><input type="tel" id="addrPhone" pattern="[0-9]{10}" maxlength="10" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Alternative Phone</label><input type="tel" id="addrAltPhone" pattern="[0-9]{10}" maxlength="10"></div>
+          <div class="form-group"><label>Pincode *</label><input type="text" id="addrPincode" pattern="[0-9]{6}" maxlength="6" required></div>
+        </div>
+        <div class="form-group"><label>Flat/House/Building Name *</label><input type="text" id="addrBuilding" required></div>
+        <div class="form-group"><label>Nearby Landmark</label><input type="text" id="addrLandmark"></div>
+        <div class="form-group"><label>Complete Address *</label><textarea id="addrAddress" rows="2" required></textarea></div>
+        <div class="form-group"><label>Address Type</label><select id="addrType"><option value="Home">🏠 Home</option><option value="Work">💼 Work</option><option value="Other">📍 Other</option></select></div>
+        <div class="modal-buttons">
+          <button type="button" class="btn-cancel" onclick="closeAddressModal()">Cancel</button>
+          <button type="submit" class="btn-save">Save Address</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="common.js"></script>
+  <script>
+    // ==================== CHECKOUT PAGE LOGIC ====================
+    let checkoutCart = [];
+    let savedAddresses = [];
+    let selectedAddressId = null;
+    let donationAmount = 0;
+    let gstEnabled = false;
+    let currentEditingAddressId = null;
+    let dropdownOpen = false;
+    
+    // Load addresses from localStorage
+    function loadAddressesFromStorage() {
+      const saved = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.ADDRESSES);
+      savedAddresses = saved ? JSON.parse(saved) : [];
+      if (savedAddresses.length === 0) {
+        savedAddresses = [
+          { id: 1, name: "Rahul Sharma", phone: "9876543210", altPhone: "", building: "123, Green Park", landmark: "Near City Mall", address: "Green Park Main Road", pincode: "110001", type: "Home", isDefault: true }
+        ];
+        localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.ADDRESSES, JSON.stringify(savedAddresses));
+      }
+    }
+    
+    function saveAddressesToStorage() {
+      localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.ADDRESSES, JSON.stringify(savedAddresses));
+    }
+    
+    function loadCartData() {
+      const savedCart = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.CART);
+      checkoutCart = savedCart ? JSON.parse(savedCart) : [];
+    }
+    
+    // Render address dropdown menu
+    function renderAddressDropdown() {
+      const menu = document.getElementById('addressDropdownMenu');
+      if (!menu) return;
+      
+      if (savedAddresses.length === 0) {
+        menu.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted);">No addresses saved. Add one below.</div>';
+        return;
+      }
+      
+      menu.innerHTML = savedAddresses.map(addr => `
+        <div class="address-dropdown-item ${selectedAddressId === addr.id ? 'selected' : ''}" onclick="selectAddress(${addr.id}); closeAddressDropdown();">
+          <div class="address-item-info">
+            <div class="address-item-name">
+              ${escapeHtml(addr.name)} - ${addr.type}
+              ${addr.isDefault ? '<span class="address-default-badge">Default</span>' : ''}
+            </div>
+            <div class="address-item-detail">${escapeHtml(addr.building)}, ${escapeHtml(addr.address)}</div>
+            <div class="address-item-detail">📞 ${addr.phone} | ${addr.pincode}</div>
+          </div>
+          ${selectedAddressId === addr.id ? '<i class="fas fa-check-circle" style="color: var(--green-primary);"></i>' : ''}
+        </div>
+      `).join('');
+    }
+    
+    // Update selected address display
+    function updateSelectedAddressDisplay() {
+      const selectedAddr = savedAddresses.find(a => a.id === selectedAddressId);
+      
+      if (selectedAddr) {
+        document.getElementById('selectedAddressType').innerHTML = selectedAddr.type;
+        document.getElementById('selectedAddressName').innerHTML = escapeHtml(selectedAddr.name);
+        document.getElementById('selectedAddressPhone').innerHTML = `📞 ${selectedAddr.phone}`;
+        
+        document.getElementById('detailName').innerHTML = escapeHtml(selectedAddr.name);
+        document.getElementById('detailPhone').innerHTML = selectedAddr.phone;
+        document.getElementById('detailAddress').innerHTML = `${escapeHtml(selectedAddr.building)}, ${escapeHtml(selectedAddr.address)}${selectedAddr.landmark ? ', ' + escapeHtml(selectedAddr.landmark) : ''}, ${selectedAddr.pincode}`;
+        document.getElementById('detailType').innerHTML = selectedAddr.type;
+      } else {
+        document.getElementById('selectedAddressType').innerHTML = 'Select';
+        document.getElementById('selectedAddressName').innerHTML = 'No Address Selected';
+        document.getElementById('selectedAddressPhone').innerHTML = '';
+        document.getElementById('detailName').innerHTML = '-';
+        document.getElementById('detailPhone').innerHTML = '-';
+        document.getElementById('detailAddress').innerHTML = '-';
+        document.getElementById('detailType').innerHTML = '-';
+      }
+    }
+    
+    function selectAddress(id) {
+      selectedAddressId = id;
+      renderAddressDropdown();
+      updateSelectedAddressDisplay();
+      updatePriceBreakdown();
+    }
+    
+    function toggleAddressDropdown() {
+      dropdownOpen = !dropdownOpen;
+      const menu = document.getElementById('addressDropdownMenu');
+      const btn = document.getElementById('addressDropdownBtn');
+      if (dropdownOpen) {
+        menu.classList.add('show');
+        btn.classList.add('open');
+        renderAddressDropdown();
+      } else {
+        menu.classList.remove('show');
+        btn.classList.remove('open');
+      }
+    }
+    
+    function closeAddressDropdown() {
+      dropdownOpen = false;
+      document.getElementById('addressDropdownMenu').classList.remove('show');
+      document.getElementById('addressDropdownBtn').classList.remove('open');
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.address-dropdown-container')) {
+        closeAddressDropdown();
+      }
+    });
+    
+    function renderCheckoutItems() {
+      const container = document.getElementById('checkoutItemsList');
+      if (!container) return;
+      
+      if (checkoutCart.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding: 40px;">Your cart is empty. <a href="index.html">Continue shopping</a></div>';
+        return;
+      }
+      
+      container.innerHTML = checkoutCart.map(item => `
+        <div class="checkout-item">
+          <img class="checkout-item-img" src="${item.image}" onerror="this.src='https://placehold.co/65'">
+          <div class="checkout-item-details">
+            <div class="checkout-item-name">${escapeHtml(item.name)}</div>
+            <div class="checkout-item-price">₹${item.price} <span class="checkout-item-old-price">${item.oldPrice ? '₹' + item.oldPrice : ''}</span></div>
+            <div class="checkout-item-qty">Quantity: ${item.qty}</div>
+          </div>
+          <div class="checkout-item-total">₹${(item.price * item.qty).toFixed(2)}</div>
+        </div>
+      `).join('');
+    }
+    
+    function updatePriceBreakdown() {
+      const subtotal = checkoutCart.reduce((s, i) => s + ((i.price || 0) * (i.qty || 0)), 0);
+      const originalTotal = checkoutCart.reduce((s, i) => {
+        const oldPrice = i.oldPrice || i.price || 0;
+        return s + (oldPrice * (i.qty || 0));
+      }, 0);
+      const totalDiscount = originalTotal - subtotal;
+      const discountPercent = originalTotal > 0 ? Math.round((totalDiscount / originalTotal) * 100) : 0;
+      const deliveryCharge = subtotal > SITE_CONFIG.FREE_DELIVERY_THRESHOLD ? 0 : SITE_CONFIG.DELIVERY_CHARGE;
+      const platformFee = SITE_CONFIG.PLATFORM_FEE;
+      const donation = donationAmount || 0;
+      const totalPayable = subtotal + deliveryCharge + platformFee + donation;
+      
+      const breakdownHTML = `
+        <div class="price-breakdown-box" style="margin-bottom: 0;">
+          <div class="breakdown-row"><span>Subtotal (${checkoutCart.reduce((s,i)=>s+i.qty,0)} items)</span><span>₹${Math.round(subtotal)}</span></div>
+          ${totalDiscount > 0 ? `<div class="breakdown-row discount-row"><span>Total Discount <strong>(${discountPercent}% OFF)</strong></span><span class="discount-amount">- ₹${Math.round(totalDiscount)}</span></div>` : ''}
+          <div class="breakdown-row"><span>Delivery Fee</span><span>${deliveryCharge === 0 ? '<span class="free-delivery">FREE</span>' : '₹' + deliveryCharge}</span></div>
+          <div class="breakdown-row"><span>Platform Fee</span><span>₹${platformFee}</span></div>
+          ${donation > 0 ? `<div class="breakdown-row"><span>Donation</span><span>₹${donation}</span></div>` : ''}
+          <div class="breakdown-row total"><span>Total Amount</span><span>₹${Math.round(totalPayable)}</span></div>
+        </div>
+      `;
+      
+      document.getElementById('checkoutPriceBreakdown').innerHTML = breakdownHTML;
+      document.getElementById('checkoutOriginalTotal').innerHTML = `₹${Math.round(originalTotal)}`;
+      document.getElementById('checkoutTotalPayable').innerHTML = `₹${Math.round(totalPayable)}`;
+    }
+    
+    function toggleGSTForm() {
+      gstEnabled = !gstEnabled;
+      const form = document.getElementById('gstFormContainer');
+      const icon = document.getElementById('gstToggleIcon');
+      if (form) {
+        form.classList.toggle('show');
+        icon.className = gstEnabled ? 'fas fa-toggle-on' : 'fas fa-toggle-off';
+      }
+    }
+    
+    function setCustomDonation() {
+      const custom = parseInt(document.getElementById('customDonation').value);
+      if (custom && custom > 0) {
+        donationAmount = custom;
+        document.querySelectorAll('.donation-btn[data-amount]').forEach(btn => btn.classList.remove('active'));
+        updatePriceBreakdown();
+        showToast(`❤️ Donation of ₹${custom} added`);
+        document.getElementById('customDonation').value = '';
+      }
+    }
+    
+    function proceedToPayment() {
+      if (!selectedAddressId) {
+        alert('Please select a delivery address');
+        return;
+      }
+      if (checkoutCart.length === 0) {
+        alert('Your cart is empty');
+        return;
+      }
+      
+      const subtotal = checkoutCart.reduce((s, i) => s + ((i.price || 0) * (i.qty || 0)), 0);
+      const originalTotal = checkoutCart.reduce((s, i) => {
+        const oldPrice = i.oldPrice || i.price || 0;
+        return s + (oldPrice * (i.qty || 0));
+      }, 0);
+      const totalDiscount = originalTotal - subtotal;
+      const discountPercent = originalTotal > 0 ? Math.round((totalDiscount / originalTotal) * 100) : 0;
+      const deliveryCharge = subtotal > SITE_CONFIG.FREE_DELIVERY_THRESHOLD ? 0 : SITE_CONFIG.DELIVERY_CHARGE;
+      const platformFee = SITE_CONFIG.PLATFORM_FEE;
+      const totalPayable = subtotal + deliveryCharge + platformFee + donationAmount;
+      
+      const checkoutData = {
+        cart: checkoutCart,
+        subtotal: subtotal,
+        originalTotal: originalTotal,
+        totalDiscount: totalDiscount,
+        discountPercent: discountPercent,
+        deliveryCharge: deliveryCharge,
+        platformFee: platformFee,
+        donation: donationAmount,
+        totalPayable: totalPayable,
+        selectedAddressId: selectedAddressId,
+        gstEnabled: gstEnabled,
+        gstData: gstEnabled ? {
+          companyName: document.getElementById('companyName')?.value,
+          gstNumber: document.getElementById('gstNumber')?.value,
+          companyAddress: document.getElementById('companyAddress')?.value
+        } : null
+      };
+      sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+      window.location.href = 'payment.html';
+    }
+    
+    // Address Modal Functions
+    function openAddAddressModal() {
+      currentEditingAddressId = null;
+      document.getElementById('addressModalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Address';
+      document.getElementById('addressFormModal').reset();
+      document.getElementById('addressId').value = '';
+      document.getElementById('addressModal').style.display = 'flex';
+    }
+    
+    function openEditAddressModal() {
+      const address = savedAddresses.find(a => a.id === selectedAddressId);
+      if (address) {
+        currentEditingAddressId = address.id;
+        document.getElementById('addressModalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Address';
+        document.getElementById('addressId').value = address.id;
+        document.getElementById('addrFullName').value = address.name || '';
+        document.getElementById('addrPhone').value = address.phone || '';
+        document.getElementById('addrAltPhone').value = address.altPhone || '';
+        document.getElementById('addrPincode').value = address.pincode || '';
+        document.getElementById('addrBuilding').value = address.building || '';
+        document.getElementById('addrLandmark').value = address.landmark || '';
+        document.getElementById('addrAddress').value = address.address || '';
+        document.getElementById('addrType').value = address.type || 'Home';
+        document.getElementById('addressModal').style.display = 'flex';
+      } else {
+        alert('No address selected to edit');
+      }
+    }
+    
+    function closeAddressModal() {
+      document.getElementById('addressModal').style.display = 'none';
+      currentEditingAddressId = null;
+    }
+    
+    function saveAddressFromModal() {
+      const phone = document.getElementById('addrPhone').value;
+      if (!/^[0-9]{10}$/.test(phone)) {
+        alert('Please enter a valid 10-digit mobile number');
+        return false;
+      }
+      const pincode = document.getElementById('addrPincode').value;
+      if (!/^[0-9]{6}$/.test(pincode)) {
+        alert('Please enter a valid 6-digit pincode');
+        return false;
+      }
+      
+      const addressData = {
+        id: currentEditingAddressId || Date.now(),
+        name: document.getElementById('addrFullName').value,
+        phone: phone,
+        altPhone: document.getElementById('addrAltPhone').value || '',
+        pincode: pincode,
+        building: document.getElementById('addrBuilding').value,
+        landmark: document.getElementById('addrLandmark').value || '',
+        address: document.getElementById('addrAddress').value,
+        type: document.getElementById('addrType').value,
+        isDefault: savedAddresses.length === 0
+      };
+      
+      if (currentEditingAddressId) {
+        const index = savedAddresses.findIndex(a => a.id === currentEditingAddressId);
+        if (index !== -1) savedAddresses[index] = addressData;
+      } else {
+        savedAddresses.push(addressData);
+      }
+      
+      saveAddressesToStorage();
+      
+      if (!selectedAddressId || currentEditingAddressId === selectedAddressId) {
+        selectedAddressId = addressData.id;
+      }
+      
+      closeAddressModal();
+      renderAddressDropdown();
+      updateSelectedAddressDisplay();
+      updatePriceBreakdown();
+      showToast('Address saved successfully!');
+      return true;
+    }
+    
+    function initDonationButtons() {
+      document.querySelectorAll('.donation-btn[data-amount]').forEach(btn => {
+        btn.addEventListener('click', function() {
+          donationAmount = parseInt(this.dataset.amount);
+          document.querySelectorAll('.donation-btn[data-amount]').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          updatePriceBreakdown();
+          showToast(`❤️ Donation of ₹${donationAmount} added`);
+        });
+      });
+    }
+    
+    function showToast(message) {
+      let toast = document.querySelector('.checkout-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'checkout-toast';
+        toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green-primary);color:white;padding:12px 24px;border-radius:50px;z-index:2100;font-size:13px;opacity:0;transition:opacity 0.3s;';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+    }
+    
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+    }
+    
+    // Make functions global
+    window.toggleAddressDropdown = toggleAddressDropdown;
+    window.selectAddress = selectAddress;
+    window.closeAddressDropdown = closeAddressDropdown;
+    window.openAddAddressModal = openAddAddressModal;
+    window.openEditAddressModal = openEditAddressModal;
+    window.closeAddressModal = closeAddressModal;
+    window.saveAddressFromModal = saveAddressFromModal;
+    window.toggleGSTForm = toggleGSTForm;
+    window.setCustomDonation = setCustomDonation;
+    window.proceedToPayment = proceedToPayment;
+    
+    async function initCheckout() {
+      await initCommon(() => {});
+      loadAddressesFromStorage();
+      loadCartData();
+      
+      const defaultAddr = savedAddresses.find(a => a.isDefault);
+      if (defaultAddr) {
+        selectedAddressId = defaultAddr.id;
+      } else if (savedAddresses.length > 0) {
+        selectedAddressId = savedAddresses[0].id;
+      }
+      
+      updateSelectedAddressDisplay();
+      renderCheckoutItems();
+      updatePriceBreakdown();
+      updateCartUI();
+      initDonationButtons();
+      
+      const form = document.getElementById('addressFormModal');
+      if (form) {
+        form.onsubmit = function(e) {
+          e.preventDefault();
+          saveAddressFromModal();
+        };
+      }
+    }
+    
+    initCheckout();
+  </script>
+</body>
+</html>

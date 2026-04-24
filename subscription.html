@@ -396,35 +396,30 @@
     }
     
     // ==================== FILTER SUBSCRIPTIONS ====================
-    function getFilteredSubscriptions() {
-      let filtered = [...allSubscriptionProducts];
-      
-      // Filter by timeline
-      if (currentTimeline !== "all") {
-        filtered = filtered.filter(sub => {
-          const planDuration = (sub.planDuration || sub.unit || '').toLowerCase();
-          const deliverySchedule = (sub.deliverySchedule || '').toLowerCase();
-          
-          switch(currentTimeline) {
-            case 'daily': return planDuration.includes('day') || deliverySchedule.includes('day') || sub.subscriptionType === 'daily';
-            case 'weekly': return planDuration.includes('week') || deliverySchedule.includes('week') || sub.subscriptionType === 'weekly';
-            case 'biweekly': return planDuration.includes('bi') || deliverySchedule.includes('bi') || planDuration.includes('2 week');
-            case 'monthly': return planDuration.includes('month') || deliverySchedule.includes('month') || sub.subscriptionType === 'monthly';
-            case 'quarterly': return planDuration.includes('quarter') || planDuration.includes('3 month');
-            default: return true;
-          }
-        });
-      }
-      
-      // Filter by category
-      if (currentSubCategory !== "all") {
-        filtered = filtered.filter(sub => 
-          sub.subscriptionType === currentSubCategory || sub.category === currentSubCategory
-        );
-      }
-      
-      return filtered;
-    }
+   function getFilteredSubscriptions() {
+  let filtered = [...allSubscriptionProducts];
+  
+  // Filter by category (using primaryCategory OR category field)
+  if (currentSubCategory !== "all") {
+    filtered = filtered.filter(sub => {
+      // Check all possible category fields
+      return sub.primaryCategory === currentSubCategory ||
+             sub.category === currentSubCategory ||
+             (sub.categories && sub.categories.includes(currentSubCategory)) ||
+             sub.subscriptionCategory === currentSubCategory;
+    });
+  }
+  
+  // Filter by timeline (subscriptionType)
+  if (currentTimeline !== "all") {
+    filtered = filtered.filter(sub => {
+      const subTimeline = sub.subscriptionType || 'monthly';
+      return subTimeline === currentTimeline;
+    });
+  }
+  
+  return filtered;
+}
     
     // ==================== RENDER SUBSCRIPTION GRID ====================
     function renderSubscriptionGrid() {

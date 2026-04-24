@@ -2155,8 +2155,10 @@ body {
   align-items: center;
   flex-wrap: wrap;
   gap: 15px;
-  margin-bottom: 25px;
-  padding-bottom: 15px;
+  /* margin-bottom: 25px;
+  padding-bottom: 15px; */
+  margin: 15px;
+  padding-bottom: 10px;
   border-bottom: 2px solid var(--border-light);
 }
 
@@ -2397,6 +2399,7 @@ body {
     font-size: 10px;
   }
 }
+
 
 @media (max-width: 480px) {
   .subscription-module-header {

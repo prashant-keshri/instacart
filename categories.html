@@ -223,6 +223,7 @@
     let categoryManager = null;
     let dealManager = null;
     let alsoManager = null;
+    let allProductsForCategory = [];
     
     // Define categories list for the page
     const categoriesList = [
@@ -232,6 +233,7 @@
       { name: "Beverages", icon: "fa-mug-saucer", cat: "beverages", emoji: "🥤" },
       { name: "Cakes", icon: "fa-cake-candles", cat: "cakes", emoji: "🎂" },
       { name: "Ice Cream", icon: "fa-ice-cream", cat: "icecream", emoji: "🍦" },
+      { name: "Snacks", icon: "fa-bowl-food", cat: "snacks", emoji: "🍿" },
       { name: "Meals", icon: "fa-utensils", cat: "meals", emoji: "🍛" },
       { name: "Meats", icon: "fa-drumstick-bite", cat: "meats", emoji: "🍗" },
       { name: "Dairy", icon: "fa-cheese", cat: "dairy", emoji: "🥛" },
@@ -240,6 +242,22 @@
       { name: "Groceries", icon: "fa-basket-shopping", cat: "groceries", emoji: "🛒" },
       { name: "Subscriptions", icon: "fa-calendar-check", cat: "subscription", emoji: "📦" }
     ];
+    
+    // Categories that have subscription offerings
+    const categoriesWithSubscriptions = ['dairy', 'fruits', 'vegetables', 'meals', 'beverages', 'groceries', 'organic'];
+    
+    // Subscription category mapping
+    const subscriptionMapping = {
+      'dairy': ['dairy', 'groceries'],
+      'fruits': ['fruits', 'organic'],
+      'vegetables': ['vegetables', 'organic'],
+      'meals': ['meals'],
+      'beverages': ['beverages'],
+      'groceries': ['groceries', 'staples'],
+      'organic': ['organic', 'fruits', 'vegetables'],
+      'fitness': ['meals', 'beverages'],
+      'pet': ['groceries']
+    };
     
     // ==================== CATEGORY RENDER FUNCTIONS ====================
     function renderFilterCapsules() {
@@ -257,29 +275,69 @@
       const container = document.getElementById('categoryCardsGrid');
       if (!container) return;
       
-      container.innerHTML = categoriesList.map(cat => 
-        `<div class="category-card ${currentCategory === cat.cat ? 'active' : ''}" data-category="${cat.cat}" onclick="filterByCategory('${cat.cat}')">
-          <div class="category-card-icon">${cat.emoji}</div>
-          <span>${cat.name}</span>
-        </div>`
-      ).join('');
+      container.innerHTML = categoriesList.map(cat => {
+        const hasSubscriptions = categoriesWithSubscriptions.includes(cat.cat);
+        return `
+          <div class="category-card ${currentCategory === cat.cat ? 'active' : ''}" data-category="${cat.cat}" onclick="filterByCategory('${cat.cat}')">
+            <div class="category-card-icon">${cat.emoji}</div>
+            <span>${cat.name}</span>
+            ${hasSubscriptions ? `<small style="font-size:8px; color:var(--orange-primary); margin-top:4px;">+ Subs</small>` : ''}
+          </div>
+        `;
+      }).join('');
     }
     
     // ==================== PRODUCT FILTERING FUNCTIONS ====================
+    function getProductsByCategory(categoryId) {
+      if (!allProductsForCategory || allProductsForCategory.length === 0) return [];
+      if (categoryId === 'all') {
+        return allProductsForCategory;
+      }
+      
+      return allProductsForCategory.filter(p => {
+        let matchesCategory = false;
+        let isSubscriptionProduct = (p.isSubscription === true || p.primaryCategory === 'subscription' || p.category === 'subscription' || p.subscriptionType);
+        
+        // Check if product belongs to this category (for regular products)
+        if (p.primaryCategory === categoryId) matchesCategory = true;
+        if (p.category === categoryId) matchesCategory = true;
+        if (p.categories && p.categories.includes(categoryId)) matchesCategory = true;
+        
+        // Check if subscription belongs to this category
+        if (isSubscriptionProduct) {
+          // Check subscription category
+          if (p.subscriptionCategory === categoryId) matchesCategory = true;
+          // Check if subscription's categories array includes this category
+          if (p.categories && p.categories.includes(categoryId)) matchesCategory = true;
+          
+          // Check through mapping
+          if (subscriptionMapping[categoryId] && subscriptionMapping[categoryId].includes(p.subscriptionCategory)) {
+            matchesCategory = true;
+          }
+          if (subscriptionMapping[p.subscriptionCategory] && subscriptionMapping[p.subscriptionCategory].includes(categoryId)) {
+            matchesCategory = true;
+          }
+        }
+        
+        return matchesCategory;
+      });
+    }
+    
     function getCategoryProducts() {
-      if (!window.allProducts) return [];
-      if (currentCategory === "all") return window.allProducts;
-      return window.allProducts.filter(p => p.category === currentCategory);
+      return getProductsByCategory(currentCategory);
     }
     
     function getDealProducts() {
-      if (!window.allProducts) return [];
-      return window.allProducts.filter(p => p.discountPercent >= 30);
+      if (!allProductsForCategory) return [];
+      return allProductsForCategory.filter(p => {
+        const discount = p.discountPercent || (p.oldPrice ? Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100) : 0);
+        return discount >= 30;
+      });
     }
     
     function getRandomProducts() {
-      if (!window.allProducts) return [];
-      return [...window.allProducts];
+      if (!allProductsForCategory) return [];
+      return [...allProductsForCategory];
     }
     
     // ==================== LOAD SUBSCRIPTION PRODUCTS ====================
@@ -290,8 +348,11 @@
       try {
         const response = await fetch('product.json');
         const data = await response.json();
-        // Get first 3 subscription products
-        const subscriptions = data.products.filter(p => p.category === "subscription").slice(0, 3);
+        const subscriptions = data.products.filter(p => 
+          p.isSubscription === true || 
+          p.category === "subscription" || 
+          p.subscriptionType
+        ).slice(0, 3);
         
         if (subscriptions.length === 0) {
           container.innerHTML = '<p style="text-align:center;">No subscription plans available</p>';
@@ -310,7 +371,7 @@
                 <div class="subscription-type-tag"><i class="fas ${typeIcon}"></i> ${typeText}</div>
               </div>
               <div class="card-content">
-                <div class="card-title">${sub.name}</div>
+                <div class="card-title">${escapeHtml(sub.name)}</div>
                 <div class="card-price">
                   ₹${sub.price}
                   <span class="card-old-price">₹${sub.oldPrice || sub.price + Math.round(sub.price * 0.3)}</span>
@@ -389,7 +450,7 @@
     function filterByCategory(cat) {
       currentCategory = cat;
       
-      // Update active states for pills
+      // Update active states
       document.querySelectorAll('.filter-capsule').forEach(btn => {
         if (btn.getAttribute('data-category') === cat) {
           btn.classList.add('active');
@@ -398,7 +459,6 @@
         }
       });
       
-      // Update active states for cards
       document.querySelectorAll('.category-card').forEach(card => {
         if (card.getAttribute('data-category') === cat) {
           card.classList.add('active');
@@ -407,12 +467,25 @@
         }
       });
       
-      // Refresh the products grid
+      // Refresh products grid
       if (categoryManager) categoryManager.refresh();
       
-      // Update title
+      // Update title with stats
       const categoryName = categoriesList.find(c => c.cat === cat)?.name || 'All Products';
-      document.getElementById('categoryTitle').innerHTML = `<i class="fas fa-tag"></i> ${categoryName}`;
+      const products = getProductsByCategory(cat);
+      const regularCount = products.filter(p => !(p.isSubscription === true || p.category === 'subscription')).length;
+      const subscriptionCount = products.filter(p => (p.isSubscription === true || p.category === 'subscription')).length;
+      
+      let subtitle = '';
+      if (subscriptionCount > 0 && cat !== 'subscription') {
+        subtitle = `<span style="font-size: 12px; color: var(--orange-primary); margin-left: 10px;">${regularCount} products + ${subscriptionCount} subscriptions</span>`;
+      } else if (cat === 'subscription') {
+        subtitle = `<span style="font-size: 12px; color: var(--orange-primary); margin-left: 10px;">${subscriptionCount} subscription plans</span>`;
+      } else {
+        subtitle = `<span style="font-size: 12px; color: var(--text-muted); margin-left: 10px;">${regularCount} products</span>`;
+      }
+      
+      document.getElementById('categoryTitle').innerHTML = `<i class="fas fa-tag"></i> ${categoryName} ${subtitle}`;
     }
     
     // ==================== VIEW PRODUCT ====================
@@ -422,49 +495,75 @@
     
     // ==================== SKELETON FUNCTIONS ====================
     function showCategorySkeleton() {
-      if (typeof showProductsSkeleton === 'function') {
-        showProductsSkeleton('categoryProductsGrid', 12);
-        showProductsSkeleton('dealZoneGrid', 8);
-        showProductsSkeleton('youMayAlsoLikeGrid', 8);
+      const grid = document.getElementById('categoryProductsGrid');
+      if (grid) {
+        grid.innerHTML = '<div class="products-skeleton-grid">' + Array(12).fill(`
+          <div class="product-skeleton">
+            <div class="image-skeleton skeleton"></div>
+            <div class="info-skeleton">
+              <div class="title-skeleton skeleton"></div>
+              <div class="price-skeleton skeleton"></div>
+              <div class="button-skeleton skeleton"></div>
+            </div>
+          </div>
+        `).join('') + '</div>';
       }
     }
-    // ==================== RENDER SUBSCRIPTION SECTION ON CATEGORIES PAGE ====================
-async function renderCategoriesSubscriptionSection() {
-  if (typeof renderSubscriptionSection === 'function') {
-    await renderSubscriptionSection('subscriptionModuleContainer', 'categories', function(category) {
-      if (category && category !== 'all') {
-        window.location.href = `subscription.html?cat=${category}`;
-      } else {
-        window.location.href = 'subscription.html';
+    
+    // ==================== RENDER SUBSCRIPTION SECTION ====================
+    async function renderCategoriesSubscriptionSection() {
+      if (typeof renderSubscriptionSection === 'function') {
+        await renderSubscriptionSection('subscriptionModuleContainer', 'categories', function(category) {
+          if (category && category !== 'all') {
+            window.location.href = `subscription.html?cat=${category}`;
+          } else {
+            window.location.href = 'subscription.html';
+          }
+        });
       }
-    });
-  }
-}
-
-
-// ==================== PAGE INITIALIZATION ====================
-async function initPage() {
-  showCategorySkeleton();
-  
-  await initCommon(() => {});
-  
-  // Get category from URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const catFromUrl = urlParams.get('cat');
-  if (catFromUrl && categoriesList.some(c => c.cat === catFromUrl)) {
-    currentCategory = catFromUrl;
-  }
-  
-  // Render categories
-  renderFilterCapsules();
-  renderCategoryCards();
-  
-  // Load subscription products
-  await loadCategorySubscriptionProducts();
-  // Call this in initPage after loading products
-  await renderCategoriesSubscriptionSection();
-  
-      // Initialize Show More Managers
+    }
+    
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+    
+    // ==================== PAGE INITIALIZATION ====================
+    async function initPage() {
+      showCategorySkeleton();
+      
+      await initCommon(async () => {
+        if (window.allProducts) {
+          allProductsForCategory = [...window.allProducts];
+        } else {
+          try {
+            const response = await fetch('product.json');
+            const data = await response.json();
+            allProductsForCategory = data.products;
+            window.allProducts = allProductsForCategory;
+          } catch(e) {
+            console.error('Error loading products:', e);
+            allProductsForCategory = [];
+          }
+        }
+      });
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      const catFromUrl = urlParams.get('cat');
+      if (catFromUrl && categoriesList.some(c => c.cat === catFromUrl)) {
+        currentCategory = catFromUrl;
+      }
+      
+      renderFilterCapsules();
+      renderCategoryCards();
+      await loadCategorySubscriptionProducts();
+      await renderCategoriesSubscriptionSection();
+      
       categoryManager = createShowMoreManager('categoryProducts', 'categoryProductsGrid', 'loadMoreCatBtn', getCategoryProducts, {
         initialItems: 12,
         loadMoreItems: 6,
@@ -489,19 +588,28 @@ async function initPage() {
       });
       alsoManager.init();
       
-      // Update title
       const categoryName = categoriesList.find(c => c.cat === currentCategory)?.name || 'All Products';
-      document.getElementById('categoryTitle').innerHTML = `<i class="fas fa-tag"></i> ${categoryName}`;
+      const products = getProductsByCategory(currentCategory);
+      const regularCount = products.filter(p => !(p.isSubscription === true || p.category === 'subscription')).length;
+      const subscriptionCount = products.filter(p => (p.isSubscription === true || p.category === 'subscription')).length;
+      
+      let subtitle = '';
+      if (subscriptionCount > 0 && currentCategory !== 'subscription') {
+        subtitle = `<span style="font-size: 12px; color: var(--orange-primary); margin-left: 10px;">${regularCount} products + ${subscriptionCount} subscriptions</span>`;
+      } else if (currentCategory === 'subscription') {
+        subtitle = `<span style="font-size: 12px; color: var(--orange-primary); margin-left: 10px;">${subscriptionCount} subscription plans</span>`;
+      } else {
+        subtitle = `<span style="font-size: 12px; color: var(--text-muted); margin-left: 10px;">${regularCount} products</span>`;
+      }
+      
+      document.getElementById('categoryTitle').innerHTML = `<i class="fas fa-tag"></i> ${categoryName} ${subtitle}`;
     }
     
-    // Make functions available globally
     window.filterByCategory = filterByCategory;
     window.addSubscriptionToCart = addSubscriptionToCart;
     window.viewProduct = viewProduct;
     
-    // Start the page
     initPage();
-
-  </script>
+</script>
 </body>
 </html>
