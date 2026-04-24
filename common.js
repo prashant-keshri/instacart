@@ -1993,7 +1993,7 @@ function renderPriceBreakdown(priceData, showFreeDeliveryMessage = false, freeDe
     `;
   } else if (showFreeDeliveryMessage && subtotal >= freeDeliveryThreshold && subtotal > 0 && deliveryFee === 0) {
     html += `
-      <div class="breakdown-row free-delivery-note success">
+      <div class="breakdown-row free-delivery-note ṁṁ">
         <span><i class="fas fa-check-circle"></i> You saved ${formatCurrency(SITE_CONFIG.DELIVERY_CHARGE)} on delivery!</span>
         <span></span>
       </div>

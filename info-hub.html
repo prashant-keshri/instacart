@@ -18,7 +18,7 @@
       margin-bottom: 40px;
     }
     .page-header h1 { font-size: 36px; margin-bottom: 15px; }
-    .page-header p { fontSize: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .page-header p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
     
     /* Main Tabs - 3 Sections */
     .main-tabs {
@@ -61,6 +61,7 @@
     .sub-tabs {
       display: flex;
       flex-wrap: wrap;
+      justify-content: center;
       gap: 10px;
       margin-bottom: 30px;
       background: var(--surface);
@@ -102,111 +103,25 @@
     .legal-subcontent.active { display: block; }
     
     /* FAQ Accordion Styles */
-    .faq-category {
-      margin-bottom: 30px;
-    }
-    .faq-category h3 {
-      font-size: 22px;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--orange-primary);
-      display: inline-block;
-    }
-    .faq-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    .faq-item {
-      background: var(--bg-primary);
-      border-radius: 16px;
-      border: 1px solid var(--border-light);
-      overflow: hidden;
-      transition: all 0.2s;
-    }
-    .faq-item:hover {
-      border-color: var(--orange-primary);
-    }
-    .faq-question {
-      padding: 18px 22px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      font-size: 16px;
-      transition: background 0.2s;
-    }
-    .faq-question:hover {
-      background: var(--surface);
-    }
-    .faq-question i {
-      transition: transform 0.3s;
-      color: var(--orange-primary);
-      font-size: 16px;
-    }
-    .faq-item.active .faq-question i {
-      transform: rotate(180deg);
-    }
-    .faq-answer {
-      padding: 0 22px;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease, padding 0.3s ease;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      font-size: 14px;
-    }
-    .faq-item.active .faq-answer {
-      padding: 0 22px 18px 22px;
-      max-height: 500px;
-    }
-    .faq-search {
-      margin-bottom: 25px;
-      position: relative;
-    }
-    .faq-search input {
-      width: 100%;
-      padding: 14px 20px;
-      border-radius: 50px;
-      border: 1px solid var(--border-light);
-      background: var(--surface);
-      color: var(--text-primary);
-      font-size: 14px;
-      padding-left: 50px;
-    }
-    .faq-search i {
-      position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-    }
-    .faq-search input:focus {
-      outline: none;
-      border-color: var(--orange-primary);
-    }
-    .no-results {
-      text-align: center;
-      padding: 40px;
-      color: var(--text-muted);
-    }
-    .faq-contact-box {
-      background: linear-gradient(135deg, var(--orange-primary), var(--green-primary));
-      border-radius: 20px;
-      padding: 25px;
-      text-align: center;
-      color: white;
-      margin-top: 30px;
-    }
-    .faq-contact-box a {
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .faq-contact-box a:hover {
-      text-decoration: underline;
-    }
+    .faq-category { margin-bottom: 30px; }
+    .faq-category h3 { font-size: 22px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--orange-primary); display: inline-block; }
+    .faq-grid { display: flex; flex-direction: column; gap: 15px; }
+    .faq-item { background: var(--bg-primary); border-radius: 16px; border: 1px solid var(--border-light); overflow: hidden; transition: all 0.2s; }
+    .faq-item:hover { border-color: var(--orange-primary); }
+    .faq-question { padding: 18px 22px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 16px; transition: background 0.2s; }
+    .faq-question:hover { background: var(--surface); }
+    .faq-question i { transition: transform 0.3s; color: var(--orange-primary); font-size: 16px; }
+    .faq-item.active .faq-question i { transform: rotate(180deg); }
+    .faq-answer { padding: 0 22px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; color: var(--text-secondary); line-height: 1.6; font-size: 14px; }
+    .faq-item.active .faq-answer { padding: 0 22px 18px 22px; max-height: 500px; }
+    .faq-search { margin-bottom: 25px; position: relative; }
+    .faq-search input { width: 100%; padding: 14px 20px; border-radius: 50px; border: 1px solid var(--border-light); background: var(--surface); color: var(--text-primary); font-size: 14px; padding-left: 50px; }
+    .faq-search i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .faq-search input:focus { outline: none; border-color: var(--orange-primary); }
+    .no-results { text-align: center; padding: 40px; color: var(--text-muted); }
+    .faq-contact-box { background: linear-gradient(135deg, var(--orange-primary), var(--green-primary)); border-radius: 20px; padding: 25px; text-align: center; color: white; margin-top: 30px; }
+    .faq-contact-box a { color: white; text-decoration: none; font-weight: 600; }
+    .faq-contact-box a:hover { text-decoration: underline; }
     
     /* Careers Section Styles */
     .careers-hero { background: var(--surface); border-radius: 24px; padding: 40px; text-align: center; margin-bottom: 40px; border: 1px solid var(--border-light); }
@@ -302,17 +217,17 @@
   <main class="container">
     <!-- Main Tabs -->
     <div class="main-tabs">
-      <button class="main-tab active" data-section="legal"><i class="fas fa-gavel"></i> Legal & Policies</button>
+      <button class="main-tab" data-section="legal"><i class="fas fa-gavel"></i> Legal & Policies</button>
       <button class="main-tab" data-section="careers"><i class="fas fa-briefcase"></i> Careers</button>
       <button class="main-tab" data-section="blog"><i class="fas fa-blog"></i> Blog</button>
     </div>
 
     <!-- ==================== SECTION 1: LEGAL & POLICIES ==================== -->
-    <div id="legal-section" class="section-content active">
+    <div id="legal-section" class="section-content">
       <!-- Legal Sub Tabs -->
       <div class="sub-tabs">
         <button class="sub-tab" data-legal-tab="about"><i class="fas fa-info-circle"></i> About Us</button>
-        <button class="sub-tab" data-legal-tab="contact"><i class="fas fa-phone-alt"></i> Contact</button>
+        <button class="sub-tab" data-legal-tab="contact"><i class="fas fa-phone-alt"></i> Contact Us</button>
         <button class="sub-tab" data-legal-tab="privacy"><i class="fas fa-shield-alt"></i> Privacy Policy</button>
         <button class="sub-tab" data-legal-tab="terms"><i class="fas fa-file-contract"></i> Terms & Conditions</button>
         <button class="sub-tab" data-legal-tab="return"><i class="fas fa-undo-alt"></i> Return Policy</button>
@@ -414,29 +329,25 @@
         </div>
       </div>
 
-      <!-- ==================== FAQ CONTENT ==================== -->
-      <div id="legal-faq" class="legal-subcontent active">
+      <!-- FAQ Content -->
+      <div id="legal-faq" class="legal-subcontent">
         <div class="legal-card">
           <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
           <p>Find quick answers to commonly asked questions about FreshKart, orders, delivery, payments, and more.</p>
           
-          <!-- Search Bar -->
           <div class="faq-search">
             <i class="fas fa-search"></i>
             <input type="text" id="faqSearchInput" placeholder="Search FAQs... (e.g., delivery, payment, return)">
           </div>
           
-          <!-- FAQ Categories -->
           <div id="faqCategoriesContainer"></div>
           
-          <!-- No Results Message -->
           <div id="noResultsMessage" class="no-results" style="display: none;">
             <i class="fas fa-search fa-2x"></i>
             <h3>No matching questions found</h3>
             <p>Try different keywords or contact our support team.</p>
           </div>
           
-          <!-- Contact Box -->
           <div class="faq-contact-box">
             <i class="fas fa-headset fa-2x"></i>
             <h3>Still have questions?</h3>
@@ -461,14 +372,12 @@
 
     <!-- ==================== SECTION 2: CAREERS ==================== -->
     <div id="careers-section" class="section-content">
-      <!-- Hero -->
       <div class="careers-hero">
         <h2>Build the Future of Grocery Delivery with FreshKart</h2>
         <p>Join India's fastest-growing grocery delivery platform. We're looking for passionate individuals who want to make a difference.</p>
         <button class="sub-plan-btn" onclick="document.getElementById('job-openings').scrollIntoView({behavior:'smooth'})" style="background:var(--orange-primary);">View Open Positions →</button>
       </div>
 
-      <!-- Stats -->
       <div class="stats-grid">
         <div class="stat-box"><div class="stat-number">500+</div><div class="stat-label">Team Members</div></div>
         <div class="stat-box"><div class="stat-number">50+</div><div class="stat-label">Cities Covered</div></div>
@@ -476,7 +385,6 @@
         <div class="stat-box"><div class="stat-number">30+</div><div class="stat-label">Open Positions</div></div>
       </div>
 
-      <!-- Values -->
       <div class="values-grid">
         <div class="value-card"><div class="value-icon"><i class="fas fa-rocket"></i></div><h3>Fast Growth</h3><p>Massive learning opportunities</p></div>
         <div class="value-card"><div class="value-icon"><i class="fas fa-hand-holding-heart"></i></div><h3>Great Culture</h3><p>Collaborative environment</p></div>
@@ -484,13 +392,11 @@
         <div class="value-card"><div class="value-icon"><i class="fas fa-laptop-house"></i></div><h3>Work Flexibility</h3><p>Hybrid work model</p></div>
       </div>
 
-      <!-- Job Openings -->
       <div id="job-openings" class="job-openings">
         <h2><i class="fas fa-bullhorn"></i> Current Openings</h2>
         <div id="job-listings-container"></div>
       </div>
 
-      <!-- Application Form -->
       <div id="application-form-container" class="application-form">
         <h3>Apply for <span id="apply-job-title"></span></h3>
         <form id="job-application-form">
@@ -505,7 +411,6 @@
         </form>
       </div>
 
-      <!-- HR Contact -->
       <div class="contact-info-box">
         <h3><i class="fas fa-envelope"></i> HR Contact Information</h3>
         <p><i class="fas fa-phone-alt"></i> <a href="tel:18001234567">1800-123-4567</a> (Press 3 for HR)</p>
@@ -522,7 +427,7 @@
       <div id="blog-grid-container" class="blog-grid"></div>
     </div>
 
-    <div class="last-updated"><p><i class="fas fa-sync-alt"></i> Last updated: January 2025 | FreshKart Grocery Delivery</p></div>
+    <div class="last-updated"><p><i class="fas fa-sync-alt"></i> &copy; All Rights Reserved | FreshKart Grocery Delivery</p></div>
   </main>
 
   <!-- Blog Modal -->
@@ -605,18 +510,57 @@
           { q: "What is FreshKart Plus membership?", a: "FreshKart Plus is our premium membership (₹999/year). Benefits include free delivery on all orders, 10% extra discount, priority support, and exclusive deals." },
           { q: "How do I contact customer support?", a: "Call 1800-123-4567 (24/7), email support@freshkart.com, or use live chat on our website/app. Response within 2 hours." }
         ]
-      },
-      {
-        name: "📱 App & Technology",
-        icon: "fa-mobile-alt",
-        questions: [
-          { q: "Where can I download the FreshKart app?", a: "The FreshKart app is available on Google Play Store for Android and Apple App Store for iOS. Search 'FreshKart' and download for free." },
-          { q: "Is the app free?", a: "Yes, the FreshKart app is completely free to download and use. You only pay for your orders." },
-          { q: "Can I use the website on mobile?", a: "Yes, our website is fully mobile-responsive. You can access freshkart.com from any mobile browser for a seamless shopping experience." },
-          { q: "How do I enable notifications?", a: "When you first open the app, allow notifications. You can also enable them later in app settings > Notifications." }
-        ]
       }
     ];
+
+    // ==================== JOB OPENINGS DATA ====================
+    const jobsData = [
+      { id: 1, title: "Senior Software Engineer - Full Stack", department: "Technology", location: "Gurugram (Hybrid)", type: "Full-time", experience: "3-6 years" },
+      // { id: 2, title: "Frontend Developer - React", department: "Technology", location: "Remote", type: "Full-time", experience: "2-4 years" },
+      // { id: 3, title: "Backend Engineer - Python/Django", department: "Technology", location: "Bengaluru", type: "Full-time", experience: "2-5 years" },
+      // { id: 4, title: "Operations Manager", department: "Operations", location: "Delhi NCR", type: "Full-time", experience: "4-8 years" },
+      { id: 5, title: "Supply Chain Coordinator", department: "Operations", location: "Mumbai", type: "Full-time", experience: "1-3 years" },
+      // { id: 6, title: "Marketing Manager - Growth", department: "Marketing", location: "Gurugram", type: "Full-time", experience: "4-7 years" },
+      // { id: 7, title: "Digital Marketing Specialist", department: "Marketing", location: "Remote", type: "Full-time", experience: "2-4 years" },
+      // { id: 8, title: "Customer Support Team Lead", department: "Support", location: "Gurugram", type: "Full-time", experience: "3-5 years" },
+      // { id: 9, title: "Customer Support Executive", department: "Support", location: "Remote", type: "Full-time", experience: "0-2 years" },
+      // { id: 10, title: "Product Manager", department: "Product", location: "Gurugram", type: "Full-time", experience: "3-6 years" },
+      // { id: 11, title: "UI/UX Designer", department: "Design", location: "Remote", type: "Full-time", experience: "2-4 years" },
+      // { id: 12, title: "HR Generalist", department: "HR", location: "Gurugram", type: "Full-time", experience: "2-4 years" }
+      { id: 13, title: "Delivery Executive", department: "Operations", location: "On-Site", type: "Own-Convenience", experience: "0 years" }
+    ];
+
+    // ==================== BLOG DATA ====================
+    const blogPosts = [
+      { id: 1, title: "How FreshKart is Revolutionizing India's Grocery Delivery", category: "Company News", excerpt: "Discover how technology is transforming grocery shopping in India.", content: "<p>FreshKart has reimagined grocery delivery by combining technology, efficient supply chains, and a customer-first approach. Since our launch, we've served over 500,000 customers across 50+ cities.</p><p>We source directly from farmers, eliminating middlemen. This ensures farmers get fair prices and customers get fresh produce at affordable rates.</p>", image: "https://images.unsplash.com/photo-1567446537708-ac4aa75c9c28?w=400", date: "2025-03-15", author: "Rahul Sharma, CEO" },
+      { id: 2, title: "5 Tips for Keeping Vegetables Fresh Longer", category: "Tips & Tricks", excerpt: "Simple storage hacks to extend vegetable life.", content: "<p>Want your vegetables to stay fresh longer? Here are proven tips: Leafy greens store in airtight containers with paper towel. Root vegetables - remove greens before storing. Tomatoes never refrigerate. Herbs store like flowers in water. Mushrooms keep in paper bags.</p>", image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400", date: "2025-03-10", author: "Priya Mehta, Nutritionist" },
+      { id: 3, title: "Meet the Farmers Behind Your Fresh Produce", category: "Behind the Scenes", excerpt: "Stories of the farmers who make FreshKart possible.", content: "<p>Behind every fresh vegetable is a dedicated farmer. From apple orchards of Himachal to mango farms of Ratnagiri, our farmers use sustainable practices to grow quality produce.</p>", image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400", date: "2025-03-05", author: "Amit Kumar" }
+    ];
+
+    let currentLegalTab = "faq";
+    let currentBlogCat = "all";
+
+    // ==================== GET URL PARAMETERS ====================
+    function getUrlParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hash = window.location.hash.substring(1);
+      
+      // Check for section in URL (priority: hash > section param > default)
+      let section = null;
+      if (hash && ['legal', 'careers', 'blog'].includes(hash)) {
+        section = hash;
+      } else if (urlParams.has('section')) {
+        section = urlParams.get('section');
+      }
+      
+      // Check for tab in URL
+      let tab = null;
+      if (urlParams.has('tab')) {
+        tab = urlParams.get('tab');
+      }
+      
+      return { section, tab };
+    }
 
     // ==================== RENDER FAQ ====================
     function renderFAQ() {
@@ -631,7 +575,7 @@
             <div class="faq-grid">
               ${category.questions.map((item, idx) => `
                 <div class="faq-item" data-question="${item.q.toLowerCase()}">
-                  <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+                  <div class="faq-question" onclick="toggleFaqItem(this)">
                     <span>${item.q}</span>
                     <i class="fas fa-chevron-down"></i>
                   </div>
@@ -645,6 +589,14 @@
       container.innerHTML = html;
     }
 
+    // ==================== TOGGLE FAQ ITEM ====================
+    function toggleFaqItem(element) {
+      const faqItem = element.closest('.faq-item');
+      if (faqItem) {
+        faqItem.classList.toggle('active');
+      }
+    }
+
     // ==================== SEARCH FAQ ====================
     function searchFAQ() {
       const searchTerm = document.getElementById('faqSearchInput')?.value.toLowerCase().trim();
@@ -653,7 +605,6 @@
       const noResults = document.getElementById('noResultsMessage');
       
       if (!searchTerm) {
-        // Show all items
         faqItems.forEach(item => item.style.display = 'block');
         categories.forEach(cat => cat.style.display = 'block');
         if (noResults) noResults.style.display = 'none';
@@ -684,38 +635,6 @@
         noResults.style.display = hasResults ? 'none' : 'block';
       }
     }
-
-    // ==================== JOB OPENINGS DATA ====================
-    const jobsData = [
-      { id: 1, title: "Senior Software Engineer - Full Stack", department: "Technology", location: "Gurugram (Hybrid)", type: "Full-time", experience: "3-6 years" },
-      { id: 2, title: "Frontend Developer - React", department: "Technology", location: "Remote", type: "Full-time", experience: "2-4 years" },
-      // { id: 3, title: "Backend Engineer - Python/Django", department: "Technology", location: "Bengaluru", type: "Full-time", experience: "2-5 years" },
-      // { id: 4, title: "Operations Manager", department: "Operations", location: "Delhi NCR", type: "Full-time", experience: "4-8 years" },
-      // { id: 5, title: "Supply Chain Coordinator", department: "Operations", location: "Mumbai", type: "Full-time", experience: "1-3 years" },
-      // { id: 6, title: "Marketing Manager - Growth", department: "Marketing", location: "Gurugram", type: "Full-time", experience: "4-7 years" },
-      // { id: 7, title: "Digital Marketing Specialist", department: "Marketing", location: "Remote", type: "Full-time", experience: "2-4 years" },
-      // { id: 8, title: "Customer Support Team Lead", department: "Support", location: "Gurugram", type: "Full-time", experience: "3-5 years" },
-      // { id: 9, title: "Customer Support Executive", department: "Support", location: "Remote", type: "Full-time", experience: "0-2 years" },
-      // { id: 10, title: "Product Manager", department: "Product", location: "Gurugram", type: "Full-time", experience: "3-6 years" },
-      { id: 11, title: "UI/UX Designer", department: "Design", location: "Remote", type: "Full-time", experience: "2-4 years" },
-      { id: 12, title: "HR Generalist", department: "HR", location: "Gurugram", type: "Full-time", experience: "2-4 years" },
-      // { id: 13, title: "Talent Acquisition Specialist", department: "HR", location: "Remote", type: "Full-time", experience: "2-4 years" },
-      { id: 14, title: "Data Scientist", department: "Technology", location: "Bengaluru", type: "Full-time", experience: "2-5 years" },
-      { id: 15, title: "Software Engineering Intern", department: "Internships", location: "Remote", type: "Internship", experience: "0 years" },
-      // { id: 16, title: "Marketing Intern", department: "Internships", location: "Remote", type: "Internship", experience: "0 years" }
-      { id: 16, title: "Delivery-Partner", department: "Delivery", location: "on-field", type: "Own-Convenience", experience: "0 years" }
-    ];
-
-    // ==================== BLOG DATA ====================
-    const blogPosts = [
-      { id: 1, title: "How FreshKart is Revolutionizing India's Grocery Delivery", category: "Company News", excerpt: "Discover how technology is transforming grocery shopping in India.", content: "<p>FreshKart has reimagined grocery delivery by combining technology, efficient supply chains, and a customer-first approach. Since our launch, we've served over 500,000 customers across 50+ cities.</p><p>We source directly from farmers, eliminating middlemen. This ensures farmers get fair prices and customers get fresh produce at affordable rates.</p><p>With plans to expand to 100 cities by 2026, FreshKart is just getting started!</p>", image: "https://images.unsplash.com/photo-1567446537708-ac4aa75c9c28?w=400", date: "2025-03-15", author: "Rahul Sharma, CEO" },
-      { id: 2, title: "5 Tips for Keeping Vegetables Fresh Longer", category: "Tips & Tricks", excerpt: "Simple storage hacks to extend vegetable life.", content: "<p>Want your vegetables to stay fresh longer? Here are proven tips:</p><ul><li><strong>Leafy greens:</strong> Store in airtight containers with paper towel to absorb moisture.</li><li><strong>Root vegetables:</strong> Remove greens before storing in cool, dark place.</li><li><strong>Tomatoes:</strong> Never refrigerate - keep at room temperature.</li><li><strong>Herbs:</strong> Store like flowers - in water with plastic bag over top.</li><li><strong>Mushrooms:</strong> Keep in paper bags, not plastic.</li></ul><p>Follow FreshKart for more grocery tips!</p>", image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400", date: "2025-03-10", author: "Priya Mehta, Nutritionist" },
-      { id: 3, title: "Meet the Farmers Behind Your Fresh Produce", category: "Behind the Scenes", excerpt: "Stories of the farmers who make FreshKart possible.", content: "<p>Behind every fresh vegetable and fruit on FreshKart is a dedicated farmer. We visited our partner farms across India to bring you their stories.</p><p>From the apple orchards of Himachal Pradesh to the mango farms of Ratnagiri, our farmers use sustainable practices to grow the highest quality produce.</p><p>By working directly with farmers, FreshKart ensures they receive fair prices and customers get the freshest products possible.</p>", image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400", date: "2025-03-05", author: "Amit Kumar, Operations Head" },
-      { id: 4, title: "The Rise of Organic Grocery Delivery in India", category: "Industry Trends", excerpt: "Why more Indians are choosing organic produce.", content: "<p>The organic food market in India is growing at 25% annually. More consumers are becoming aware of the health and environmental benefits of organic produce.</p><p>FreshKart now offers certified organic products from over 200 farms. Our organic range includes vegetables, fruits, staples, and dairy products.</p><p>We verify organic certification and ensure complete traceability from farm to fork.</p>", image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=400", date: "2025-02-28", author: "Neha Gupta, Organic Specialist" }
-    ];
-
-    let currentLegalTab = "faq";
-    let currentBlogCat = "all";
 
     // ==================== RENDER JOB LISTINGS ====================
     function renderJobs() {
@@ -808,34 +727,8 @@
       document.getElementById('blog-modal').classList.remove('active'); 
     }
 
-    // ==================== SWITCH LEGAL TAB (SUB-TABS) ====================
-    function switchLegalTab(tabId) {
-      // Hide all legal subcontents
-      document.querySelectorAll('.legal-subcontent').forEach(el => {
-        el.classList.remove('active');
-      });
-      
-      // Show selected legal subcontent
-      const selectedContent = document.getElementById(`legal-${tabId}`);
-      if (selectedContent) {
-        selectedContent.classList.add('active');
-      }
-      
-      // Update active state on sub-tab buttons
-      document.querySelectorAll('.sub-tab').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-legal-tab') === tabId) {
-          btn.classList.add('active');
-        }
-      });
-      
-      // Save to localStorage
-      currentLegalTab = tabId;
-      localStorage.setItem('freshkart_legal_tab', tabId);
-    }
-
     // ==================== SWITCH MAIN SECTION ====================
-    function switchSection(section) {
+    function switchSection(section, saveToStorage = true) {
       // Hide all sections
       document.querySelectorAll('.section-content').forEach(el => {
         el.classList.remove('active');
@@ -855,8 +748,10 @@
         }
       });
       
-      // Save to localStorage
-      localStorage.setItem('freshkart_active_section', section);
+      // Save to localStorage only if not from URL (to avoid overriding)
+      if (saveToStorage) {
+        localStorage.setItem('freshkart_active_section', section);
+      }
       
       // Render content if needed
       if (section === 'careers') {
@@ -865,9 +760,56 @@
       if (section === 'blog') {
         renderBlog();
       }
+    }
+
+    // ==================== SWITCH LEGAL TAB ====================
+    function switchLegalTab(tabId, saveToStorage = true) {
+      // Hide all legal subcontents
+      document.querySelectorAll('.legal-subcontent').forEach(el => {
+        el.classList.remove('active');
+      });
       
-      // Update URL hash for deep linking
-      window.location.hash = section;
+      // Show selected legal subcontent
+      const selectedContent = document.getElementById(`legal-${tabId}`);
+      if (selectedContent) {
+        selectedContent.classList.add('active');
+      }
+      
+      // Update active state on sub-tab buttons
+      document.querySelectorAll('.sub-tab').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-legal-tab') === tabId) {
+          btn.classList.add('active');
+        }
+      });
+      
+      // Save to localStorage only if not from URL
+      if (saveToStorage) {
+        currentLegalTab = tabId;
+        localStorage.setItem('freshkart_legal_tab', tabId);
+      }
+    }
+
+    // ==================== UPDATE URL WITHOUT RELOAD ====================
+    function updateUrl(section, tab) {
+      const newUrl = new URL(window.location.href);
+      if (section && section !== 'legal') {
+        newUrl.searchParams.set('section', section);
+        newUrl.hash = '';
+      } else if (section === 'legal') {
+        newUrl.searchParams.delete('section');
+        if (tab && tab !== 'faq') {
+          newUrl.searchParams.set('tab', tab);
+        } else {
+          newUrl.searchParams.delete('tab');
+        }
+        newUrl.hash = '';
+      } else {
+        newUrl.searchParams.delete('section');
+        newUrl.searchParams.delete('tab');
+        newUrl.hash = '';
+      }
+      window.history.pushState({}, '', newUrl);
     }
 
     // ==================== APPLICATION FORM SUBMIT ====================
@@ -892,29 +834,54 @@
         searchInput.addEventListener('input', searchFAQ);
       }
       
-      // Get saved preferences
-      const savedSection = localStorage.getItem('freshkart_active_section') || 'legal';
-      const savedLegalTab = localStorage.getItem('freshkart_legal_tab') || 'faq';
+      // Get URL parameters (these take priority over localStorage)
+      const urlParams = getUrlParams();
       
-      // Set initial active section
-      switchSection(savedSection);
+      // Determine which section to show (URL takes priority)
+      let targetSection = urlParams.section;
+      let targetTab = urlParams.tab;
       
-      // Set initial legal tab (only if on legal section)
-      if (savedSection === 'legal') {
-        switchLegalTab(savedLegalTab);
+      if (targetSection) {
+        // URL parameter exists - use it and don't save to storage
+        switchSection(targetSection, false);
+        
+        // If we're on legal section and have a tab parameter
+        if (targetSection === 'legal' && targetTab) {
+          switchLegalTab(targetTab, false);
+        } else if (targetSection === 'legal') {
+          // Default to FAQ if no tab specified
+          switchLegalTab('faq', false);
+        }
+        
+        // Update URL to reflect current state
+        updateUrl(targetSection, targetTab);
+      } else {
+        // No URL parameters - use localStorage or defaults
+        const savedSection = localStorage.getItem('freshkart_active_section') || 'legal';
+        const savedLegalTab = localStorage.getItem('freshkart_legal_tab') || 'faq';
+        
+        switchSection(savedSection, true);
+        
+        if (savedSection === 'legal') {
+          switchLegalTab(savedLegalTab, true);
+        }
       }
       
       // Add event listeners to main tabs
       document.querySelectorAll('.main-tab').forEach(btn => {
-        btn.addEventListener('click', () => {
-          switchSection(btn.getAttribute('data-section'));
+        btn.addEventListener('click', function() {
+          const section = this.getAttribute('data-section');
+          switchSection(section, true);
+          updateUrl(section, null);
         });
       });
       
       // Add event listeners to sub-tabs
       document.querySelectorAll('.sub-tab').forEach(btn => {
-        btn.addEventListener('click', () => {
-          switchLegalTab(btn.getAttribute('data-legal-tab'));
+        btn.addEventListener('click', function() {
+          const tab = this.getAttribute('data-legal-tab');
+          switchLegalTab(tab, true);
+          updateUrl('legal', tab);
         });
       });
       
@@ -931,6 +898,7 @@
     window.switchLegalTab = switchLegalTab;
     window.switchSection = switchSection;
     window.searchFAQ = searchFAQ;
+    window.toggleFaqItem = toggleFaqItem;
     
     initPage();
   </script>

@@ -40,12 +40,13 @@
     
     /* Main Card */
     .success-card {
-      background: var(--surface);
+      background: var(--surface) 50% transparent;
       border-radius: 40px;
       padding: 40px 30px;
       border: 1px solid var(--border-light);
       position: relative;
       z-index: 10;
+      transition: ;
       animation: slideUpPop 0.5s ease-out;
     }
     @keyframes slideUpPop {
@@ -217,7 +218,7 @@
   <script src="common.js"></script>
   <script>
     let order = null;
-    let timerSeconds = 10;
+    let timerSeconds = 100;
     
     function createRibbons() {
       const container = document.getElementById('confettiBg');
