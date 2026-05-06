@@ -9,14 +9,14 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="common.css">
   <style>
-    .page-header { text-align: center; margin: 30px 0; }
+    .page-header { text-align: center; margin: 10px 0; }
     .page-header h1 { font-size: 32px; margin-bottom: 10px; }
     .page-header p { color: var(--text-muted); }
     
     /* Timeline Section */
     .timeline-section {
-      margin: 20px 0 30px;
-      padding: 20px;
+      margin: 10px 0 10px;
+      padding: 10px;
       background: var(--surface);
       border-radius: 20px;
       border: 1px solid var(--border-light);
@@ -25,9 +25,10 @@
     .timeline-title {
       font-size: 16px;
       font-weight: 600;
-      margin-bottom: 15px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       color: var(--text-primary);
     }
@@ -197,6 +198,126 @@
       margin: 20px 0;
     }
     
+    /* My Subscriptions Preview Section */
+    .my-subscriptions-section {
+      background: var(--surface);
+      border-radius: 28px;
+      border: 1px solid var(--border-light);
+      margin: 40px 0;
+      overflow: hidden;
+    }
+    
+    .my-subs-header {
+      background: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(46,125,50,0.08));
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .my-subs-header h2 {
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .subs-stats-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--orange-primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      margin-left: 12px;
+    }
+    
+    .subs-preview-card {
+      background: var(--bg-primary);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-light);
+      transition: all 0.2s;
+    }
+    
+    .subs-preview-card:hover {
+      border-color: var(--orange-primary);
+      transform: translateX(5px);
+    }
+    
+    .subs-preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .subs-preview-name {
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .subs-preview-status {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    .subs-preview-next {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .subs-preview-price {
+      font-weight: 800;
+      color: var(--green-primary);
+      font-size: 14px;
+    }
+    
+    .view-all-manage-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--orange-primary), var(--green-primary));
+      color: white;
+      padding: 12px 32px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .view-all-manage-btn:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px rgba(249,115,22,0.4);
+    }
+    
+    .quick-action-link {
+      color: var(--orange-primary);
+      font-size: 12px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .quick-action-link:hover {
+      text-decoration: underline;
+    }
+    
     @keyframes fadeIn { 
       from { opacity: 0; transform: translateY(-10px); } 
       to { opacity: 1; transform: translateY(0); } 
@@ -207,18 +328,36 @@
       .steps-grid { grid-template-columns: 1fr; gap: 20px; }
       .faq-grid { grid-template-columns: 1fr; }
       .subscription-small-grid { gap: 12px; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+      .my-subs-header { padding: 16px; }
+      .my-subs-header h2 { font-size: 18px; }
+      .subs-stats-badge { font-size: 10px; margin-left: 8px; }
+      .subs-preview-card { padding: 12px; }
     }
   </style>
 </head>
 <body data-theme="dark">
   <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
-
+  
   <!-- Top Bar -->
   <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
-
-  <!-- Header -->
-  <header class="main-header"><div class="container"><div class="logo-row"><div class="logo"><h1>Fresh<span>Kart</span></h1><p style="font-size:10px;">Grocery Delivery</p></div><div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span id="mobileCartCount">0</span></div></div><div class="search-location"><div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search subscriptions..."></div><div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect"><option>📍 Delhi 110001</option><option>📍 Mumbai 400001</option><option>📍 Bangalore 560001</option></select></div></div><div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button></div></div></header>
-
+  
+  <!-- Horizontal Brand Switcher -->
+  <div class="brand-bar">
+    <div class="brand-container">
+      <button class="brand-switch-btn" data-brand="hyperlocal" data-url="index.html">
+        <i class="fas fa-store"></i> Hyper Local
+      </button>
+      <button class="brand-switch-btn active" data-brand="subscribe" data-url="subscription.html">
+        <i class="fas fa-calendar-check"></i> Subscribe
+      </button>
+      <button class="brand-switch-btn" data-brand="ride" data-url="ride.html">
+        <i class="fas fa-motorcycle"></i> Ride
+      </button>
+    </div>
+  </div>
+  
+  <div id="simpleHeaderPlaceholder"></div>
+  
   <!-- Main Content -->
   <main class="container">
     <div class="page-header">
@@ -256,6 +395,29 @@
     <!-- Subscription Products Grid -->
     <div id="subscriptionGrid" class="subscription-small-grid"></div>
 
+    <!-- ==================== MY SUBSCRIPTIONS PREVIEW SECTION ==================== -->
+    <div class="my-subscriptions-section">
+      <div class="my-subs-header">
+        <h2>
+          <i class="fas fa-list-alt"></i> My Subscriptions
+          <span class="subs-stats-badge" id="activeSubsCount">0 Active</span>
+        </h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">Manage all your active subscriptions in one place</p>
+      </div>
+      
+      <!-- Quick Preview -->
+      <div id="mySubscriptionsPreview" style="padding: 20px;">
+        <!-- Subscriptions preview will be loaded here -->
+      </div>
+      
+      <!-- View All Button -->
+      <div style="padding: 16px 24px 24px; text-align: center; border-top: 1px solid var(--border-light);">
+        <a href="subscription-manager.html" class="view-all-manage-btn">
+          Manage All Subscriptions <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+
     <!-- How It Works -->
     <div class="how-it-works">
       <h2><i class="fas fa-question-circle"></i> How It Works</h2>
@@ -279,34 +441,47 @@
     </div>
   </main>
 
-  <!-- Bottom Nav -->
-  <nav class="bottom-nav"><a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a><a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a><a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a><a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a></nav>
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item" id="navHome">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="#" class="nav-item active" id="navBrowsePlans">
+      <i class="fas fa-calendar-check"></i>
+      <span>Plans</span>
+    </a>
+    <a href="subscription-manager.html" class="nav-item" id="navManageSubs">
+      <i class="fas fa-list-alt"></i>
+      <span>Manage</span>
+    </a>
+    <a href="account.html" class="nav-item" id="navAccount">
+      <i class="fas fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>
 
   <!-- Cart Sidebar -->
-  <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div><div class="cart-items" id="cartItemsList"></div><div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div>
+    <div class="cart-items" id="cartItemsList"></div>
+    <div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div>
+  </div>
   <div class="overlay" id="overlay"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="common.js"></script>
   <script>
     // ==================== SUBSCRIPTION PAGE CONFIGURATION ====================
-    // Edit these variables to customize the subscription page
     const SUBSCRIPTION_CONFIG = {
-      // Filter settings
       defaultTimeline: "all",
       defaultCategory: "all",
-      
-      // Display settings
       showTimelineFilter: true,
       showCategoryCards: true,
       showActiveFiltersBar: true,
-      
-      // Product display settings
       productsPerRow: 4,
       showDiscountBadge: true,
       showDeliveryInfo: true,
-      
-      // You May Also Like settings
       showAlsoLike: true,
       alsoLikeCount: 8
     };
@@ -319,9 +494,9 @@
     
     // FAQ Data
     const faqs = [
-      { q: "How do I manage my subscription?", a: "You can manage your subscription from your account dashboard. Pause, skip, or cancel anytime with just a click." },
+      { q: "How do I manage my subscription?", a: "You can manage your subscription from the 'Manage' tab in the bottom navigation. Pause, skip, or cancel anytime with just a click." },
       { q: "When will I receive my first delivery?", a: "Your first delivery will arrive based on the schedule shown in the plan. Most daily subscriptions start the next day." },
-      { q: "Can I change my delivery address?", a: "Yes! Update your address in account settings before your next scheduled delivery." },
+      { q: "Can I change my delivery address?", a: "Yes! Update your address in the subscription management section or from your account settings." },
       { q: "What if I'm not satisfied?", a: "We offer a 100% satisfaction guarantee. Contact support for a refund or replacement." },
       { q: "Can I customize my subscription box?", a: "Yes, most subscription plans allow customization. Check the plan details or contact support." },
       { q: "How does billing work?", a: "You're billed upfront for the plan duration. Renewals happen automatically unless cancelled." }
@@ -335,7 +510,6 @@
         allSubscriptionProducts = data.products.filter(p => p.category === "subscription" || p.subscriptionType);
         window.allProducts = data.products;
         
-        // Render all components
         if (SUBSCRIPTION_CONFIG.showTimelineFilter) {
           renderTimelinePills('timelinePills', currentTimeline, setTimelineFilter);
         }
@@ -395,33 +569,28 @@
       renderSubscriptionGrid();
     }
     
-    // ==================== FILTER SUBSCRIPTIONS ====================
-   function getFilteredSubscriptions() {
-  let filtered = [...allSubscriptionProducts];
-  
-  // Filter by category (using primaryCategory OR category field)
-  if (currentSubCategory !== "all") {
-    filtered = filtered.filter(sub => {
-      // Check all possible category fields
-      return sub.primaryCategory === currentSubCategory ||
-             sub.category === currentSubCategory ||
-             (sub.categories && sub.categories.includes(currentSubCategory)) ||
-             sub.subscriptionCategory === currentSubCategory;
-    });
-  }
-  
-  // Filter by timeline (subscriptionType)
-  if (currentTimeline !== "all") {
-    filtered = filtered.filter(sub => {
-      const subTimeline = sub.subscriptionType || 'monthly';
-      return subTimeline === currentTimeline;
-    });
-  }
-  
-  return filtered;
-}
+    function getFilteredSubscriptions() {
+      let filtered = [...allSubscriptionProducts];
+      
+      if (currentSubCategory !== "all") {
+        filtered = filtered.filter(sub => {
+          return sub.primaryCategory === currentSubCategory ||
+                 sub.category === currentSubCategory ||
+                 (sub.categories && sub.categories.includes(currentSubCategory)) ||
+                 sub.subscriptionCategory === currentSubCategory;
+        });
+      }
+      
+      if (currentTimeline !== "all") {
+        filtered = filtered.filter(sub => {
+          const subTimeline = sub.subscriptionType || 'monthly';
+          return subTimeline === currentTimeline;
+        });
+      }
+      
+      return filtered;
+    }
     
-    // ==================== RENDER SUBSCRIPTION GRID ====================
     function renderSubscriptionGrid() {
       const container = document.getElementById('subscriptionGrid');
       const subscriptions = getFilteredSubscriptions();
@@ -474,7 +643,6 @@
       }).join('');
     }
     
-    // ==================== ADD TO CART ====================
     async function addToCartFromSubscription(productId) {
       try {
         const response = await fetch('product.json');
@@ -513,11 +681,15 @@
       }
     }
     
+    function viewProduct(productId) {
+      window.location.href = `description.html?id=${productId}`;
+    }
+    
     function showToast(message) {
-      let toast = document.querySelector('.sub-toast');
+      let toast = document.querySelector('.sub-page-toast');
       if (!toast) {
         toast = document.createElement('div');
-        toast.className = 'sub-toast';
+        toast.className = 'sub-page-toast';
         toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green-primary);color:white;padding:10px 20px;border-radius:40px;z-index:2000;font-size:13px;opacity:0;transition:opacity 0.3s;';
         document.body.appendChild(toast);
       }
@@ -526,11 +698,6 @@
       setTimeout(() => { toast.style.opacity = '0'; }, 2000);
     }
     
-    function viewProduct(productId) {
-      window.location.href = `description.html?id=${productId}`;
-    }
-    
-    // ==================== SETUP ALSO LIKE MANAGER ====================
     function setupAlsoLikeManager() {
       if (!SUBSCRIPTION_CONFIG.showAlsoLike) return;
       
@@ -548,7 +715,6 @@
       return window.allProducts.filter(p => p.category !== 'subscription').slice(0, 50);
     }
     
-    // ==================== RENDER FAQ ====================
     function renderFAQ() {
       const container = document.getElementById('faqGrid');
       if (container) {
@@ -561,7 +727,89 @@
       }
     }
     
-    // ==================== ESCAPE HTML ====================
+    // ==================== MY SUBSCRIPTIONS PREVIEW ====================
+    function getNextDeliveryDateFormatted(daysToAdd = 1) {
+      const date = new Date();
+      date.setDate(date.getDate() + daysToAdd);
+      return date.toISOString().split('T')[0];
+    }
+    
+    function loadSubscriptionsPreview() {
+      const saved = localStorage.getItem('freshkart_subscriptions');
+      let subscriptions = [];
+      if (saved) {
+        subscriptions = JSON.parse(saved);
+      } else {
+        // Sample data for preview
+        subscriptions = [
+          {
+            id: "SUB-2024-001",
+            name: "Hostel Mess Plan - Vegetarian",
+            status: "active",
+            nextDelivery: getNextDeliveryDateFormatted(1),
+            price: 2999
+          },
+          {
+            id: "SUB-2024-002",
+            name: "Daily Milk Subscription",
+            status: "active",
+            nextDelivery: getNextDeliveryDateFormatted(0),
+            price: 899
+          }
+        ];
+      }
+      
+      const activeSubs = subscriptions.filter(s => s.status === 'active');
+      const container = document.getElementById('mySubscriptionsPreview');
+      const activeCountSpan = document.getElementById('activeSubsCount');
+      
+      if (activeCountSpan) {
+        activeCountSpan.innerHTML = `${activeSubs.length} Active`;
+      }
+      
+      if (activeSubs.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 40px 20px;">
+            <i class="fas fa-box-open" style="font-size: 48px; margin-bottom: 12px; display: block; opacity: 0.5;"></i>
+            <p style="color: var(--text-muted);">No active subscriptions yet</p>
+            <a href="#" onclick="document.getElementById('subscriptionGrid').scrollIntoView({behavior:'smooth'}); return false;" style="color: var(--orange-primary); text-decoration: none; font-size: 13px;">Browse Plans →</a>
+          </div>
+        `;
+        return;
+      }
+      
+      const previewSubs = activeSubs.slice(0, 3);
+      
+      container.innerHTML = previewSubs.map(sub => `
+        <div class="subs-preview-card">
+          <div class="subs-preview-header">
+            <div class="subs-preview-name">
+              <i class="fas fa-calendar-alt" style="color: var(--orange-primary); font-size: 12px;"></i>
+              ${escapeHtml(sub.name)}
+              <span class="subs-preview-status">ACTIVE</span>
+            </div>
+            <div class="subs-preview-price">₹${sub.price.toLocaleString()}</div>
+          </div>
+          <div class="subs-preview-next">
+            <i class="fas fa-truck"></i> Next delivery: ${sub.nextDelivery || 'Calculating...'}
+          </div>
+          <div style="margin-top: 12px;">
+            <a href="subscription-manager.html" class="quick-action-link">
+              <i class="fas fa-chevron-right"></i> Manage this subscription
+            </a>
+          </div>
+        </div>
+      `).join('');
+      
+      if (activeSubs.length > 3) {
+        container.innerHTML += `
+          <div style="text-align: center; padding: 12px; font-size: 12px; color: var(--text-muted);">
+            +${activeSubs.length - 3} more active subscription${activeSubs.length - 3 > 1 ? 's' : ''}
+          </div>
+        `;
+      }
+    }
+    
     function escapeHtml(str) {
       if (!str) return '';
       return str.replace(/[&<>]/g, function(m) {
@@ -572,19 +820,42 @@
       });
     }
     
+    // ==================== BOTTOM NAVIGATION HANDLERS ====================
+    function scrollToPlansSection() {
+      document.getElementById('subscriptionGrid').scrollIntoView({ behavior: 'smooth' });
+    }
+    
     // ==================== PAGE INITIALIZATION ====================
     async function initPage() {
       await loadSubscriptionProducts();
       await initCommon(() => {});
+      loadSubscriptionsPreview();
       updateCartUI();
       
       const clearBtn = document.getElementById('clearFiltersBtn');
       if (clearBtn) {
         clearBtn.addEventListener('click', clearAllFilters);
       }
+      
+      // Bottom navigation handlers
+      const navBrowsePlans = document.getElementById('navBrowsePlans');
+      
+      if (navBrowsePlans) {
+        navBrowsePlans.addEventListener('click', (e) => {
+          e.preventDefault();
+          scrollToPlansSection();
+        });
+      }
+      
+      // Brand switcher
+      document.querySelectorAll('.brand-switch-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          window.location.href = btn.dataset.url;
+        });
+      });
     }
     
-    // Make functions available globally
+    // Make functions global
     window.setTimelineFilter = setTimelineFilter;
     window.setCategoryFilter = setCategoryFilter;
     window.clearAllFilters = clearAllFilters;

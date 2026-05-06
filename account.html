@@ -9,187 +9,1110 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="common.css">
   <style>
-    .account-container { display: grid; grid-template-columns: 280px 1fr; gap: 30px; margin: 30px 0; }
-    @media (max-width: 900px) { .account-container { grid-template-columns: 1fr; gap: 20px; } }
-    .account-sidebar { background: var(--surface); border-radius: 24px; padding: 20px; border: 1px solid var(--border-light); height: fit-content; position: sticky; top: 100px; }
-    @media (max-width: 900px) { .account-sidebar { position: static; } }
-    .profile-summary { text-align: center; padding-bottom: 20px; border-bottom: 1px solid var(--border-light); margin-bottom: 20px; }
-    .profile-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, var(--orange-primary), var(--green-primary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 36px; color: white; position: relative; cursor: pointer; overflow: hidden; }
-    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .profile-avatar:hover::after { content: '\f030'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; bottom: 0; right: 0; background: rgba(0,0,0,0.7); border-radius: 50%; padding: 8px; font-size: 14px; color: white; }
-    .profile-name { font-size: 18px; font-weight: 700; }
-    .profile-email { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
-    .sidebar-menu { list-style: none; }
-    .sidebar-menu li { margin-bottom: 8px; }
-    .sidebar-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 16px; text-decoration: none; color: var(--text-secondary); transition: all 0.2s; font-size: 14px; }
-    .sidebar-menu a:hover { background: var(--bg-primary); }
-    .sidebar-menu a.active { background: var(--orange-primary); color: white; }
-    .account-main { background: var(--surface); border-radius: 24px; padding: 30px; border: 1px solid var(--border-light); }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px; }
-    .stat-card { background: var(--bg-primary); border-radius: 20px; padding: 20px; text-align: center; cursor: pointer; border: 1px solid var(--border-light); transition: all 0.2s; }
-    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .stat-icon { font-size: 32px; color: var(--orange-primary); margin-bottom: 10px; }
-    .stat-value { font-size: 28px; font-weight: 800; }
-    .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 5px; }
-    
-    /* Recent Orders Section - Simplified */
-    .recent-orders-section { margin-top: 20px; }
-    .recent-orders-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
-    .recent-order-card { background: var(--bg-primary); border-radius: 16px; padding: 16px; border: 1px solid var(--border-light); cursor: pointer; transition: all 0.2s; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-    .recent-order-card:hover { transform: translateX(5px); border-color: var(--orange-primary); background: rgba(249,115,22,0.05); }
-    .recent-order-info { flex: 1; }
-    .recent-order-id { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-    .recent-order-date { font-size: 11px; color: var(--text-muted); }
-    .recent-order-total { font-weight: 800; font-size: 20px; color: var(--green-primary); }
-    .recent-order-status { padding: 4px 12px; border-radius: 30px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-    .status-delivered { background: #e8f5e9; color: #2e7d32; }
-    .status-shipped { background: #fff3e0; color: #f97316; }
-    .status-processing { background: #e3f2fd; color: #1976d2; }
-    .status-cancelled { background: #ffebee; color: #c62828; }
-    .view-all-orders-btn { background: transparent; border: 1px solid var(--orange-primary); color: var(--orange-primary); padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: 600; transition: all 0.2s; margin-top: 15px; width: auto; }
-    .view-all-orders-btn:hover { background: var(--orange-primary); color: white; }
-    
-    /* Orders Section - Simplified List */
-    .orders-section-container { margin-top: 20px; }
-    .orders-list-container { max-height: 600px; overflow-y: auto; padding-right: 10px; margin-bottom: 20px; }
-    .orders-list { display: flex; flex-direction: column; gap: 12px; }
-    
-    /* Simplified Order Card for Account Page */
-    .order-simple-card { background: var(--bg-primary); border-radius: 16px; padding: 16px; border: 1px solid var(--border-light); cursor: pointer; transition: all 0.2s; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-    .order-simple-card:hover { transform: translateX(5px); border-color: var(--orange-primary); background: rgba(249,115,22,0.05); }
-    .order-simple-left { flex: 1; }
-    .order-simple-id { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-    .order-simple-date { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
-    .order-simple-right { display: flex; align-items: center; gap: 15px; }
-    .order-simple-total { font-weight: 800; font-size: 18px; color: var(--green-primary); }
-    .order-simple-status { padding: 4px 12px; border-radius: 30px; font-size: 11px; font-weight: 600; }
-    .order-simple-arrow { color: var(--text-muted); font-size: 14px; }
-    
-    /* Wishlist Section */
-    .wishlist-items-grid { display: flex; flex-direction: column; gap: 16px; max-height: 600px; overflow-y: auto; padding-right: 10px; }
-    .wishlist-item-card { display: flex; gap: 16px; background: var(--bg-primary); border-radius: 16px; padding: 16px; border: 1px solid var(--border-light); transition: all 0.2s; cursor: pointer; }
-    .wishlist-item-card:hover { transform: translateX(5px); border-color: var(--orange-primary); }
-    .wishlist-item-img { width: 80px; height: 80px; border-radius: 12px; object-fit: cover; }
-    .wishlist-item-details { flex: 1; }
-    .wishlist-item-name { font-weight: 700; font-size: 16px; margin-bottom: 5px; }
-    .wishlist-item-price { display: flex; gap: 10px; align-items: baseline; margin: 8px 0; flex-wrap: wrap; }
-    .wishlist-current-price { font-weight: 800; color: var(--green-primary); font-size: 18px; }
-    .wishlist-old-price { text-decoration: line-through; font-size: 13px; color: var(--text-muted); }
-    .wishlist-discount { color: var(--red-primary); font-size: 12px; font-weight: 600; }
-    .wishlist-actions { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-    .wishlist-add-cart { background: var(--orange-primary); color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; font-weight: 600; font-size: 12px; }
-    .wishlist-remove { background: var(--red-primary); color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; font-weight: 600; font-size: 12px; }
-    .empty-wishlist { text-align: center; padding: 60px; color: var(--text-muted); }
-    
-    /* Address Section */
-    .addresses-grid { display: flex; flex-direction: column; gap: 16px; max-height: 500px; overflow-y: auto; padding-right: 10px; }
-    .address-card-enhanced { background: var(--bg-primary); border-radius: 16px; padding: 18px; border: 1px solid var(--border-light); transition: all 0.2s; }
-    .address-card-enhanced:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .address-card-enhanced.address-default { border: 2px solid var(--green-primary); background: linear-gradient(135deg, var(--bg-primary), rgba(46,125,50,0.05)); }
-    .address-card-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
-    .address-card-title { font-weight: 700; display: flex; align-items: center; gap: 8px; font-size: 16px; }
-    .default-badge { background: var(--green-primary); color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
-    .address-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-    .address-actions button { background: transparent; border: 1px solid var(--border-light); padding: 6px 14px; border-radius: 25px; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.2s; }
-    .address-actions button:hover { background: var(--orange-primary); color: white; border-color: var(--orange-primary); }
-    .address-actions button.delete-btn:hover { background: var(--red-primary); }
-    .address-details p { margin: 6px 0; font-size: 13px; line-height: 1.4; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .address-details i { width: 18px; color: var(--orange-primary); font-size: 12px; }
-    .add-address-btn { background: var(--orange-primary); color: white; border: none; padding: 14px 20px; border-radius: 40px; cursor: pointer; width: 100%; margin-top: 20px; font-weight: 600; font-size: 14px; transition: all 0.2s; }
-    .add-address-btn:hover { opacity: 0.9; transform: translateY(-2px); }
-    
-    /* Address Modal */
-    .address-form-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
-    .address-form-container { background: var(--surface); border-radius: 24px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; padding: 24px; }
-    .address-form-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-    .address-form-group { margin-bottom: 16px; }
-    .address-form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
-    .address-form-group label .required { color: var(--red-primary); }
-    .address-form-group input, .address-form-group select, .address-form-group textarea { width: 100%; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-light); background: var(--bg-primary); color: var(--text-primary); font-size: 14px; }
-    .address-form-group input:focus, .address-form-group select:focus, .address-form-group textarea:focus { outline: none; border-color: var(--orange-primary); }
-    .address-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-actions { display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end; }
-    .btn-submit { background: var(--green-primary); color: white; border: none; padding: 10px 24px; border-radius: 30px; cursor: pointer; font-weight: 600; }
-    .btn-cancel { background: var(--red-primary); color: white; border: none; padding: 10px 24px; border-radius: 30px; cursor: pointer; font-weight: 600; }
-    
-    /* Settings Section */
-    .profile-form { max-width: 700px; }
-    .profile-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-    .profile-form-group { margin-bottom: 16px; position: relative; }
-    .profile-form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
-    .profile-form-group label .required { color: var(--red-primary); }
-    .profile-form-group input, .profile-form-group select { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border-light); background: var(--bg-primary); color: var(--text-primary); font-size: 14px; }
-    .edit-field-btn { position: absolute; right: 10px; top: 32px; background: var(--orange-primary); color: white; border: none; padding: 4px 12px; border-radius: 20px; cursor: pointer; font-size: 11px; }
-    .profile-photo-section { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-light); }
-    .profile-photo { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--orange-primary), var(--green-primary)); display: flex; align-items: center; justify-content: center; font-size: 36px; color: white; cursor: pointer; position: relative; overflow: hidden; }
-    .profile-photo img { width: 100%; height: 100%; object-fit: cover; }
-    .profile-photo-upload { font-size: 12px; color: var(--text-muted); }
-    .default-address-card { background: var(--bg-primary); border-radius: 16px; padding: 16px; margin: 16px 0; border: 1px solid var(--border-light); }
-    .default-address-card h4 { font-size: 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: var(--green-primary); }
-    .google-auth-info { background: var(--bg-primary); border-radius: 12px; padding: 15px; margin-top: 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; border: 1px solid var(--border-light); }
-    .google-auth-badge { background: #4285f4; color: white; padding: 6px 14px; border-radius: 25px; font-size: 12px; display: inline-flex; align-items: center; gap: 8px; }
-    .auth-connect-btn { background: transparent; border: 1px solid var(--border-light); padding: 6px 16px; border-radius: 25px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
-    .auth-connect-btn:hover { background: var(--orange-primary); color: white; border-color: var(--orange-primary); }
-    .save-btn { background: var(--green-primary); color: white; border: none; padding: 12px; border-radius: 40px; font-weight: 600; cursor: pointer; margin-top: 10px; width: 100%; font-size: 14px; transition: all 0.2s; }
-    .save-btn:hover { opacity: 0.9; transform: scale(0.98); }
-    
-    .section-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-    .section-title i { color: var(--orange-primary); }
-    
-    /* Blinking Animation for Highlighted Order */
-    @keyframes blinkHighlight {
-      0% { background-color: transparent; border-color: var(--border-light); }
-      25% { background-color: rgba(249, 115, 22, 0.3); border-color: var(--orange-primary); }
-      50% { background-color: rgba(249, 115, 22, 0.15); border-color: var(--orange-primary); }
-      75% { background-color: rgba(249, 115, 22, 0.3); border-color: var(--orange-primary); }
-      100% { background-color: transparent; border-color: var(--border-light); }
-    }
-    
-    .order-highlight {
-      animation: blinkHighlight 1.5s ease-in-out 3;
-      box-shadow: 0 0 0 2px var(--orange-primary);
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @media (max-width: 768px) {
-      .profile-form-row { grid-template-columns: 1fr; gap: 0; }
-      .address-form-row { grid-template-columns: 1fr; }
-      .wishlist-item-card { flex-direction: column; }
-      .wishlist-item-img { width: 100%; height: 150px; }
-      .edit-field-btn { position: static; margin-top: 8px; display: inline-block; }
-      .order-simple-card { flex-direction: column; align-items: flex-start; }
-      .order-simple-right { width: 100%; justify-content: space-between; }
-      .recent-order-card { flex-direction: column; align-items: flex-start; }
-      .recent-order-total { align-self: flex-end; }
-    }
+    /* ==================== COMPLETE ACCOUNT PAGE STYLES ==================== */
+/* Copy everything below and paste at the END of your common.css file */
 
-    /* Editable field styles */
-.profile-form-group input:not([readonly]) {
-  background: var(--bg-primary) !important;
-  border-color: var(--orange-primary) !important;
-  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
+/* Account Container Layout */
+.account-container {
+  display: flex;
+  gap: 24px;
+  margin: 24px 0;
+  min-height: calc(100vh - 200px);
 }
 
-.edit-field-btn, .save-field-btn, .cancel-field-btn {
-  transition: all 0.2s ease;
+@media (max-width: 768px) {
+  .account-container {
+    flex-direction: column;
+    gap: 16px;
+  }
 }
 
-.edit-field-btn:hover, .save-field-btn:hover, .cancel-field-btn:hover {
+/* Account Sidebar */
+.account-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-radius: 20px;
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  position: sticky;
+  top: 80px;
+  height: fit-content;
+}
+
+@media (max-width: 768px) {
+  .account-sidebar {
+    width: 100%;
+    position: static;
+  }
+}
+
+/* Profile Header */
+.profile-header {
+  padding: 24px 20px;
+  background: linear-gradient(135deg, var(--orange-primary), var(--green-primary));
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: 3px solid white;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-avatar i {
+  font-size: 40px;
+  color: white;
+}
+
+.profile-name {
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.profile-email {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+}
+
+/* Sidebar Menu */
+.sidebar-menu {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  margin: 0;
+}
+
+.sidebar-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.sidebar-menu li a i {
+  width: 22px;
+  font-size: 18px;
+}
+
+.sidebar-menu li a:hover {
+  background: var(--bg-primary);
+  color: var(--orange-primary);
+}
+
+.sidebar-menu li a.active {
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--orange-primary);
+  border-right: 3px solid var(--orange-primary);
+}
+
+/* Account Main Content */
+.account-main {
+  flex: 1;
+  background: var(--surface);
+  border-radius: 20px;
+  border: 1px solid var(--border-light);
+  padding: 28px;
+}
+
+@media (max-width: 768px) {
+  .account-main {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .account-main {
+    padding: 16px;
+  }
+}
+
+/* Section Headers */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.section-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-header h2 i {
+  color: var(--orange-primary);
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--border-light);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border-color: var(--orange-primary);
+}
+
+.stat-icon {
+  font-size: 32px;
+  color: var(--orange-primary);
+  margin-bottom: 12px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+/* Order Cards */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-card {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.order-card:hover {
+  transform: translateX(5px);
+  border-color: var(--orange-primary);
+  background: rgba(249, 115, 22, 0.03);
+}
+
+.order-info {
+  flex: 1;
+}
+
+.order-id {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.order-date {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-total {
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--green-primary);
+}
+
+/* Order Status Colors */
+.order-status {
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.status-delivered {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+[data-theme="dark"] .status-delivered {
+  background: rgba(46, 125, 50, 0.2);
+  color: #4caf50;
+}
+
+.status-shipped {
+  background: #fff3e0;
+  color: #f97316;
+}
+
+[data-theme="dark"] .status-shipped {
+  background: rgba(249, 115, 22, 0.2);
+  color: #f97316;
+}
+
+.status-processing {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+[data-theme="dark"] .status-processing {
+  background: rgba(25, 118, 210, 0.2);
+  color: #42a5f5;
+}
+
+.status-cancelled {
+  background: #ffebee;
+  color: #c62828;
+}
+
+[data-theme="dark"] .status-cancelled {
+  background: rgba(198, 40, 40, 0.2);
+  color: #ef5350;
+}
+
+/* Wishlist Items */
+.wishlist-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wishlist-item {
+  display: flex;
+  gap: 16px;
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid var(--border-light);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.wishlist-item:hover {
+  transform: translateX(5px);
+  border-color: var(--orange-primary);
+}
+
+@media (max-width: 600px) {
+  .wishlist-item {
+    flex-direction: column;
+  }
+}
+
+.wishlist-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .wishlist-img {
+    width: 100%;
+    height: 160px;
+  }
+}
+
+.wishlist-details {
+  flex: 1;
+}
+
+.wishlist-name {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.wishlist-price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 8px 0;
+  flex-wrap: wrap;
+}
+
+.current-price {
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--green-primary);
+}
+
+.old-price {
+  text-decoration: line-through;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.wishlist-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+/* Address Cards */
+.addresses-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.address-card {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid var(--border-light);
+  transition: all 0.2s;
+}
+
+.address-card.address-default {
+  border: 2px solid var(--green-primary);
+  background: linear-gradient(135deg, var(--bg-primary), rgba(46, 125, 50, 0.05));
+}
+
+.address-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.address-type {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.default-badge {
+  background: var(--green-primary);
+  color: white;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.address-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.address-actions button {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  padding: 6px 14px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.address-actions button:hover {
+  background: var(--orange-primary);
+  color: white;
+  border-color: var(--orange-primary);
+}
+
+.address-details p {
+  margin: 8px 0;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.address-details i {
+  width: 20px;
+  color: var(--orange-primary);
+}
+
+/* Settings Form */
+.settings-form {
+  max-width: 800px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-group label .required {
+  color: var(--red-primary);
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--orange-primary);
+}
+
+.form-group input[readonly] {
+  background: var(--border-light);
+  cursor: not-allowed;
+}
+
+/* Input with Edit Button */
+.input-with-edit {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.input-with-edit input {
+  flex: 1;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--orange-primary);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
   transform: translateY(-2px);
 }
 
-.save-field-btn:hover {
+.btn-success {
   background: var(--green-primary);
-  opacity: 0.9;
+  color: white;
+  padding: 12px;
+  border-radius: 40px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  font-size: 14px;
+  transition: all 0.2s;
+  margin-top: 16px;
 }
 
-.cancel-field-btn:hover {
-  background: var(--red-primary);
+.btn-success:hover {
   opacity: 0.9;
+  transform: scale(0.98);
+}
+
+.btn-danger {
+  background: var(--red-primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-danger:hover {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+.edit-btn {
+  background: var(--orange-primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.edit-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Settings Cards */
+.settings-card {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border-light);
+}
+
+.settings-card h3 {
+  font-size: 16px;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.settings-card h3 i {
+  color: var(--orange-primary);
+}
+
+/* Notification Settings */
+.notification-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.notification-option:last-child {
+  border-bottom: none;
+}
+
+.notification-option label {
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.notification-option small {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  width: 50px;
+  height: 24px;
+  display: inline-block;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 34px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--green-primary);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+/* Language Selector */
+.language-selector {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+/* Preference Tags */
+.preference-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.preference-tag {
+  padding: 8px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.preference-tag:hover {
+  border-color: var(--orange-primary);
+}
+
+.preference-tag.selected {
+  background: var(--orange-primary);
+  color: white;
+  border-color: var(--orange-primary);
+}
+
+/* Payment Methods */
+.payment-method {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+}
+
+.payment-method:last-child {
+  border-bottom: none;
+}
+
+.payment-method i {
+  width: 40px;
+  font-size: 24px;
+  color: var(--orange-primary);
+}
+
+.payment-method .payment-info {
+  flex: 1;
+}
+
+.payment-method .payment-name {
+  font-weight: 600;
+}
+
+.payment-method .payment-details {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.payment-method .radio {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-light);
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+.payment-method.selected .radio {
+  border-color: var(--green-primary);
+}
+
+.payment-method.selected .radio:after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: var(--green-primary);
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
+
+/* Add Payment Button */
+.add-payment-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--orange-primary);
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 12px;
+  color: var(--orange-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Danger Zone */
+.danger-zone {
+  border-color: var(--red-primary);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.danger-zone h3 {
+  color: var(--red-primary);
+  border-bottom-color: var(--red-primary);
+}
+
+.danger-zone h3 i {
+  color: var(--red-primary);
+}
+
+.danger-btn {
+  background: transparent;
+  border: 1px solid var(--red-primary);
+  color: var(--red-primary);
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.danger-btn:hover {
+  background: var(--red-primary);
+  color: white;
+}
+
+/* Photo Section */
+.photo-section {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-light);
+  flex-wrap: wrap;
+}
+
+.profile-photo {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--orange-primary), var(--green-primary));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-photo i {
+  font-size: 36px;
+  color: white;
+}
+
+.photo-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Modal Styles */
+.address-form-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+}
+
+.address-form-container {
+  background: var(--surface);
+  border-radius: 24px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.address-form-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.address-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .address-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.address-form-group {
+  margin-bottom: 16px;
+}
+
+.address-form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.address-form-group input,
+.address-form-group select,
+.address-form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.btn-submit {
+  background: var(--green-primary);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-cancel {
+  background: var(--red-primary);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Empty States */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+
+.empty-state i {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  margin-bottom: 20px;
+}
+
+.empty-state button {
+  background: var(--orange-primary);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Load More Button */
+.load-more-btn {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  padding: 12px 24px;
+  border-radius: 40px;
+  cursor: pointer;
+  font-weight: 600;
+  width: 100%;
+  margin-top: 20px;
+  transition: all 0.2s;
+}
+
+.load-more-btn:hover {
+  background: var(--bg-primary);
+  border-color: var(--orange-primary);
+  color: var(--orange-primary);
+}
+
+/* Toast Notification */
+.account-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--green-primary);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 40px;
+  z-index: 2000;
+  font-size: 13px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+/* Blink Animation for Highlight */
+@keyframes blinkHighlight {
+  0%, 100% {
+    background-color: transparent;
+    border-color: var(--border-light);
+  }
+  25%, 75% {
+    background-color: rgba(249, 115, 22, 0.3);
+    border-color: var(--orange-primary);
+  }
+  50% {
+    background-color: rgba(249, 115, 22, 0.15);
+    border-color: var(--orange-primary);
+  }
+}
+
+.order-highlight {
+  animation: blinkHighlight 1.5s ease-in-out 3;
+  box-shadow: 0 0 0 2px var(--orange-primary);
+}
+
+/* Custom Scrollbars */
+.orders-list::-webkit-scrollbar,
+.wishlist-grid::-webkit-scrollbar,
+.addresses-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.orders-list::-webkit-scrollbar-track,
+.wishlist-grid::-webkit-scrollbar-track,
+.addresses-grid::-webkit-scrollbar-track {
+  background: var(--border-light);
+  border-radius: 10px;
+}
+
+.orders-list::-webkit-scrollbar-thumb,
+.wishlist-grid::-webkit-scrollbar-thumb,
+.addresses-grid::-webkit-scrollbar-thumb {
+  background: var(--orange-primary);
+  border-radius: 10px;
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease;
 }
   </style>
 </head>
@@ -197,689 +1120,396 @@
   <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
 
   <!-- Top Bar -->
-  <div class="top-bar"><div class="container"><div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i class="fas fa-leaf"></i> 100% Fresh</span></div><div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i class="fas fa-download"></i> App</span></div></div></div>
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-left">
+        <span><i class="fas fa-truck"></i> Free delivery > ₹499</span>
+        <span><i class="fas fa-leaf"></i> 100% Fresh</span>
+      </div>
+      <div class="top-right">
+        <span><i class="fas fa-headset"></i> 24/7 Support</span>
+        <span><i class="fas fa-download"></i> App</span>
+      </div>
+    </div>
+  </div>
 
-  <!-- Header -->
-  <header class="main-header"><div class="container"><div class="logo-row"><div class="logo"><h1>Fresh<span>Kart</span></h1><p style="font-size:10px;">Grocery Delivery</p></div><div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span id="mobileCartCount">0</span></div></div><div class="search-location"><div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search products..."></div><div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect"><option>📍 Delhi 110001</option><option>📍 Mumbai 400001</option><option>📍 Bangalore 560001</option></select></div></div><div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button></div></div></header>
+  <!-- Header Placeholder -->
+  <div id="simpleHeaderPlaceholder"></div>
 
-  <!-- Main Content -->
-  <main class="container"><div class="account-container"><aside class="account-sidebar"><div class="profile-summary"><div class="profile-avatar" id="profileAvatar" onclick="triggerPhotoUpload()"><i class="fas fa-user" id="avatarIcon"></i></div><div class="profile-name" id="userName">Rahul Sharma</div><div class="profile-email" id="userEmail">rahul@example.com</div></div><ul class="sidebar-menu"><li><a href="#" class="active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li><li><a href="#" data-tab="orders"><i class="fas fa-shopping-bag"></i> My Orders</a></li><li><a href="#" data-tab="wishlist"><i class="fas fa-heart"></i> Wishlist</a></li><li><a href="#" data-tab="addresses"><i class="fas fa-map-marker-alt"></i> Addresses</a></li><li><a href="#" data-tab="settings"><i class="fas fa-user-cog"></i> Settings</a></li></ul></aside><div class="account-main" id="accountMain"></div></div></main>
+  <!-- Main Account Section -->
+  <main class="container">
+    <div class="account-container">
+      <!-- Sidebar -->
+      <aside class="account-sidebar">
+        <div class="profile-header">
+          <div class="profile-avatar" id="profileAvatar" onclick="triggerPhotoUpload()">
+            <i class="fas fa-user" id="avatarIcon"></i>
+          </div>
+          <div class="profile-name" id="userName">Rahul Sharma</div>
+          <div class="profile-email" id="userEmail">rahul@example.com</div>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="#" class="active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+          <li><a href="#" data-tab="orders"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+          <li><a href="#" data-tab="wishlist"><i class="fas fa-heart"></i> Wishlist</a></li>
+          <li><a href="#" data-tab="addresses"><i class="fas fa-map-marker-alt"></i> Addresses</a></li>
+          <!-- <li><a href="#" data-tab="payments"><i class="fas fa-credit-card"></i> Payments</a></li> -->
+          <li><a href="#" data-tab="notifications"><i class="fas fa-bell"></i> Notifications</a></li>
+          <li><a href="#" data-tab="preferences"><i class="fas fa-sliders-h"></i> Preferences</a></li>
+          <li><a href="#" data-tab="security"><i class="fas fa-shield-alt"></i> Security</a></li>
+          <li><a href="#" data-tab="settings"><i class="fas fa-user-cog"></i> Settings</a></li>
+        </ul>
+      </aside>
 
-  <!-- Address Form Modal -->
+      <!-- Main Content -->
+      <div class="account-main" id="accountMain"></div>
+    </div>
+  </main>
+
+  <!-- Address Modal -->
   <div id="addressModal" class="address-form-modal">
     <div class="address-form-container">
-      <div class="address-form-title"><span id="addressModalTitle">Add New Address</span><button onclick="closeAddressModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-primary);">&times;</button></div>
+      <div class="address-form-title">
+        <span id="addressModalTitle">Add New Address</span>
+        <button onclick="closeAddressModal()" style="background:none;border:none;font-size:24px;cursor:pointer;">&times;</button>
+      </div>
       <form id="addressForm">
-        <input type="hidden" id="addressId" value="">
+        <input type="hidden" id="addressId">
         <div class="address-form-row">
-          <div class="address-form-group"><label>Full Name <span class="required">*</span></label><input type="text" id="addrFullName" required placeholder="Enter full name"></div>
-          <div class="address-form-group"><label>Phone Number <span class="required">*</span></label><input type="tel" id="addrPhone" required placeholder="10 digit mobile number" pattern="[0-9]{10}" maxlength="10"></div>
+          <div class="address-form-group"><label>Full Name *</label><input type="text" id="addrFullName" required></div>
+          <div class="address-form-group"><label>Phone *</label><input type="tel" id="addrPhone" required pattern="[0-9]{10}" maxlength="10"></div>
         </div>
         <div class="address-form-row">
-          <div class="address-form-group"><label>Alternative Phone</label><input type="tel" id="addrAltPhone" placeholder="Optional" pattern="[0-9]{10}" maxlength="10"></div>
-          <div class="address-form-group"><label>Pincode <span class="required">*</span></label><input type="text" id="addrPincode" required placeholder="6 digit pincode" pattern="[0-9]{6}" maxlength="6"></div>
+          <div class="address-form-group"><label>Alternative Phone</label><input type="tel" id="addrAltPhone" pattern="[0-9]{10}" maxlength="10"></div>
+          <div class="address-form-group"><label>Pincode *</label><input type="text" id="addrPincode" required pattern="[0-9]{6}" maxlength="6"></div>
         </div>
-        <div class="address-form-group"><label>Flat/House/Building Name <span class="required">*</span></label><input type="text" id="addrBuilding" required placeholder="Flat/House/Office No."></div>
-        <div class="address-form-group"><label>Nearby Famous Location</label><input type="text" id="addrLandmark" placeholder="Nearest metro, mall or landmark"></div>
-        <div class="address-form-group"><label>Complete Address <span class="required">*</span></label><textarea id="addrAddress" rows="3" required placeholder="Street, area, locality"></textarea></div>
+        <div class="address-form-group"><label>Building/Flat No. *</label><input type="text" id="addrBuilding" required></div>
+        <div class="address-form-group"><label>Landmark</label><input type="text" id="addrLandmark"></div>
+        <div class="address-form-group"><label>Complete Address *</label><textarea id="addrAddress" rows="3" required></textarea></div>
         <div class="address-form-group"><label>Address Type</label><select id="addrType"><option value="Home">🏠 Home</option><option value="Work">💼 Work</option><option value="Other">📍 Other</option></select></div>
         <div class="form-actions"><button type="button" class="btn-cancel" onclick="closeAddressModal()">Cancel</button><button type="submit" class="btn-submit">Save Address</button></div>
       </form>
     </div>
   </div>
 
-  <!-- Edit Field Modal -->
-  <div id="editFieldModal" class="address-form-modal" style="display: none;">
-    <div class="address-form-container" style="max-width: 400px;">
-      <div class="address-form-title"><span id="editFieldTitle">Edit Field</span><button onclick="closeEditModal()" style="background:none;border:none;font-size:24px;cursor:pointer;">&times;</button></div>
-      <form id="editFieldForm">
-        <div class="address-form-group"><label id="editFieldLabel">Value</label><input type="text" id="editFieldValue" class="edit-field-input"></div>
-        <div class="form-actions"><button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button><button type="submit" class="btn-submit">Update</button></div>
+  <!-- Payment Method Modal -->
+  <div id="paymentModal" class="address-form-modal">
+    <div class="address-form-container" style="max-width: 500px;">
+      <div class="address-form-title"><span>Add Payment Method</span><button onclick="closePaymentModal()" style="background:none;border:none;font-size:24px;cursor:pointer;">&times;</button></div>
+      <form id="paymentForm">
+        <div class="address-form-group"><label>Payment Type</label><select id="paymentType"><option value="card">💳 Credit/Debit Card</option><option value="upi">📱 UPI</option><option value="netbanking">🏦 Net Banking</option><option value="wallet">👛 Wallet</option></select></div>
+        <div id="cardFields">
+          <div class="address-form-group"><label>Card Number</label><input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19"></div>
+          <div class="address-form-row"><div class="address-form-group"><label>Expiry</label><input type="text" id="expiry" placeholder="MM/YY"></div><div class="address-form-group"><label>CVV</label><input type="password" id="cvv" maxlength="3"></div></div>
+          <div class="address-form-group"><label>Cardholder Name</label><input type="text" id="cardName"></div>
+        </div>
+        <div id="upiFields" style="display:none;"><div class="address-form-group"><label>UPI ID</label><input type="text" id="upiId" placeholder="username@upi"></div></div>
+        <div class="form-actions"><button type="button" class="btn-cancel" onclick="closePaymentModal()">Cancel</button><button type="submit" class="btn-submit">Add Payment</button></div>
       </form>
     </div>
   </div>
 
-  <!-- Bottom Nav -->
-  <nav class="bottom-nav"><a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a><a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a><a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a><a href="account.html" class="nav-item active"><i class="fas fa-user"></i><span>Account</span></a><a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a></nav>
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a>
+    <a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a>
+    <a href="account.html" class="nav-item active"><i class="fas fa-user"></i><span>Account</span></a>
+    <a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a>
+  </nav>
 
   <!-- Cart Sidebar -->
-  <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div><div class="cart-items" id="cartItemsList"></div><div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div>
+    <div class="cart-items" id="cartItemsList"></div>
+    <div class="cart-footer"><div id="priceBreakdownBox" class="price-breakdown"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div>
+  </div>
   <div class="overlay" id="overlay"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="common.js"></script>
   <script>
-    // ==================== ACCOUNT PAGE CODE ====================
+    // ==================== ENHANCED ACCOUNT PAGE ====================
     let addresses = [];
+    let paymentMethods = [];
     let userData = {};
     let fullOrdersList = [];
+    let notificationPreferences = { email: true, sms: true, push: true, offers: true, orderUpdates: true };
+    let userPreferences = { language: 'english', currency: 'INR', diet: [] };
     let currentEditingAddressId = null;
     let currentDisplayLimit = 10;
-    let currentEditContext = { type: null, callback: null };
-    
-    // ==================== LOAD USER DATA ====================
+    let isLoading = false;
+
+    // Load all data
     function loadUserData() {
       try {
-        const savedOrders = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.ORDERS);
-        const existingOrders = savedOrders ? JSON.parse(savedOrders) : [];
+        const savedOrders = localStorage.getItem('freshkart_orders');
+        fullOrdersList = savedOrders ? JSON.parse(savedOrders) : generateSampleOrders();
         
-        if (existingOrders.length > 0) {
-          fullOrdersList = existingOrders;
-        } else {
-          // Generate sample orders
-          fullOrdersList = [];
-          for (let i = 1; i <= 15; i++) {
-            const statuses = ['delivered', 'shipped', 'processing', 'delivered', 'delivered'];
-            const status = statuses[Math.floor(Math.random() * statuses.length)];
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            
-            fullOrdersList.push({
-              id: `FRK-2024-${String(100 + i).slice(1)}`,
-              date: date.toISOString().split('T')[0],
-              status: status,
-              subtotal: Math.floor(Math.random() * 1500) + 300,
-              deliveryFee: Math.random() > 0.7 ? 40 : 0,
-              platformFee: 9,
-              discount: Math.floor(Math.random() * 200) + 20,
-              total: 0,
-              items: [
-                { productId: 1, name: "Organic Apples", price: 120, quantity: Math.floor(Math.random() * 3) + 1, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200" },
-                { productId: 2, name: "Fresh Bananas", price: 49, quantity: Math.floor(Math.random() * 4) + 1, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200" }
-              ]
-            });
-            // Calculate total
-            fullOrdersList[fullOrdersList.length - 1].total = 
-              fullOrdersList[fullOrdersList.length - 1].subtotal + 
-              fullOrdersList[fullOrdersList.length - 1].deliveryFee + 
-              fullOrdersList[fullOrdersList.length - 1].platformFee - 
-              fullOrdersList[fullOrdersList.length - 1].discount;
-          }
-        }
-        
-        const savedAddresses = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.ADDRESSES);
+        const savedAddresses = localStorage.getItem('freshkart_addresses');
         addresses = savedAddresses ? JSON.parse(savedAddresses) : [
           { id: 1, name: "Rahul Sharma", phone: "9876543210", altPhone: "8765432109", building: "123, Green Park", landmark: "Near City Mall", address: "Green Park Main Road", pincode: "110001", type: "Home", isDefault: true },
           { id: 2, name: "Rahul Sharma", phone: "9876543210", altPhone: "", building: "456, Cyber City", landmark: "Near Huda City Centre", address: "Sector 29", pincode: "122002", type: "Work", isDefault: false }
         ];
         
-        const savedUserData = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.USER_DATA);
-        userData = savedUserData ? JSON.parse(savedUserData) : { 
-          name: "Rahul Sharma", 
-          email: "rahul@example.com", 
-          phone: "9876543210",
-          altPhone: "8765432109",
-          gender: "male",
-          age: "28",
-          photo: null,
-          googleConnected: true,
-          googleEmail: "rahul.sharma@gmail.com"
+        const savedPayments = localStorage.getItem('freshkart_payments');
+        paymentMethods = savedPayments ? JSON.parse(savedPayments) : [
+          { id: 1, type: "card", name: "Visa ****4242", isDefault: true },
+          { id: 2, type: "upi", name: "rahul@okhdfcbank", isDefault: false }
+        ];
+        
+        const savedUser = localStorage.getItem('freshkart_user_data');
+        userData = savedUser ? JSON.parse(savedUser) : { 
+          name: "Rahul Sharma", email: "rahul@example.com", phone: "9876543210", altPhone: "8765432109",
+          gender: "male", age: "28", photo: null, googleConnected: true, googleEmail: "rahul.sharma@gmail.com"
         };
-      } catch(e) {
-        console.error('Error loading data:', e);
-      }
+        
+        const savedNotif = localStorage.getItem('freshkart_notifications');
+        if (savedNotif) notificationPreferences = JSON.parse(savedNotif);
+        
+        const savedPrefs = localStorage.getItem('freshkart_preferences');
+        if (savedPrefs) userPreferences = JSON.parse(savedPrefs);
+        
+      } catch(e) { console.error('Error loading data:', e); }
     }
-    
-    function saveOrders() { localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.ORDERS, JSON.stringify(fullOrdersList)); }
-    function saveAddresses() { localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.ADDRESSES, JSON.stringify(addresses)); }
-    function saveUserData() { localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(userData)); }
-    
-    function updateAllProfilePhotos(photoUrl) {
-      const sidebarAvatar = document.querySelector('.profile-avatar');
-      if (sidebarAvatar) {
-        if (photoUrl) { sidebarAvatar.innerHTML = `<img src="${photoUrl}" alt="Profile">`; } 
-        else { sidebarAvatar.innerHTML = `<i class="fas fa-user"></i>`; }
+
+    function generateSampleOrders() {
+      const orders = [];
+      const statuses = ['delivered', 'delivered', 'delivered', 'shipped', 'processing'];
+      for (let i = 1; i <= 12; i++) {
+        const status = statuses[Math.floor(Math.random() * statuses.length)];
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        orders.push({
+          id: `FRK-${String(10000 + i).slice(1)}`,
+          date: date.toISOString().split('T')[0],
+          status: status,
+          subtotal: Math.floor(Math.random() * 1500) + 300,
+          deliveryFee: Math.random() > 0.7 ? 40 : 0,
+          platformFee: 9,
+          discount: Math.floor(Math.random() * 200) + 20,
+          total: 0,
+          items: [{ productId: 1, name: "Organic Apples", quantity: Math.floor(Math.random() * 3) + 1, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200" }]
+        });
+        orders[orders.length - 1].total = orders[orders.length - 1].subtotal + orders[orders.length - 1].deliveryFee + orders[orders.length - 1].platformFee - orders[orders.length - 1].discount;
       }
-      const settingsPhoto = document.getElementById('profilePhotoPreview');
-      if (settingsPhoto) {
-        if (photoUrl) { settingsPhoto.innerHTML = `<img src="${photoUrl}" alt="Profile" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } 
-        else { settingsPhoto.innerHTML = `<i class="fas fa-user"></i>`; }
-      }
+      return orders;
     }
-    
-    // ==================== DASHBOARD RENDER ====================
-    function renderDashboard() { 
+
+    function saveOrders() { localStorage.setItem('freshkart_orders', JSON.stringify(fullOrdersList)); }
+    function saveAddresses() { localStorage.setItem('freshkart_addresses', JSON.stringify(addresses)); }
+    function savePaymentMethods() { localStorage.setItem('freshkart_payments', JSON.stringify(paymentMethods)); }
+    function saveUserData() { localStorage.setItem('freshkart_user_data', JSON.stringify(userData)); }
+    function saveNotificationPrefs() { localStorage.setItem('freshkart_notifications', JSON.stringify(notificationPreferences)); }
+    function saveUserPreferences() { localStorage.setItem('freshkart_preferences', JSON.stringify(userPreferences)); }
+
+    // ==================== DASHBOARD ====================
+    function renderDashboard() {
       const recentOrders = fullOrdersList.slice(0, 5);
+      const cartTotal = cart.reduce((s, i) => s + (i.qty || 0), 0);
       document.getElementById('accountMain').innerHTML = `
-        <div class="section-title"><i class="fas fa-chart-line"></i> Dashboard</div>
+        <div class="section-header"><h2><i class="fas fa-chart-line"></i> Dashboard</h2></div>
         <div class="stats-grid">
-          <div class="stat-card" onclick="switchTab('orders')"><div class="stat-icon"><i class="fas fa-shopping-bag"></i></div><div class="stat-value">${fullOrdersList.length}</div><div class="stat-label">Orders</div></div>
+          <div class="stat-card" onclick="switchTab('orders')"><div class="stat-icon"><i class="fas fa-shopping-bag"></i></div><div class="stat-value">${fullOrdersList.length}</div><div class="stat-label">Total Orders</div></div>
           <div class="stat-card" onclick="switchTab('wishlist')"><div class="stat-icon"><i class="fas fa-heart"></i></div><div class="stat-value">${wishlist.length}</div><div class="stat-label">Wishlist</div></div>
-          <div class="stat-card" onclick="openCart()"><div class="stat-icon"><i class="fas fa-cart-shopping"></i></div><div class="stat-value">${cart.reduce((s,i)=>s+(i.qty||0),0)}</div><div class="stat-label">Cart</div></div>
+          <div class="stat-card" onclick="openCart()"><div class="stat-icon"><i class="fas fa-cart-shopping"></i></div><div class="stat-value">${cartTotal}</div><div class="stat-label">Cart Items</div></div>
           <div class="stat-card" onclick="switchTab('addresses')"><div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div><div class="stat-value">${addresses.length}</div><div class="stat-label">Addresses</div></div>
         </div>
-        <div class="recent-orders-section">
-          <div class="section-title"><i class="fas fa-clock"></i> Recent Orders</div>
-          <div class="recent-orders-grid">
-            ${recentOrders.length > 0 ? recentOrders.map(o => `
-              <div class="recent-order-card" onclick="goToOrderDetails('${o.id}')">
-                <div class="recent-order-info">
-                  <div class="recent-order-id">${o.id}</div>
-                  <div class="recent-order-date"><i class="fas fa-calendar-alt"></i> ${o.date} • ${o.status.toUpperCase()}</div>
-                </div>
-                <div class="recent-order-total">₹${o.total}</div>
-                <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
-              </div>
-            `).join('') : '<div style="text-align:center;padding:40px;">No orders yet</div>'}
-          </div>
-          ${fullOrdersList.length > 5 ? `<div style="text-align:center; margin-top:15px;"><button class="view-all-orders-btn" onclick="switchTab('orders')">View All Orders (${fullOrdersList.length}) <i class="fas fa-arrow-right"></i></button></div>` : ''}
-        </div>
+        <div class="section-header"><h2><i class="fas fa-clock"></i> Recent Orders</h2>${fullOrdersList.length > 5 ? `<button class="btn-primary" onclick="switchTab('orders')">View All <i class="fas fa-arrow-right"></i></button>` : ''}</div>
+        <div class="orders-list">${recentOrders.map(o => `
+          <div class="order-card" onclick="goToOrderDetails('${o.id}')">
+            <div class="order-info"><div class="order-id">${o.id} <span class="order-status status-${o.status}">${o.status.toUpperCase()}</span></div><div class="order-date"><i class="fas fa-calendar-alt"></i> ${o.date}</div></div>
+            <div class="order-total">₹${o.total}</div><i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+          </div>`).join('')}</div>
       `;
+      document.getElementById('userName').innerText = userData.name;
+      document.getElementById('userEmail').innerText = userData.email;
+      if (userData.photo) document.querySelector('.profile-avatar').innerHTML = `<img src="${userData.photo}">`;
     }
-    
-    // ==================== SIMPLIFIED ORDERS RENDER ====================
+
+    // ==================== ORDERS ====================
     function renderOrders() {
+      const displayOrders = fullOrdersList.slice(0, currentDisplayLimit);
       document.getElementById('accountMain').innerHTML = `
-        <div class="section-title"><i class="fas fa-shopping-bag"></i> My Orders (${fullOrdersList.length})</div>
-        <div class="orders-section-container">
-          <div class="orders-list-container" id="ordersListContainer">
-            <div class="orders-list" id="ordersList"></div>
-          </div>
-          <div class="load-more-orders" id="loadMoreContainer"></div>
-        </div>
+        <div class="section-header"><h2><i class="fas fa-shopping-bag"></i> My Orders (${fullOrdersList.length})</h2></div>
+        <div class="orders-list">${displayOrders.map(o => `
+          <div class="order-card" onclick="goToOrderDetails('${o.id}')">
+            <div class="order-info"><div class="order-id">${o.id} <span class="order-status status-${o.status}">${o.status.toUpperCase()}</span></div><div class="order-date"><i class="fas fa-calendar-alt"></i> ${o.date}</div></div>
+            <div class="order-total">₹${o.total}</div><i class="fas fa-chevron-right"></i>
+          </div>`).join('')}</div>
+        ${currentDisplayLimit < fullOrdersList.length ? `<button class="load-more-btn" onclick="loadMoreOrders()"><i class="fas fa-plus-circle"></i> Load More (${fullOrdersList.length - currentDisplayLimit} left)</button>` : fullOrdersList.length > 0 ? '<div style="text-align:center;padding:20px;"><i class="fas fa-check-circle"></i> All orders loaded</div>' : '<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>No orders yet</p><button onclick="window.location.href=\'categories.html\'">Start Shopping</button></div>'}
       `;
-      
-      loadMoreOrdersList();
     }
-    
-    function loadMoreOrdersList() {
-      const ordersList = document.getElementById('ordersList');
-      const loadMoreContainer = document.getElementById('loadMoreContainer');
-      
-      if (!ordersList) return;
-      
-      const startIndex = 0;
-      const endIndex = Math.min(currentDisplayLimit, fullOrdersList.length);
-      const ordersToShow = fullOrdersList.slice(startIndex, endIndex);
-      
-      ordersList.innerHTML = ordersToShow.map(order => `
-        <div class="order-simple-card" onclick="goToOrderDetails('${order.id}')">
-          <div class="order-simple-left">
-            <div class="order-simple-id">${order.id}</div>
-            <div class="order-simple-date"><i class="fas fa-calendar-alt"></i> ${order.date}</div>
-          </div>
-          <div class="order-simple-right">
-            <div class="order-simple-total">₹${order.total}</div>
-            <div class="order-simple-status status-${order.status}">${order.status.toUpperCase()}</div>
-            <i class="fas fa-chevron-right order-simple-arrow"></i>
-          </div>
-        </div>
-      `).join('');
-      
-      if (endIndex < fullOrdersList.length) {
-        loadMoreContainer.innerHTML = `
-          <button class="load-more-btn" id="loadMoreBtn" onclick="loadMoreOrdersBatch()">
-            <i class="fas fa-plus-circle"></i> Load More Orders (${fullOrdersList.length - endIndex} remaining)
-          </button>
-        `;
-      } else {
-        loadMoreContainer.innerHTML = `
-          <div style="text-align: center; padding: 20px; color: var(--text-muted);">
-            <i class="fas fa-check-circle"></i> You've seen all ${fullOrdersList.length} orders
-          </div>
-        `;
-      }
-    }
-    
-    function loadMoreOrdersBatch() {
-      if (isLoading) return;
-      isLoading = true;
-      
-      const loadMoreBtn = document.getElementById('loadMoreBtn');
-      if (loadMoreBtn) {
-        loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-        loadMoreBtn.disabled = true;
-      }
-      
-      setTimeout(() => {
-        currentDisplayLimit += 10;
-        loadMoreOrdersList();
-        isLoading = false;
-      }, 500);
-    }
-    
-    // ==================== GO TO ORDER DETAILS WITH BLINKING ANIMATION ====================
-    function goToOrderDetails(orderId) {
-      // Store the order ID to highlight in sessionStorage
-      sessionStorage.setItem('highlightOrderId', orderId);
-      // Redirect to orders page
-      window.location.href = `orders.html`;
-    }
-    
-    // ==================== WISHLIST RENDER ====================
-    function renderWishlist() { 
+
+    function loadMoreOrders() { currentDisplayLimit += 10; renderOrders(); }
+
+    // ==================== WISHLIST ====================
+    function renderWishlist() {
       let wishlistProducts = getWishlistProducts();
       document.getElementById('accountMain').innerHTML = `
-        <div class="section-title"><i class="fas fa-heart"></i> My Wishlist (${wishlistProducts.length})</div>
-        <div class="wishlist-items-grid">
-          ${wishlistProducts.length > 0 ? wishlistProducts.map(p => `
-            <div class="wishlist-item-card" onclick="viewProduct(${p.id})">
-              <img class="wishlist-item-img" src="${p.image}" onerror="this.src='https://placehold.co/80'">
-              <div class="wishlist-item-details">
-                <div class="wishlist-item-name">${p.name}</div>
-                <div class="wishlist-item-price">
-                  <span class="wishlist-current-price">₹${p.price}</span>
-                  ${p.oldPrice ? `<span class="wishlist-old-price">₹${p.oldPrice}</span><span class="wishlist-discount">${Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100)}% OFF</span>` : ''}
-                </div>
-                <div class="wishlist-actions">
-                  <button class="wishlist-add-cart" onclick="event.stopPropagation();addToCart(${JSON.stringify(p).replace(/"/g, '&quot;')})"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
-                  <button class="wishlist-remove" onclick="event.stopPropagation();removeFromWishlist(${p.id})"><i class="fas fa-trash"></i> Remove</button>
-                </div>
-              </div>
-            </div>
-          `).join('') : '<div class="empty-wishlist"><i class="fas fa-heart-broken" style="font-size: 48px;"></i><p>Your wishlist is empty</p><button onclick="window.location.href=\'categories.html\'" style="margin-top: 16px; background: var(--orange-primary); color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer;">Start Shopping</button></div>'}
-        </div>
+        <div class="section-header"><h2><i class="fas fa-heart"></i> Wishlist (${wishlistProducts.length})</h2></div>
+        <div class="wishlist-grid">${wishlistProducts.length > 0 ? wishlistProducts.map(p => `
+          <div class="wishlist-item" onclick="viewProduct(${p.id})">
+            <img class="wishlist-img" src="${p.image}" onerror="this.src='https://placehold.co/100'">
+            <div class="wishlist-details"><div class="wishlist-name">${escapeHtml(p.name)}</div><div class="wishlist-price"><span class="current-price">₹${p.price}</span>${p.oldPrice ? `<span class="old-price">₹${p.oldPrice}</span>` : ''}</div>
+            <div class="wishlist-actions"><button class="btn-primary" onclick="event.stopPropagation();addToCart(${JSON.stringify(p).replace(/"/g, '&quot;')})"><i class="fas fa-cart-plus"></i> Add to Cart</button><button class="btn-danger" onclick="event.stopPropagation();removeFromWishlist(${p.id})"><i class="fas fa-trash"></i> Remove</button></div></div>
+          </div>`).join('') : '<div class="empty-state"><i class="fas fa-heart-broken"></i><p>Wishlist empty</p><button onclick="window.location.href=\'categories.html\'">Explore Products</button></div>'}</div>
       `;
     }
-    
-    function removeFromWishlist(productId) {
-      const index = wishlist.indexOf(productId);
-      if (index !== -1) wishlist.splice(index, 1);
-      saveWishlist();
-      renderWishlist();
-      showToast('Removed from wishlist');
-    }
-    
-    // ==================== ADDRESSES RENDER ====================
-    function renderAddresses() { 
+
+    // ==================== ADDRESSES ====================
+    function renderAddresses() {
       document.getElementById('accountMain').innerHTML = `
-        <div class="section-title"><i class="fas fa-map-marker-alt"></i> Saved Addresses (${addresses.length})</div>
-        <div class="addresses-grid">
-          ${addresses.map(a => `
-            <div class="address-card-enhanced ${a.isDefault ? 'address-default' : ''}">
-              <div class="address-card-header">
-                <div class="address-card-title"><i class="fas ${a.type === 'Home' ? 'fa-home' : a.type === 'Work' ? 'fa-briefcase' : 'fa-map-pin'}"></i> ${a.name} ${a.isDefault ? '<span class="default-badge">✓ DEFAULT</span>' : ''}</div>
-                <div class="address-actions">
-                  <button onclick="editAddress(${a.id})"><i class="fas fa-edit"></i> Edit</button>
-                  ${!a.isDefault ? `<button onclick="setDefaultAddress(${a.id})"><i class="fas fa-check"></i> Set Default</button>` : ''}
-                  <button class="delete-btn" onclick="deleteAddress(${a.id})"><i class="fas fa-trash"></i> Delete</button>
-                </div>
-              </div>
-              <div class="address-details">
-                <p><i class="fas fa-phone"></i> ${a.phone} ${a.altPhone ? `| ${a.altPhone}` : ''}</p>
-                <p><i class="fas fa-building"></i> ${a.building}</p>
-                ${a.landmark ? `<p><i class="fas fa-location-dot"></i> Landmark: ${a.landmark}</p>` : ''}
-                <p><i class="fas fa-map-pin"></i> ${a.address}, ${a.pincode}</p>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-        <button class="add-address-btn" onclick="openAddAddressModal()"><i class="fas fa-plus"></i> Add New Address</button>
+        <div class="section-header"><h2><i class="fas fa-map-marker-alt"></i> Addresses (${addresses.length})</h2><button class="btn-primary" onclick="openAddAddressModal()"><i class="fas fa-plus"></i> Add New</button></div>
+        <div class="addresses-grid">${addresses.map(a => `
+          <div class="address-card ${a.isDefault ? 'address-default' : ''}"><div class="address-header"><div class="address-type"><i class="fas ${a.type === 'Home' ? 'fa-home' : a.type === 'Work' ? 'fa-briefcase' : 'fa-map-pin'}"></i> ${a.name}${a.isDefault ? '<span class="default-badge">✓ DEFAULT</span>' : ''}</div><div class="address-actions"><button onclick="editAddress(${a.id})"><i class="fas fa-edit"></i> Edit</button>${!a.isDefault ? `<button onclick="setDefaultAddress(${a.id})"><i class="fas fa-check"></i> Set Default</button>` : ''}<button onclick="deleteAddress(${a.id})"><i class="fas fa-trash"></i> Delete</button></div></div>
+          <div class="address-details"><p><i class="fas fa-phone"></i> ${a.phone}${a.altPhone ? ` | ${a.altPhone}` : ''}</p><p><i class="fas fa-building"></i> ${a.building}</p>${a.landmark ? `<p><i class="fas fa-location-dot"></i> ${a.landmark}</p>` : ''}<p><i class="fas fa-map-pin"></i> ${a.address}, ${a.pincode}</p></div></div>`).join('')}</div>
       `;
     }
-    
-    function openAddAddressModal() {
-      currentEditingAddressId = null;
-      document.getElementById('addressModalTitle').innerText = 'Add New Address';
-      document.getElementById('addressForm').reset();
-      document.getElementById('addressId').value = '';
-      document.getElementById('addressModal').style.display = 'flex';
+
+    // ==================== PAYMENTS ====================
+    // function renderPayments() {
+    //   document.getElementById('accountMain').innerHTML = `
+    //     <div class="section-header"><h2><i class="fas fa-credit-card"></i> Payment Methods</h2><button class="btn-primary" onclick="openPaymentModal()"><i class="fas fa-plus"></i> Add New</button></div>
+    //     <div class="settings-card"><h3><i class="fas fa-credit-card"></i> Saved Cards & UPI</h3>
+    //       ${paymentMethods.map(p => `<div class="payment-method ${p.isDefault ? 'selected' : ''}" onclick="selectDefaultPayment(${p.id})"><i class="fas ${p.type === 'card' ? 'fa-credit-card' : 'fa-mobile-alt'}"></i><div class="payment-info"><div class="payment-name">${p.name}</div><div class="payment-details">${p.type.toUpperCase()}</div></div><div class="radio"></div></div>`).join('')}
+    //       ${paymentMethods.length === 0 ? '<div style="text-align:center;padding:20px;">No saved payment methods</div>' : ''}
+    //     </div>
+    //     <div class="settings-card"><h3><i class="fas fa-history"></i> Transaction History</h3><div style="text-align:center;padding:20px;"><i class="fas fa-receipt"></i><p>Your recent transactions will appear here</p></div></div>
+    //   `;
+    // }
+
+    // ==================== NOTIFICATIONS ====================
+    function renderNotifications() {
+      document.getElementById('accountMain').innerHTML = `
+        <div class="section-header"><h2><i class="fas fa-bell"></i> Notification Preferences</h2></div>
+        <div class="settings-card"><h3><i class="fas fa-envelope"></i> Email Notifications</h3>
+          <div class="notification-option"><div><label>Order Updates</label><small>Get updates about your orders via email</small></div><label class="toggle-switch"><input type="checkbox" id="notifEmailOrders" ${notificationPreferences.email ? 'checked' : ''}><span class="toggle-slider"></span></label></div>
+          <div class="notification-option"><div><label>Promotions & Offers</label><small>Exclusive deals and coupons</small></div><label class="toggle-switch"><input type="checkbox" id="notifEmailOffers" ${notificationPreferences.offers ? 'checked' : ''}><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="settings-card"><h3><i class="fas fa-mobile-alt"></i> SMS Notifications</h3>
+          <div class="notification-option"><div><label>Order Status</label><small>Get SMS for order confirmation & delivery</small></div><label class="toggle-switch"><input type="checkbox" id="notifSms" ${notificationPreferences.sms ? 'checked' : ''}><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="settings-card"><h3><i class="fas fa-bell"></i> Push Notifications</h3>
+          <div class="notification-option"><div><label>Marketing & Recommendations</label><small>Personalized product recommendations</small></div><label class="toggle-switch"><input type="checkbox" id="notifPush" ${notificationPreferences.push ? 'checked' : ''}><span class="toggle-slider"></span></label></div>
+        </div>
+        <button class="btn-success" onclick="saveNotificationSettings()"><i class="fas fa-save"></i> Save Notification Settings</button>
+      `;
+      document.getElementById('notifEmailOrders')?.addEventListener('change', (e) => notificationPreferences.email = e.target.checked);
+      document.getElementById('notifEmailOffers')?.addEventListener('change', (e) => notificationPreferences.offers = e.target.checked);
+      document.getElementById('notifSms')?.addEventListener('change', (e) => notificationPreferences.sms = e.target.checked);
+      document.getElementById('notifPush')?.addEventListener('change', (e) => notificationPreferences.push = e.target.checked);
     }
-    
-    function editAddress(id) {
-      const address = addresses.find(a => a.id === id);
-      if (address) {
-        currentEditingAddressId = id;
-        document.getElementById('addressModalTitle').innerText = 'Edit Address';
-        document.getElementById('addressId').value = address.id;
-        document.getElementById('addrFullName').value = address.name || '';
-        document.getElementById('addrPhone').value = address.phone || '';
-        document.getElementById('addrAltPhone').value = address.altPhone || '';
-        document.getElementById('addrPincode').value = address.pincode || '';
-        document.getElementById('addrBuilding').value = address.building || '';
-        document.getElementById('addrLandmark').value = address.landmark || '';
-        document.getElementById('addrAddress').value = address.address || '';
-        document.getElementById('addrType').value = address.type || 'Home';
-        document.getElementById('addressModal').style.display = 'flex';
-      }
+
+    // ==================== PREFERENCES ====================
+    function renderPreferences() {
+      document.getElementById('accountMain').innerHTML = `
+        <div class="section-header"><h2><i class="fas fa-sliders-h"></i> Preferences</h2></div>
+        <div class="settings-card"><h3><i class="fas fa-language"></i> Language</h3><select class="language-selector" id="prefLanguage"><option value="english" ${userPreferences.language === 'english' ? 'selected' : ''}>English</option><option value="hindi" ${userPreferences.language === 'hindi' ? 'selected' : ''}>हिंदी (Hindi)</option><option value="tamil" ${userPreferences.language === 'tamil' ? 'selected' : ''}>தமிழ் (Tamil)</option><option value="telugu" ${userPreferences.language === 'telugu' ? 'selected' : ''}>తెలుగు (Telugu)</option><option value="bengali" ${userPreferences.language === 'bengali' ? 'selected' : ''}>বাংলা (Bengali)</option></select></div>
+        <div class="settings-card"><h3><i class="fas fa-rupee-sign"></i> Currency</h3><select class="language-selector" id="prefCurrency"><option value="INR" ${userPreferences.currency === 'INR' ? 'selected' : ''}>Indian Rupee (₹)</option><option value="USD" ${userPreferences.currency === 'USD' ? 'selected' : ''}>US Dollar ($)</option></select></div>
+        <div class="settings-card"><h3><i class="fas fa-utensils"></i> Dietary Preferences</h3><div class="preference-tags" id="dietTags"><span class="preference-tag ${userPreferences.diet?.includes('vegetarian') ? 'selected' : ''}" data-diet="vegetarian">🥬 Vegetarian</span><span class="preference-tag ${userPreferences.diet?.includes('vegan') ? 'selected' : ''}" data-diet="vegan">🌱 Vegan</span><span class="preference-tag ${userPreferences.diet?.includes('gluten-free') ? 'selected' : ''}" data-diet="gluten-free">🌾 Gluten-Free</span><span class="preference-tag ${userPreferences.diet?.includes('dairy-free') ? 'selected' : ''}" data-diet="dairy-free">🥛 Dairy-Free</span><span class="preference-tag ${userPreferences.diet?.includes('keto') ? 'selected' : ''}" data-diet="keto">🥩 Keto</span></div></div>
+        <div class="settings-card"><h3><i class="fas fa-tag"></i> Favorite Categories</h3><div class="preference-tags" id="categoryTags"><span class="preference-tag" data-cat="fruits">🍎 Fruits</span><span class="preference-tag" data-cat="vegetables">🥬 Vegetables</span><span class="preference-tag" data-cat="organic">🌿 Organic</span><span class="preference-tag" data-cat="snacks">🍿 Snacks</span><span class="preference-tag" data-cat="beverages">🥤 Beverages</span></div></div>
+        <button class="btn-success" onclick="savePreferences()"><i class="fas fa-save"></i> Save Preferences</button>
+      `;
+      document.querySelectorAll('#dietTags .preference-tag').forEach(tag => {
+        tag.addEventListener('click', () => { tag.classList.toggle('selected'); });
+      });
     }
-    
+
+    // ==================== SECURITY ====================
+    function renderSecurity() {
+      document.getElementById('accountMain').innerHTML = `
+        <div class="section-header"><h2><i class="fas fa-shield-alt"></i> Security</h2></div>
+        <div class="settings-card"><h3><i class="fas fa-lock"></i> Login & Security</h3><div style="margin-bottom:15px;"><div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;"><span><strong>Password</strong><br><small>●●●●●●●●</small></span><button class="edit-btn" onclick="showToast('Change password feature coming soon')">Change</button></div><div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;"><span><strong>Email</strong><br><small>${userData.email}</small></span><button class="edit-btn" onclick="showToast('Update email feature coming soon')">Update</button></div><div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;"><span><strong>Phone</strong><br><small>${userData.phone}</small></span><button class="edit-btn" onclick="showToast('Update phone feature coming soon')">Update</button></div></div></div>
+        <div class="settings-card"><h3><i class="fas fa-mobile-alt"></i> Two-Factor Authentication</h3><div class="notification-option"><div><label>Enable 2FA</label><small>Add an extra layer of security to your account</small></div><label class="toggle-switch"><input type="checkbox" id="twoFactorToggle"><span class="toggle-slider"></span></label></div></div>
+        <div class="settings-card"><h3><i class="fab fa-google"></i> Connected Accounts</h3><div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;"><span><i class="fab fa-google" style="color:#4285f4;"></i> Google Account<br><small>${userData.googleConnected ? userData.googleEmail : 'Not connected'}</small></span><button class="edit-btn" onclick="toggleGoogleAuth()">${userData.googleConnected ? 'Disconnect' : 'Connect'}</button></div></div>
+        <div class="settings-card danger-zone"><h3><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3><div style="display:flex;gap:15px;flex-wrap:wrap;"><button class="danger-btn" onclick="deactivateAccount()"><i class="fas fa-user-slash"></i> Deactivate Account</button><button class="danger-btn" onclick="deleteAccount()"><i class="fas fa-trash-alt"></i> Delete Account Permanently</button></div></div>
+      `;
+    }
+
+    // ==================== SETTINGS ====================
+    function renderSettings() {
+      document.getElementById('accountMain').innerHTML = `
+        <div class="section-header"><h2><i class="fas fa-user-cog"></i> Account Settings</h2></div>
+        <div class="photo-section"><div class="profile-photo" id="profilePhotoPreview" onclick="triggerPhotoUpload()"><i class="fas fa-user"></i></div><div class="photo-hint"><small>Click to change profile photo</small><input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="updateProfilePhoto(this)"></div></div>
+        <form id="profileForm" class="settings-form"><div class="form-row"><div class="form-group"><label>Full Name <span class="required">*</span></label><input type="text" id="fullName" value="${userData.name}" readonly></div><div class="form-group"><label>Email <span class="required">*</span></label><input type="email" id="emailId" value="${userData.email}" readonly></div></div>
+        <div class="form-row"><div class="form-group"><label>Mobile Number</label><div class="input-with-edit"><input type="tel" id="mobileNo" value="${userData.phone}" readonly><button type="button" class="edit-btn" id="editMobileBtn"><i class="fas fa-edit"></i> Edit</button><button type="button" class="edit-btn" id="saveMobileBtn" style="display:none;background:var(--green-primary);">Save</button><button type="button" class="edit-btn" id="cancelMobileBtn" style="display:none;background:var(--red-primary);">Cancel</button></div></div>
+        <div class="form-group"><label>Alternative Mobile</label><div class="input-with-edit"><input type="tel" id="altMobileNo" value="${userData.altPhone || ''}" readonly><button type="button" class="edit-btn" id="editAltMobileBtn"><i class="fas fa-edit"></i> Edit</button><button type="button"class="edit-btn" id="saveAltMobileBtn" style="display:none;background:var(--green-primary);">Save</button><button type="button" class="edit-btn" id="cancelAltMobileBtn" style="display:none;background:var(--red-primary);">Cancel</button></div></div></div>
+        <div class="form-row"><div class="form-group"><label>Gender</label><select id="gender"><option value="male" ${userData.gender === 'male' ? 'selected' : ''}>Male</option><option value="female" ${userData.gender === 'female' ? 'selected' : ''}>Female</option><option value="other" ${userData.gender === 'other' ? 'selected' : ''}>Other</option></select></div>
+        <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" value="${userData.dob || ''}"></div></div>
+        <button type="submit" class="btn-success"><i class="fas fa-save"></i> Save Profile Changes</button></form>
+        <div style="margin-top:30px;"><button onclick="logout()" class="btn-danger" style="width:100%;"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+      `;
+      if (userData.photo) document.getElementById('profilePhotoPreview').innerHTML = `<img src="${userData.photo}">`;
+      
+      setupEditableField('mobileNo', 'editMobileBtn', 'saveMobileBtn', 'cancelMobileBtn', (v) => { if(/^[0-9]{10}$/.test(v)){userData.phone=v;saveUserData();showToast('Mobile updated');return true;}showToast('Invalid number');return false;});
+      setupEditableField('altMobileNo', 'editAltMobileBtn', 'saveAltMobileBtn', 'cancelAltMobileBtn', (v) => {userData.altPhone=v;saveUserData();showToast('Updated');return true;});
+      document.getElementById('profileForm').onsubmit = (e) => { e.preventDefault(); userData.gender = document.getElementById('gender').value; userData.dob = document.getElementById('dob').value; saveUserData(); showToast('Profile updated!'); };
+    }
+
+    function setupEditableField(inputId, editId, saveId, cancelId, onSave) {
+      const input = document.getElementById(inputId), edit = document.getElementById(editId), save = document.getElementById(saveId), cancel = document.getElementById(cancelId);
+      if(!input||!edit) return;
+      let original = input.value;
+      edit.onclick = () => { original = input.value; input.readOnly = false; input.style.background = 'var(--bg-primary)'; input.style.border = '1px solid var(--orange-primary)'; edit.style.display = 'none'; if(save) save.style.display = 'inline-flex'; if(cancel) cancel.style.display = 'inline-flex'; input.focus(); };
+      if(save) save.onclick = () => { if(onSave(input.value.trim())) { input.readOnly = true; input.style.background = 'var(--border-light)'; input.style.border = ''; edit.style.display = 'inline-flex'; save.style.display = 'none'; if(cancel) cancel.style.display = 'none'; } else { input.value = original; } };
+      if(cancel) cancel.onclick = () => { input.value = original; input.readOnly = true; input.style.background = 'var(--border-light)'; input.style.border = ''; edit.style.display = 'inline-flex'; save.style.display = 'none'; cancel.style.display = 'none'; };
+    }
+
+    // ==================== HELPER FUNCTIONS ====================
+    function goToOrderDetails(orderId) { sessionStorage.setItem('highlightOrderId', orderId); window.location.href = 'orders.html'; }
+    function removeFromWishlist(id) { const idx = wishlist.indexOf(id); if(idx !== -1) wishlist.splice(idx,1); saveWishlist(); renderWishlist(); showToast('Removed from wishlist'); }
+    function setDefaultAddress(id) { addresses = addresses.map(a => ({...a, isDefault: a.id === id})); saveAddresses(); renderAddresses(); showToast('Default address updated'); }
+    function deleteAddress(id) { if(confirm('Delete this address?')) { addresses = addresses.filter(a => a.id !== id); if(addresses.length && !addresses.some(a=>a.isDefault)) addresses[0].isDefault = true; saveAddresses(); renderAddresses(); showToast('Address deleted'); } }
+    function openAddAddressModal() { currentEditingAddressId = null; document.getElementById('addressModalTitle').innerText = 'Add New Address'; document.getElementById('addressForm').reset(); document.getElementById('addressId').value = ''; document.getElementById('addressModal').style.display = 'flex'; }
+    function editAddress(id) { const a = addresses.find(a=>a.id===id); if(a){ currentEditingAddressId=id; document.getElementById('addressModalTitle').innerText='Edit Address'; document.getElementById('addressId').value=a.id; document.getElementById('addrFullName').value=a.name; document.getElementById('addrPhone').value=a.phone; document.getElementById('addrAltPhone').value=a.altPhone||''; document.getElementById('addrPincode').value=a.pincode; document.getElementById('addrBuilding').value=a.building; document.getElementById('addrLandmark').value=a.landmark||''; document.getElementById('addrAddress').value=a.address; document.getElementById('addrType').value=a.type; document.getElementById('addressModal').style.display='flex'; } }
     function closeAddressModal() { document.getElementById('addressModal').style.display = 'none'; }
-    function closeEditModal() { document.getElementById('editFieldModal').style.display = 'none'; }
-    
-    function openEditField(label, currentValue, onSave) {
-      document.getElementById('editFieldTitle').innerText = `Edit ${label}`;
-      document.getElementById('editFieldLabel').innerText = label;
-      document.getElementById('editFieldValue').value = currentValue;
-      currentEditContext.callback = onSave;
-      document.getElementById('editFieldModal').style.display = 'flex';
-      
-      document.getElementById('editFieldForm').onsubmit = (e) => {
-        e.preventDefault();
-        const newValue = document.getElementById('editFieldValue').value;
-        if (currentEditContext.callback) currentEditContext.callback(newValue);
-        closeEditModal();
-      };
-    }
-    
-    // Address form submission
-    const addressFormHandler = () => {
-      const form = document.getElementById('addressForm');
-      if (form) {
-        form.onsubmit = (e) => {
-          e.preventDefault();
-          const phone = document.getElementById('addrPhone').value;
-          if (!/^[0-9]{10}$/.test(phone)) { alert('Please enter a valid 10-digit mobile number'); return; }
-          const pincode = document.getElementById('addrPincode').value;
-          if (!/^[0-9]{6}$/.test(pincode)) { alert('Please enter a valid 6-digit pincode'); return; }
-          
-          const addressData = {
-            id: currentEditingAddressId || Date.now(),
-            name: document.getElementById('addrFullName').value,
-            phone: phone,
-            altPhone: document.getElementById('addrAltPhone').value,
-            pincode: pincode,
-            building: document.getElementById('addrBuilding').value,
-            landmark: document.getElementById('addrLandmark').value,
-            address: document.getElementById('addrAddress').value,
-            type: document.getElementById('addrType').value,
-            isDefault: currentEditingAddressId ? (addresses.find(a => a.id === currentEditingAddressId)?.isDefault || false) : addresses.length === 0
-          };
-          
-          if (currentEditingAddressId) {
-            const index = addresses.findIndex(a => a.id === currentEditingAddressId);
-            if (index !== -1) addresses[index] = addressData;
-          } else { addresses.push(addressData); }
-          
-          saveAddresses();
-          closeAddressModal();
-          renderAddresses();
-          showToast('Address saved successfully!');
-        };
-      }
+    function openPaymentModal() { document.getElementById('paymentModal').style.display = 'flex'; }
+    function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; }
+    function selectDefaultPayment(id) { paymentMethods = paymentMethods.map(p => ({...p, isDefault: p.id === id})); savePaymentMethods(); renderPayments(); showToast('Default payment method updated'); }
+    function saveNotificationSettings() { saveNotificationPrefs(); showToast('Notification settings saved'); }
+    function savePreferences() { userPreferences.language = document.getElementById('prefLanguage')?.value || 'english'; userPreferences.currency = document.getElementById('prefCurrency')?.value || 'INR'; userPreferences.diet = [...document.querySelectorAll('#dietTags .preference-tag.selected')].map(t => t.dataset.diet); saveUserPreferences(); showToast('Preferences saved'); }
+    function toggleGoogleAuth() { if(userData.googleConnected){ if(confirm('Disconnect Google?')){ userData.googleConnected=false; userData.googleEmail=null; saveUserData(); showToast('Google disconnected'); } } else { alert('Demo: Connecting Google account...'); userData.googleConnected=true; userData.googleEmail=userData.email; saveUserData(); showToast('Google connected'); } renderSecurity(); }
+    function deactivateAccount() { if(confirm('Deactivate your account?\nYou can reactivate by logging in within 30 days.')){ showToast('Account deactivated'); setTimeout(()=>logout(),1500); } }
+    function deleteAccount() { if(confirm('⚠️ PERMANENT ACTION: Delete your account?\nAll data will be lost forever!')){ if(confirm('Type DELETE to confirm')){ localStorage.clear(); window.location.href='index.html'; } } }
+    function triggerPhotoUpload() { document.getElementById('photoUpload')?.click(); }
+    function updateProfilePhoto(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = e => { userData.photo = e.target.result; saveUserData(); const avatar = document.querySelector('.profile-avatar'); if(avatar) avatar.innerHTML = `<img src="${userData.photo}">`; const preview = document.getElementById('profilePhotoPreview'); if(preview) preview.innerHTML = `<img src="${userData.photo}">`; showToast('Photo updated'); }; reader.readAsDataURL(input.files[0]); } }
+    function viewProduct(id) { window.location.href = `description.html?id=${id}`; }
+    function logout() { if(confirm('Logout?')) { localStorage.removeItem('freshkart_user_data'); window.location.href = 'index.html'; } }
+    function showToast(msg) { let t = document.querySelector('.account-toast'); if(!t){ t=document.createElement('div'); t.className='account-toast'; document.body.appendChild(t); } t.innerHTML=`<i class="fas fa-check-circle"></i> ${msg}`; t.style.opacity='1'; setTimeout(()=>t.style.opacity='0',2000); }
+    function switchTab(tab) { document.querySelectorAll('.sidebar-menu a').forEach(a=>a.classList.remove('active')); document.querySelector(`.sidebar-menu a[data-tab="${tab}"]`)?.classList.add('active'); if(tab==='dashboard') renderDashboard(); else if(tab==='orders'){currentDisplayLimit=10;renderOrders();} else if(tab==='wishlist') renderWishlist(); else if(tab==='addresses') renderAddresses(); else if(tab==='payments') renderPayments(); else if(tab==='notifications') renderNotifications(); else if(tab==='preferences') renderPreferences(); else if(tab==='security') renderSecurity(); else if(tab==='settings') renderSettings(); }
+
+    // Address form handler
+    document.getElementById('addressForm').onsubmit = (e) => {
+      e.preventDefault();
+      const phone = document.getElementById('addrPhone').value;
+      if(!/^[0-9]{10}$/.test(phone)) return alert('Valid 10-digit phone required');
+      const pincode = document.getElementById('addrPincode').value;
+      if(!/^[0-9]{6}$/.test(pincode)) return alert('Valid 6-digit pincode required');
+      const addrData = { id: currentEditingAddressId || Date.now(), name: document.getElementById('addrFullName').value, phone: phone, altPhone: document.getElementById('addrAltPhone').value, pincode: pincode, building: document.getElementById('addrBuilding').value, landmark: document.getElementById('addrLandmark').value, address: document.getElementById('addrAddress').value, type: document.getElementById('addrType').value, isDefault: currentEditingAddressId ? (addresses.find(a=>a.id===currentEditingAddressId)?.isDefault||false) : addresses.length===0 };
+      if(currentEditingAddressId){ const idx=addresses.findIndex(a=>a.id===currentEditingAddressId); if(idx!==-1) addresses[idx]=addrData; } else addresses.push(addrData);
+      saveAddresses(); closeAddressModal(); renderAddresses(); showToast('Address saved');
     };
-    
-    function setDefaultAddress(id) {
-      addresses = addresses.map(a => ({ ...a, isDefault: a.id === id }));
-      saveAddresses();
-      renderAddresses();
-      showToast('Default address updated');
-    }
-    
-    function deleteAddress(id) {
-      if (confirm('Are you sure you want to delete this address?')) {
-        addresses = addresses.filter(a => a.id !== id);
-        if (addresses.length && !addresses.some(a => a.isDefault)) addresses[0].isDefault = true;
-        saveAddresses();
-        renderAddresses();
-        showToast('Address deleted');
-      }
-    }
-    
-    // ==================== SETTINGS RENDER ====================
-    function renderSettings() { 
-  const defaultAddress = addresses.find(a => a.isDefault) || addresses[0];
-  
-  // Store original values for cancel functionality
-  window.originalMobileNo = userData.phone || '';
-  window.originalAltMobileNo = userData.altPhone || '';
-  
-  document.getElementById('accountMain').innerHTML = `
-    <div class="section-title"><i class="fas fa-user-cog"></i> Account Settings</div>
-    <form id="profileForm" class="profile-form">
-      <div class="profile-photo-section">
-        <div class="profile-photo" id="profilePhotoPreview" onclick="triggerPhotoUpload()"><i class="fas fa-user"></i></div>
-        <div class="profile-photo-upload"><small>Click on photo to change</small><br><input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="updateProfilePhoto(this)"></div>
-      </div>
-      <div class="profile-form-row">
-        <div class="profile-form-group"><label>Full Name <span class="required">*</span></label><input type="text" id="fullName" value="${userData.name || ''}" required placeholder="Enter your full name" readonly style="background:var(--border-light); cursor: not-allowed;"></div>
-        <div class="profile-form-group"><label>Email ID <span class="required">*</span></label><input type="email" id="emailId" value="${userData.email || ''}" required placeholder="your@email.com" readonly style="background:var(--border-light); cursor: not-allowed;"></div>
-      </div>
-      <div class="profile-form-row">
-        <div class="profile-form-group">
-          <label>Mobile Number <span class="required">*</span></label>
-          <div style="display: flex; gap: 10px; align-items: center;">
-            <input type="tel" id="mobileNo" value="${userData.phone || ''}" required placeholder="10 digit mobile number" pattern="[0-9]{10}" maxlength="10" readonly style="background:var(--border-light); cursor: not-allowed; flex: 1;">
-            <button type="button" class="edit-field-btn" id="editMobileBtn" style="white-space: nowrap;"><i class="fas fa-edit"></i> Edit</button>
-            <button type="button" class="save-field-btn" id="saveMobileBtn" style="display: none; background: var(--green-primary); color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; font-size: 11px; font-weight: 600;"><i class="fas fa-save"></i> Save</button>
-            <button type="button" class="cancel-field-btn" id="cancelMobileBtn" style="display: none; background: var(--red-primary); color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; font-size: 11px; font-weight: 600;"><i class="fas fa-times"></i> Cancel</button>
-          </div>
-        </div>
-        <div class="profile-form-group">
-          <label>Alternative Mobile</label>
-          <div style="display: flex; gap: 10px; align-items: center;">
-            <input type="tel" id="altMobileNo" value="${userData.altPhone || ''}" placeholder="Optional" pattern="[0-9]{10}" maxlength="10" readonly style="background:var(--border-light); cursor: not-allowed; flex: 1;">
-            <button type="button" class="edit-field-btn" id="editAltMobileBtn" style="white-space: nowrap;"><i class="fas fa-edit"></i> Edit</button>
-            <button type="button" class="save-field-btn" id="saveAltMobileBtn" style="display: none; background: var(--green-primary); color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; font-size: 11px; font-weight: 600;"><i class="fas fa-save"></i> Save</button>
-            <button type="button" class="cancel-field-btn" id="cancelAltMobileBtn" style="display: none; background: var(--red-primary); color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; font-size: 11px; font-weight: 600;"><i class="fas fa-times"></i> Cancel</button>
-          </div>
-        </div>
-      </div>
-      <div class="profile-form-row">
-        <div class="profile-form-group"><label>Gender</label><select id="gender"><option value="male" ${userData.gender === 'male' ? 'selected' : ''}>Male</option><option value="female" ${userData.gender === 'female' ? 'selected' : ''}>Female</option><option value="other" ${userData.gender === 'other' ? 'selected' : ''}>Other</option></select></div>
-        <div class="profile-form-group"><label>Age</label><input type="number" id="age" value="${userData.age || ''}" placeholder="Your age" min="1" max="120"></div>
-      </div>
-      
-      <div class="default-address-card">
-        <h4><i class="fas fa-map-marker-alt"></i> Default Delivery Address</h4>
-        ${defaultAddress ? `
-          <p><strong>${defaultAddress.name}</strong></p>
-          <p>${defaultAddress.building}, ${defaultAddress.address}</p>
-          <p>${defaultAddress.landmark ? defaultAddress.landmark + ', ' : ''}${defaultAddress.pincode}</p>
-          <p>📞 ${defaultAddress.phone} ${defaultAddress.altPhone ? `| ${defaultAddress.altPhone}` : ''}</p>
-          <button type="button" class="edit-field-btn" onclick="switchTab('addresses')">Manage Addresses →</button>
-        ` : '<p>No address found. <a href="#" onclick="switchTab(\'addresses\')">Add address</a></p>'}
-      </div>
-      
-      <div class="google-auth-info">
-        <div class="google-auth-badge"><i class="fab fa-google"></i> ${userData.googleConnected ? 'Google Account Connected' : 'Connect Google Account'}</div>
-        ${userData.googleConnected ? `<span style="font-size: 12px;">${userData.googleEmail || 'rahul.sharma@gmail.com'}</span>` : ''}
-        <button type="button" class="auth-connect-btn" onclick="toggleGoogleAuth()">${userData.googleConnected ? 'Disconnect' : 'Connect'}</button>
-      </div>
-      <button type="submit" class="save-btn"><i class="fas fa-save"></i> Save Changes</button>
-    </form>
-    <div style="margin-top:30px;padding:20px;background:var(--bg-primary);border-radius:16px;">
-      <h4><i class="fas fa-sign-out-alt"></i> Logout</h4>
-      <button onclick="logout()" style="background:var(--red-primary);color:white;border:none;padding:10px 20px;border-radius:40px;margin-top:10px;cursor:pointer;">Logout</button>
-    </div>
-  `;
-  
-  if (userData.photo) {
-    const preview = document.getElementById('profilePhotoPreview');
-    if (preview) preview.innerHTML = `<img src="${userData.photo}" alt="Profile" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-  }
-  
-  // Setup mobile number edit functionality
-  setupEditableField('mobileNo', 'editMobileBtn', 'saveMobileBtn', 'cancelMobileBtn', (newValue) => {
-    if (/^[0-9]{10}$/.test(newValue)) {
-      userData.phone = newValue;
-      saveUserData();
-      // Also update any orders with this phone number
-      updateOrdersWithNewPhone(newValue);
-      showToast('Mobile number updated successfully!');
-      return true;
-    } else {
-      showToast('Please enter a valid 10-digit mobile number');
-      return false;
-    }
-  });
-  
-  // Setup alternative mobile number edit functionality
-  setupEditableField('altMobileNo', 'editAltMobileBtn', 'saveAltMobileBtn', 'cancelAltMobileBtn', (newValue) => {
-    userData.altPhone = newValue;
-    saveUserData();
-    showToast('Alternative mobile number updated!');
-    return true;
-  });
-  
-  document.getElementById('profileForm').onsubmit = (e) => { 
-    e.preventDefault(); 
-    userData.gender = document.getElementById('gender').value; 
-    userData.age = document.getElementById('age').value; 
-    saveUserData(); 
-    showToast('Profile updated successfully!'); 
-  };
-}
 
-// Helper function to setup editable fields
-function setupEditableField(inputId, editBtnId, saveBtnId, cancelBtnId, onSave) {
-  const input = document.getElementById(inputId);
-  const editBtn = document.getElementById(editBtnId);
-  const saveBtn = document.getElementById(saveBtnId);
-  const cancelBtn = document.getElementById(cancelBtnId);
-  
-  if (!input || !editBtn) return;
-  
-  let originalValue = input.value;
-  
-  editBtn.addEventListener('click', () => {
-    originalValue = input.value;
-    input.readOnly = false;
-    input.style.background = 'var(--bg-primary)';
-    input.style.cursor = 'text';
-    input.style.border = '1px solid var(--orange-primary)';
-    input.focus();
-    editBtn.style.display = 'none';
-    if (saveBtn) saveBtn.style.display = 'inline-flex';
-    if (cancelBtn) cancelBtn.style.display = 'inline-flex';
-  });
-  
-  if (saveBtn) {
-    saveBtn.addEventListener('click', () => {
-      const newValue = input.value.trim();
-      const isValid = onSave(newValue);
-      if (isValid) {
-        input.readOnly = true;
-        input.style.background = 'var(--border-light)';
-        input.style.cursor = 'not-allowed';
-        input.style.border = '1px solid var(--border-light)';
-        editBtn.style.display = 'inline-flex';
-        saveBtn.style.display = 'none';
-        if (cancelBtn) cancelBtn.style.display = 'none';
-      } else {
-        input.value = originalValue;
-      }
-    });
-  }
-  
-  if (cancelBtn) {
-    cancelBtn.addEventListener('click', () => {
-      input.value = originalValue;
-      input.readOnly = true;
-      input.style.background = 'var(--border-light)';
-      input.style.cursor = 'not-allowed';
-      input.style.border = '1px solid var(--border-light)';
-      editBtn.style.display = 'inline-flex';
-      saveBtn.style.display = 'none';
-      cancelBtn.style.display = 'none';
-      showToast('Changes cancelled');
-    });
-  }
-}
+    // document.getElementById('paymentForm').onsubmit = (e) => {
+    //   e.preventDefault();
+    //   const type = document.getElementById('paymentType').value;
+    //   let name = '';
+    //   if(type === 'card') name = `💳 ****${document.getElementById('cardNumber').value.slice(-4)}`;
+    //   else if(type === 'upi') name = `📱 ${document.getElementById('upiId').value}`;
+    //   else name = type === 'netbanking' ? '🏦 Net Banking' : '👛 Wallet';
+    //   paymentMethods.push({ id: Date.now(), type: type, name: name, isDefault: paymentMethods.length === 0 });
+    //   savePaymentMethods(); closePaymentModal(); renderPayments(); showToast('Payment method added');
+    // };
 
-// Function to update orders with new phone number
-function updateOrdersWithNewPhone(newPhone) {
-  const formattedPhone = newPhone.startsWith('+91') ? newPhone : `+91 ${newPhone}`;
-  if (fullOrdersList && fullOrdersList.length > 0) {
-    fullOrdersList = fullOrdersList.map(order => ({
-      ...order,
-      userPhone: formattedPhone
-    }));
-    saveOrders();
-  }
-}
-    
-    function toggleGoogleAuth() {
-      if (userData.googleConnected) {
-        if (confirm('Disconnect Google Account? You can reconnect anytime.')) {
-          userData.googleConnected = false;
-          userData.googleEmail = null;
-          saveUserData();
-          renderSettings();
-          showToast('Google Account disconnected');
-        }
-      } else {
-        alert('🔐 Google Authentication\n\nThis would open Google Sign-In popup.\nFor demo purposes, we\'ll simulate a successful connection.');
-        userData.googleConnected = true;
-        userData.googleEmail = userData.email || 'user@gmail.com';
-        saveUserData();
-        renderSettings();
-        showToast('Google Account connected successfully!');
-      }
-    }
-    
-    function triggerPhotoUpload() { document.getElementById('photoUpload').click(); }
-    
-    function updateProfilePhoto(input) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          userData.photo = e.target.result;
-          saveUserData();
-          updateAllProfilePhotos(userData.photo);
-          showToast('Profile photo updated!');
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-    
-    // ==================== TAB SWITCHING ====================
-    let isLoading = false;
-    
-    function switchTab(tab) { 
-      document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active')); 
-      const activeLink = document.querySelector(`.sidebar-menu a[data-tab="${tab}"]`);
-      if (activeLink) activeLink.classList.add('active');
-      if (tab === 'dashboard') renderDashboard(); 
-      else if (tab === 'orders') {
-        currentDisplayLimit = 10;
-        renderOrders(); 
-      } else if (tab === 'wishlist') renderWishlist(); 
-      else if (tab === 'addresses') renderAddresses(); 
-      else if (tab === 'settings') renderSettings(); 
-    }
-    
-    function showToast(message) {
-      let toast = document.querySelector('.account-toast');
-      if (!toast) {
-        toast = document.createElement('div');
-        toast.className = 'account-toast';
-        toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green-primary);color:white;padding:10px 20px;border-radius:40px;z-index:2000;font-size:13px;opacity:0;transition:opacity 0.3s;';
-        document.body.appendChild(toast);
-      }
-      toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-      toast.style.opacity = '1';
-      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
-    }
-    
-    function viewProduct(productId) { window.location.href = `description.html?id=${productId}`; }
-    function logout() { if (confirm('Logout?')) { localStorage.clear(); window.location.href = 'index.html'; } }
-    
-    // Make functions global for onclick handlers
-    window.goToOrderDetails = goToOrderDetails;
-    window.loadMoreOrdersBatch = loadMoreOrdersBatch;
-    window.switchTab = switchTab;
-    window.setDefaultAddress = setDefaultAddress;
-    window.deleteAddress = deleteAddress;
-    window.addAddress = openAddAddressModal;
-    window.editAddress = editAddress;
-    window.closeAddressModal = closeAddressModal;
-    window.closeEditModal = closeEditModal;
-    window.openEditField = openEditField;
-    window.logout = logout;
-    window.viewProduct = viewProduct;
-    window.removeFromWishlist = removeFromWishlist;
-    window.triggerPhotoUpload = triggerPhotoUpload;
-    window.updateProfilePhoto = updateProfilePhoto;
-    window.toggleGoogleAuth = toggleGoogleAuth;
-    
+    // document.getElementById('paymentType')?.addEventListener('change', (e) => {
+    //   document.getElementById('cardFields').style.display = e.target.value === 'card' ? 'block' : 'none';
+    //   document.getElementById('upiFields').style.display = e.target.value === 'upi' ? 'block' : 'none';
+    // });
+
     // Initialize
-    document.addEventListener('DOMContentLoaded', addressFormHandler);
-    
-    async function initPage() { 
-      await initCommon(() => {});
-      loadUserData();
-      if (userData.photo) {
-        const sidebarAvatar = document.querySelector('.profile-avatar');
-        if (sidebarAvatar) sidebarAvatar.innerHTML = `<img src="${userData.photo}" alt="Profile">`;
-      }
-      renderDashboard(); 
-      document.querySelectorAll('.sidebar-menu a').forEach(a => a.addEventListener('click', (e) => { 
-        e.preventDefault(); 
-        switchTab(a.dataset.tab); 
-      })); 
-    }
-    
+    async function initPage() { await initCommon(()=>{}); loadUserData(); if(userData.photo) document.querySelector('.profile-avatar').innerHTML = `<img src="${userData.photo}">`; renderDashboard(); document.querySelectorAll('.sidebar-menu a').forEach(a=>a.addEventListener('click',(e)=>{e.preventDefault();switchTab(a.dataset.tab);})); }
+    window.switchTab = switchTab; window.goToOrderDetails = goToOrderDetails; window.loadMoreOrders = loadMoreOrders; window.removeFromWishlist = removeFromWishlist; window.setDefaultAddress = setDefaultAddress; window.deleteAddress = deleteAddress; window.openAddAddressModal = openAddAddressModal; window.editAddress = editAddress; window.closeAddressModal = closeAddressModal; window.openPaymentModal = openPaymentModal; window.closePaymentModal = closePaymentModal; window.selectDefaultPayment = selectDefaultPayment; window.saveNotificationSettings = saveNotificationSettings; window.savePreferences = savePreferences; window.toggleGoogleAuth = toggleGoogleAuth; window.deactivateAccount = deactivateAccount; window.deleteAccount = deleteAccount; window.triggerPhotoUpload = triggerPhotoUpload; window.updateProfilePhoto = updateProfilePhoto; window.viewProduct = viewProduct; window.logout = logout; window.showToast = showToast;
     initPage();
   </script>
 </body>

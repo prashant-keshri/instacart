@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FreshKart – Track Your Order</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* Real-time Tracking Styles */
+    .tracking-container {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+      margin: 30px 0;
+    }
+    
+    @media (max-width: 1000px) {
+      .tracking-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Map Container */
+    .tracking-map {
+      background: var(--surface);
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+    }
+    
+    #realtimeMap {
+      height: 500px;
+      width: 100%;
+    }
+    
+    /* Order Info Panel */
+    .order-info-panel {
+      background: var(--surface);
+      border-radius: 24px;
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+      position: sticky;
+      top: 100px;
+    }
+    
+    .order-status-header {
+      background: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(46,125,50,0.1));
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .status-animation {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .pulse-dot {
+      width: 12px;
+      height: 12px;
+      background: var(--orange-primary);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(0.8); opacity: 1; }
+      100% { transform: scale(1.2); opacity: 0; }
+    }
+    
+    .driver-card {
+      background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(59,130,246,0.05));
+      border-radius: 20px;
+      padding: 16px;
+      margin: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .driver-avatar {
+      width: 60px;
+      height: 60px;
+      background: var(--orange-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: white;
+    }
+    
+    /* Timeline Steps */
+    .tracking-timeline {
+      padding: 20px;
+    }
+    
+    .timeline-step {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      position: relative;
+    }
+    
+    .timeline-step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 22px;
+      top: 50px;
+      bottom: -20px;
+      width: 2px;
+      background: var(--border-light);
+    }
+    
+    .timeline-step.completed .step-badge {
+      background: var(--green-primary);
+      color: white;
+    }
+    
+    .timeline-step.active .step-badge {
+      background: var(--orange-primary);
+      color: white;
+      animation: pulse 1.5s infinite;
+    }
+    
+    .step-badge {
+      width: 44px;
+      height: 44px;
+      background: var(--bg-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      border: 2px solid var(--border-light);
+      z-index: 1;
+    }
+    
+    .step-content {
+      flex: 1;
+    }
+    
+    .step-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .step-time {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    
+    /* ETA Card */
+    .eta-card {
+      background: var(--bg-primary);
+      border-radius: 16px;
+      padding: 16px;
+      margin: 16px;
+      text-align: center;
+    }
+    
+    .eta-large {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--orange-primary);
+    }
+    
+    /* Action Buttons */
+    .tracking-actions {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      border-top: 1px solid var(--border-light);
+      flex-wrap: wrap;
+    }
+    
+    .track-action-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 40px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    
+    .track-action-btn.call { background: var(--green-primary); color: white; }
+    .track-action-btn.chat { background: var(--blue-primary); color: white; }
+    .track-action-btn.help { background: var(--orange-primary); color: white; }
+    
+    /* Brand Specific Badges */
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    
+    .brand-hyperlocal { background: linear-gradient(135deg, #f97316, #16a34a); color: white; }
+    .brand-subscribe { background: linear-gradient(135deg, #d946ef, #ea580c); color: white; }
+    .brand-ride { background: linear-gradient(135deg, #c026d3, #2563eb); color: white; }
+    
+    @media (max-width: 768px) {
+      #realtimeMap { height: 350px; }
+      .eta-large { font-size: 36px; }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
+
+  <div class="brand-bar">
+    <div class="brand-container">
+      <button class="brand-switch-btn" data-brand="hyperlocal" data-url="index.html"><i class="fas fa-store"></i> Hyper Local</button>
+      <button class="brand-switch-btn" data-brand="subscribe" data-url="subscription.html"><i class="fas fa-calendar-check"></i> Subscribe</button>
+      <button class="brand-switch-btn" data-brand="ride" data-url="ride.html"><i class="fas fa-motorcycle"></i> Ride</button>
+    </div>
+  </div>
+
+  <div id="simpleHeaderPlaceholder"></div>
+
+  <main class="container">
+    <div class="page-header" style="margin: 20px 0;">
+      <h1><i class="fas fa-location-dot"></i> Track Your Order</h1>
+      <p id="trackingSubtitle">Real-time delivery tracking</p>
+    </div>
+
+    <div class="tracking-container">
+      <!-- Map Section -->
+      <div class="tracking-map">
+        <div id="realtimeMap"></div>
+      </div>
+
+      <!-- Order Info Panel -->
+      <div class="order-info-panel">
+        <div class="order-status-header">
+          <div class="status-animation">
+            <div class="pulse-dot"></div>
+            <div class="pulse-dot" style="animation-delay: 0.5s;"></div>
+            <div class="pulse-dot" style="animation-delay: 1s;"></div>
+          </div>
+          <h3 id="orderStatusText">Order Confirmed</h3>
+          <p id="orderIdText" style="font-size: 12px; margin-top: 4px;"></p>
+          <span id="brandBadge" class="brand-badge brand-hyperlocal"><i class="fas fa-store"></i> Hyperlocal Delivery</span>
+        </div>
+
+        <!-- Driver Info -->
+        <div class="driver-card" id="driverCard">
+          <div class="driver-avatar"><i class="fas fa-user-ninja"></i></div>
+          <div style="flex: 1;">
+            <div style="font-weight: 700;">Finding nearest partner</div>
+            <div style="font-size: 12px; color: var(--text-muted);" id="driverStatus">Searching for available delivery partner...</div>
+          </div>
+        </div>
+
+        <!-- ETA Card -->
+        <div class="eta-card">
+          <div style="font-size: 12px; color: var(--text-muted);">Estimated Delivery Time</div>
+          <div class="eta-large" id="etaCountdown">--:--</div>
+          <div id="etaDestination" style="font-size: 12px; margin-top: 4px;"></div>
+        </div>
+
+        <!-- Timeline Steps -->
+        <div class="tracking-timeline" id="trackingTimeline">
+          <div class="timeline-step completed" data-step="order">
+            <div class="step-badge"><i class="fas fa-check-circle"></i></div>
+            <div class="step-content">
+              <div class="step-title">Order Placed</div>
+              <div class="step-time" id="orderPlacedTime">Just now</div>
+            </div>
+          </div>
+          <div class="timeline-step" data-step="preparing">
+            <div class="step-badge"><i class="fas fa-utensils"></i></div>
+            <div class="step-content">
+              <div class="step-title">Preparing Your Order</div>
+              <div class="step-time" id="preparingTime">-</div>
+            </div>
+          </div>
+          <div class="timeline-step" data-step="picked">
+            <div class="step-badge"><i class="fas fa-box"></i></div>
+            <div class="step-content">
+              <div class="step-title">Order Picked Up</div>
+              <div class="step-time" id="pickedTime">-</div>
+            </div>
+          </div>
+          <div class="timeline-step" data-step="delivered">
+            <div class="step-badge"><i class="fas fa-home"></i></div>
+            <div class="step-content">
+              <div class="step-title">Delivered</div>
+              <div class="step-time" id="deliveredTime">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="tracking-actions">
+          <button class="track-action-btn call" id="callDriverBtn"><i class="fas fa-phone-alt"></i> Call Driver</button>
+          <button class="track-action-btn chat" id="chatSupportBtn"><i class="fas fa-comment-dots"></i> Chat</button>
+          <button class="track-action-btn help" id="helpCenterBtn"><i class="fas fa-question-circle"></i> Help</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Orders</span></a>
+    <a href="categories.html" class="nav-item"><i class="fas fa-th-large"></i><span>Category</span></a>
+    <a href="account.html" class="nav-item"><i class="fas fa-user"></i><span>Account</span></a>
+    <a href="#" class="nav-item" id="bottomCartBtn"><div class="cart-badge-wrapper"><i class="fas fa-shopping-cart"></i><span class="bottom-cart-count" id="bottomCartCount">0</span></div><span>Cart</span></a>
+  </nav>
+
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div>
+    <div class="cart-items" id="cartItemsList"></div>
+    <div class="cart-footer"><div id="priceBreakdownBox"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="common.js"></script>
+  <script>
+    // ==================== REAL-TIME ORDER TRACKING SYSTEM ====================
+    
+    let trackingMap;
+    let driverMarker;
+    let routeLayer;
+    let trackingInterval;
+    let etaInterval;
+    
+    // Tracking data
+    let currentOrder = {
+      id: null,
+      brand: "hyperlocal",
+      status: "confirmed",
+      orderPlaced: new Date(),
+      estimatedDelivery: new Date(Date.now() + 45 * 60000),
+      pickupLocation: { lat: 28.6328, lng: 77.2197 },
+      deliveryLocation: { lat: 28.6129, lng: 77.2295 },
+      currentDriverLocation: { lat: 28.6328, lng: 77.2197 },
+      driverName: "Rahul Kumar",
+      driverPhone: "+91 9876543210",
+      driverRating: 4.8,
+      orderItems: ["Organic Apples x2", "Fresh Bananas x1"]
+    };
+    
+    // Simulated driver movement path
+    const driverPath = [
+      { lat: 28.6328, lng: 77.2197 },
+      { lat: 28.6305, lng: 77.2210 },
+      { lat: 28.6280, lng: 77.2230 },
+      { lat: 28.6255, lng: 77.2250 },
+      { lat: 28.6230, lng: 77.2265 },
+      { lat: 28.6205, lng: 77.2280 },
+      { lat: 28.6180, lng: 77.2290 },
+      { lat: 28.6155, lng: 77.2298 },
+      { lat: 28.6130, lng: 77.2295 }
+    ];
+    let currentPathIndex = 0;
+    
+    function initTrackingMap() {
+      trackingMap = L.map('realtimeMap').setView([currentOrder.pickupLocation.lat, currentOrder.pickupLocation.lng], 13);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap'
+      }).addTo(trackingMap);
+      
+      // Pickup marker
+      L.marker([currentOrder.pickupLocation.lat, currentOrder.pickupLocation.lng], {
+        icon: L.divIcon({ html: '<i class="fas fa-store" style="color:#f97316; font-size:28px;"></i>', iconSize: [28,28] })
+      }).addTo(trackingMap).bindPopup("Pickup Location");
+      
+      // Delivery marker
+      L.marker([currentOrder.deliveryLocation.lat, currentOrder.deliveryLocation.lng], {
+        icon: L.divIcon({ html: '<i class="fas fa-home" style="color:#10b981; font-size:28px;"></i>', iconSize: [28,28] })
+      }).addTo(trackingMap).bindPopup("Your Location");
+      
+      // Driver marker
+      driverMarker = L.marker([currentOrder.currentDriverLocation.lat, currentOrder.currentDriverLocation.lng], {
+        icon: L.divIcon({ html: '<i class="fas fa-motorcycle" style="color:#3b82f6; font-size:28px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>', iconSize: [28,28] })
+      }).addTo(trackingMap).bindPopup("Driver: " + currentOrder.driverName);
+      
+      // Draw route
+      drawRoute();
+      
+      trackingMap.fitBounds([
+        [currentOrder.pickupLocation.lat, currentOrder.pickupLocation.lng],
+        [currentOrder.deliveryLocation.lat, currentOrder.deliveryLocation.lng]
+      ], { padding: [50, 50] });
+    }
+    
+    function drawRoute() {
+      if (routeLayer) trackingMap.removeLayer(routeLayer);
+      routeLayer = L.polyline([currentOrder.pickupLocation, currentOrder.deliveryLocation], {
+        color: '#f97316',
+        weight: 4,
+        opacity: 0.7,
+        dashArray: '10, 10'
+      }).addTo(trackingMap);
+    }
+    
+    function startTrackingSimulation() {
+      trackingInterval = setInterval(() => {
+        if (currentPathIndex < driverPath.length) {
+          const newPos = driverPath[currentPathIndex];
+          currentOrder.currentDriverLocation = newPos;
+          driverMarker.setLatLng([newPos.lat, newPos.lng]);
+          trackingMap.panTo([newPos.lat, newPos.lng]);
+          
+          // Update ETA based on progress
+          const progress = currentPathIndex / driverPath.length;
+          const remainingTime = Math.max(1, Math.floor((1 - progress) * 25));
+          document.getElementById('etaCountdown').innerHTML = `${remainingTime} min`;
+          
+          // Update status based on progress
+          if (currentPathIndex === 0) {
+            updateTrackingStatus("preparing");
+          } else if (currentPathIndex === 3) {
+            updateTrackingStatus("picked");
+          } else if (currentPathIndex === driverPath.length - 1) {
+            updateTrackingStatus("delivered");
+            clearInterval(trackingInterval);
+            clearInterval(etaInterval);
+          }
+          
+          currentPathIndex++;
+        }
+      }, 4000);
+    }
+    
+    function updateTrackingStatus(status) {
+      const steps = ['order', 'preparing', 'picked', 'delivered'];
+      const statusIndex = steps.indexOf(status);
+      
+      steps.forEach((step, idx) => {
+        const stepElement = document.querySelector(`.timeline-step[data-step="${step}"]`);
+        if (stepElement) {
+          if (idx < statusIndex) {
+            stepElement.classList.add('completed');
+            stepElement.classList.remove('active');
+          } else if (idx === statusIndex) {
+            stepElement.classList.add('active');
+            stepElement.classList.remove('completed');
+          }
+        }
+      });
+      
+      // Update status text
+      const statusTexts = {
+        'order': 'Order Confirmed',
+        'preparing': 'Preparing Your Order',
+        'picked': 'Order Picked Up & On The Way',
+        'delivered': 'Order Delivered! 🎉'
+      };
+      
+      document.getElementById('orderStatusText').innerHTML = statusTexts[status] || statusTexts.order;
+      document.getElementById('orderStatusText').style.color = status === 'delivered' ? 'var(--green-primary)' : '';
+      
+      // Update time stamps
+      const now = new Date();
+      if (status === 'preparing') document.getElementById('preparingTime').innerHTML = now.toLocaleTimeString();
+      if (status === 'picked') document.getElementById('pickedTime').innerHTML = now.toLocaleTimeString();
+      if (status === 'delivered') document.getElementById('deliveredTime').innerHTML = now.toLocaleTimeString();
+      
+      // Update driver card
+      if (status === 'picked') {
+        document.querySelector('.driver-avatar').innerHTML = '<i class="fas fa-motorcycle"></i>';
+        document.getElementById('driverStatus').innerHTML = `${currentOrder.driverName} is on the way! ⭐ ${currentOrder.driverRating}`;
+      } else if (status === 'delivered') {
+        document.querySelector('.driver-avatar').innerHTML = '<i class="fas fa-check-circle"></i>';
+        document.getElementById('driverStatus').innerHTML = 'Order delivered successfully!';
+        document.getElementById('etaCountdown').innerHTML = 'Delivered!';
+      }
+    }
+    
+    function updateETA() {
+      const now = new Date();
+      const diff = currentOrder.estimatedDelivery - now;
+      if (diff <= 0) {
+        document.getElementById('etaCountdown').innerHTML = 'Arriving Soon!';
+        clearInterval(etaInterval);
+      } else {
+        const minutes = Math.floor(diff / 60000);
+        document.getElementById('etaCountdown').innerHTML = `${minutes} min`;
+      }
+    }
+    
+    function loadOrderFromParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('order');
+      const subscriptionId = urlParams.get('subscription');
+      const brand = urlParams.get('brand');
+      
+      if (orderId) {
+        currentOrder.id = orderId;
+        document.getElementById('orderIdText').innerHTML = `Order ID: ${orderId}`;
+      } else if (subscriptionId) {
+        currentOrder.id = subscriptionId;
+        document.getElementById('orderIdText').innerHTML = `Subscription: ${subscriptionId}`;
+      }
+      
+      if (brand) {
+        currentOrder.brand = brand;
+        const brandNames = { hyperlocal: 'Hyperlocal Delivery', subscribe: 'Subscription Delivery', ride: 'Ride Booking' };
+        document.getElementById('trackingSubtitle').innerHTML = brandNames[brand] || 'Real-time tracking';
+        
+        const brandBadge = document.getElementById('brandBadge');
+        brandBadge.className = `brand-badge brand-${brand}`;
+        if (brand === 'hyperlocal') brandBadge.innerHTML = '<i class="fas fa-store"></i> Hyperlocal Delivery';
+        else if (brand === 'subscribe') brandBadge.innerHTML = '<i class="fas fa-calendar-check"></i> Subscription Delivery';
+        else brandBadge.innerHTML = '<i class="fas fa-motorcycle"></i> Ride Booking';
+      }
+      
+      // Set delivery location based on brand
+      if (currentOrder.brand === 'ride') {
+        currentOrder.deliveryLocation = { lat: 28.6139, lng: 77.2090 };
+        document.getElementById('etaDestination').innerHTML = "Destination: India Gate, Delhi";
+      } else {
+        document.getElementById('etaDestination').innerHTML = "Delivery to: Connaught Place, Delhi";
+      }
+      
+      document.getElementById('orderPlacedTime').innerHTML = currentOrder.orderPlaced.toLocaleTimeString();
+    }
+    
+    // Action handlers
+    function callDriver() {
+      window.location.href = `tel:${currentOrder.driverPhone}`;
+    }
+    
+    function chatSupport() {
+      window.open('https://wa.me/919876543210?text=Hello%2C%20I%20need%20help%20with%20my%20order', '_blank');
+    }
+    
+    function showHelp() {
+      alert("Need help?\n\n📞 Customer Support: 1800 123 3737\n📧 Email: support@freshkart.com\n💬 Live Chat: Available 24/7");
+    }
+    
+    async function initOrderTracking() {
+      await initCommon(() => {});
+      updateCartUI();
+      loadOrderFromParams();
+      initTrackingMap();
+      startTrackingSimulation();
+      etaInterval = setInterval(updateETA, 1000);
+      
+      // Bind action buttons
+      document.getElementById('callDriverBtn').addEventListener('click', callDriver);
+      document.getElementById('chatSupportBtn').addEventListener('click', chatSupport);
+      document.getElementById('helpCenterBtn').addEventListener('click', showHelp);
+      
+      // Brand switcher
+      document.querySelectorAll('.brand-switch-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          window.location.href = btn.dataset.url;
+        });
+      });
+    }
+    
+    initOrderTracking();
+  </script>
+</body>
+</html>

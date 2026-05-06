@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Your Ride - FreshKart Ride</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    .track-header { background: linear-gradient(135deg, #1e3a8a, #f97316); color: white; padding: 20px 0; text-align: center; }
+    .track-status { background: var(--surface); border-radius: 24px; padding: 24px; margin: 20px 0; border: 1px solid var(--border-light); }
+    .status-timeline { display: flex; justify-content: space-between; margin: 30px 0; position: relative; }
+    .status-step { text-align: center; flex: 1; position: relative; z-index: 1; }
+    .status-step .step-icon { width: 50px; height: 50px; background: var(--bg-primary); border: 2px solid var(--border-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px; }
+    .status-step.completed .step-icon { background: var(--green-primary); border-color: var(--green-primary); color: white; }
+    .status-step.active .step-icon { border-color: var(--orange-primary); color: var(--orange-primary); }
+    .driver-card { display: flex; align-items: center; gap: 20px; padding: 20px; background: var(--bg-primary); border-radius: 20px; margin: 20px 0; }
+    .driver-avatar { width: 70px; height: 70px; background: var(--orange-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; color: white; }
+    .track-map { height: 350px; border-radius: 20px; margin: 20px 0; }
+    .eta-card { background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(16,185,129,0.05)); border-radius: 20px; padding: 20px; text-align: center; }
+    .eta-number { font-size: 48px; font-weight: 800; color: var(--orange-primary); }
+  </style>
+</head>
+<body>
+  <div class="track-header"><h1><i class="fas fa-motorcycle"></i> Track Your Ride</h1><p>Ride ID: #RID<span id="rideId">12345</span></p></div>
+  <div class="container">
+    <div class="track-status">
+      <div class="status-timeline" id="statusTimeline"></div>
+      <div class="driver-card"><div class="driver-avatar"><i class="fas fa-user-circle"></i></div><div><h3>Rajesh Kumar</h3><p><i class="fas fa-star" style="color:#fbbf24;"></i> 4.9 ★ | 2,500+ rides</p><p><i class="fas fa-car"></i> DL 01 AB 1234 | White Swift</p></div><div style="margin-left:auto;"><button class="call-btn" style="background:var(--green-primary); border:none; padding:10px 20px; border-radius:40px; color:white;"><i class="fas fa-phone"></i> Call</button></div></div>
+      <div class="track-map" id="trackMap"></div>
+      <div class="eta-card"><div class="eta-number" id="etaMinutes">3</div><div>minutes away</div><div style="margin-top:10px;"><i class="fas fa-map-marker-alt"></i> Near Connaught Place Metro Station</div></div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const statuses = ["Driver Assigned", "Arriving", "Reached", "Ride Started", "Almost There", "Arrived"];
+    let currentStep = 1;
+    function updateTimeline() { 
+      const container = document.getElementById('statusTimeline');
+      container.innerHTML = statuses.map((s, i) => `<div class="status-step ${i < currentStep ? 'completed' : i === currentStep ? 'active' : ''}"><div class="step-icon"><i class="fas ${i===0?'fa-user-check':i===1?'fa-location-dot':i===2?'fa-flag-checkered':i===3?'fa-play':i===4?'fa-hourglass-half':'fa-flag-checkered'}"></i></div><div>${s}</div></div>`).join('');
+    }
+    let map = L.map('trackMap').setView([28.6328, 77.2197], 14);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+    let driverMarker = L.marker([28.6350, 77.2200], {icon: L.divIcon({html: '<i class="fas fa-motorcycle" style="font-size:28px; color:#f97316;"></i>', iconSize: [28,28]})}).addTo(map).bindPopup("Your Captain");
+    let pickupMarker = L.marker([28.6328, 77.2197]).addTo(map).bindPopup("Your Location");
+    setInterval(() => { currentStep = Math.min(currentStep+1, 5); updateTimeline(); document.getElementById('etaMinutes').innerText = Math.max(1, 5-currentStep); if(currentStep>=5) clearInterval(); }, 5000);
+    updateTimeline();
+  </script>
+</body>
+</html>

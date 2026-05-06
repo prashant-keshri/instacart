@@ -9,7 +9,7 @@
       "price": 120,
       "oldPrice": 150,
       "discountPercent": 20,
-      "unit": "1 kg",
+      "unit": ["1 kg", "500 g", "3 kg"],
       "image": "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=300",
       "images": ["https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400"],
       "rating": 4.5,

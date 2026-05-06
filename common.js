@@ -10,14 +10,15 @@ const SITE_CONFIG = {
   DEFAULT_MAX_CYCLES: 10,
   DEFAULT_THEME: 'dark',
   STORAGE_KEYS: {
-    CART: 'freshkart_cart',
-    WISHLIST: 'freshkart_wishlist',
-    RECENTLY_VIEWED: 'freshkart_recently',
-    THEME: 'freshkart_theme',
-    USER_DATA: 'freshkart_user_data',
-    ADDRESSES: 'freshkart_addresses',
-    ORDERS: 'freshkart_orders'
-  }
+  CART: 'freshkart_cart',
+  WISHLIST: 'freshkart_wishlist',
+  RECENTLY_VIEWED: 'freshkart_recently',
+  THEME: 'freshkart_theme',
+  USER_DATA: 'freshkart_user_data',
+  ADDRESSES: 'freshkart_addresses',
+  ORDERS: 'freshkart_orders',
+  LOCATION: 'freshkart_location'  // Add this line
+}
 };
 
 // ==================== SECTION 1.5: EDITABLE CATEGORIES CONFIGURATION ====================
@@ -25,19 +26,20 @@ const CATEGORIES_CONFIG = {
   // Master list of all available categories (edit these as needed)
   allCategories: [
     { id: "all", name: "All", icon: "fa-th-large", emoji: "📦", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 0 },
-    { id: "fruits", name: "Fruits", icon: "fa-apple", emoji: "🍎", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 1 },
-    { id: "vegetables", name: "Vegetables", icon: "fa-carrot", emoji: "🥬", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 2 },
-    { id: "beverages", name: "Beverages", icon: "fa-mug-saucer", emoji: "🥤", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 3 },
-    { id: "cakes", name: "Cakes", icon: "fa-cake-candles", emoji: "🎂", showInNav: true, showInHome: false, showInOrders: true, showInSubscription: true, order: 4 },
-    { id: "icecream", name: "Ice Cream", icon: "fa-ice-cream", emoji: "🍦", showInNav: true, showInHome: false, showInOrders: true, showInSubscription: true, order: 5 },
-    { id: "snacks", name: "Snacks", icon: "fa-bowl-food", emoji: "🍿", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 6 },
-    { id: "meals", name: "Meals", icon: "fa-utensils", emoji: "🍛", showInNav: true, showInHome: false, showInOrders: true, showInSubscription: true, order: 7 },
-    { id: "meats", name: "Meats", icon: "fa-drumstick-bite", emoji: "🍗", showInNav: true, showInHome: false, showInOrders: true, showInSubscription: true, order: 8 },
-    { id: "dairy", name: "Dairy", icon: "fa-cheese", emoji: "🥛", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 9 },
-    { id: "bakery", name: "Bakery", icon: "fa-bread-slice", emoji: "🥖", showInNav: true, showInHome: false, showInOrders: true, showInSubscription: true, order: 10 },
-    { id: "staples", name: "Staples", icon: "fa-box", emoji: "🍚", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 11 },
-    { id: "groceries", name: "Groceries", icon: "fa-basket-shopping", emoji: "🛒", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 12 },
-    { id: "subscription", name: "Subscriptions", icon: "fa-calendar-check", emoji: "📦", showInNav: true, showInHome: true, showInOrders: false, showInSubscription: true, order: 13 }
+    { id: "shop", name: "Shops", icon: "fa-box", emoji: "🛒", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 1 },
+    { id: "fruits", name: "Fruits", icon: "fa-apple", emoji: "🍎", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 2 },
+    { id: "vegetables", name: "Vegetables", icon: "fa-carrot", emoji: "🥬", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 3 },
+    { id: "beverages", name: "Beverages", icon: "fa-mug-saucer", emoji: "🥤", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 4 },
+    { id: "cakes", name: "Cakes", icon: "fa-cake-candles", emoji: "🎂", showInNav: true, showInHome: false, showInOrders: true, showInSubscription: true, order: 5 },
+    { id: "icecream", name: "Ice Cream", icon: "fa-ice-cream", emoji: "🍦", showInNav: true, showInHome: false, showInOrders: true, showInSubscription: true, order: 6 },
+    { id: "snacks", name: "Snacks", icon: "fa-bowl-food", emoji: "🍿", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 7 },
+    { id: "meals", name: "Meals", icon: "fa-utensils", emoji: "🍛", showInNav: true, showInHome: false, showInOrders: true, showInSubscription: true, order: 8 },
+    { id: "meats", name: "Meats", icon: "fa-drumstick-bite", emoji: "🍗", showInNav: true, showInHome: false, showInOrders: true, showInSubscription: true, order: 9 },
+    { id: "dairy", name: "Dairy", icon: "fa-cheese", emoji: "🥛", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 10 },
+    { id: "bakery", name: "Bakery", icon: "fa-bread-slice", emoji: "🥖", showInNav: true, showInHome: false, showInOrders: true, showInSubscription: true, order: 11 },
+    { id: "staples", name: "Staples", icon: "fa-box", emoji: "🍚", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 12 },
+    { id: "groceries", name: "Groceries", icon: "fa-basket-shopping", emoji: "🛒", showInNav: true, showInHome: true, showInOrders: true, showInSubscription: true, order: 13 },
+    { id: "subscription", name: "Subscriptions", icon: "fa-calendar-check", emoji: "📦", showInNav: true, showInHome: true, showInOrders: false, showInSubscription: true, order: 14 }
   ],
   
   // Number of categories to show on each page
@@ -86,6 +88,13 @@ function renderQuickCategories(containerId, pageName, onClickCallback) {
     links[i].addEventListener('click', function(e) {
       e.preventDefault();
       const category = this.getAttribute('data-category');
+      
+      // Special handling for 'shop' category - redirect to near shop page
+      if (category === 'shop') {
+        window.location.href = 'nearshop.html';
+        return;
+      }
+      
       if (onClickCallback && typeof onClickCallback === 'function') {
         onClickCallback(category);
       } else {
@@ -1166,23 +1175,1145 @@ function showCategoriesSkeleton() {
 }
 
 // ==================== SECTION 12: HEADER COMPONENTS ====================
-function initGlobalSearch() {
+// For INDEX PAGE - Full header with search bar and location search input
+function initFullHeader() {
+  console.log("Initializing full header for index page");
+  
+  // ========== SEARCH FUNCTIONALITY ==========
   const searchInput = document.getElementById('globalSearch');
-  if (searchInput && allProductsData) {
-    searchInput.addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      const filtered = allProductsData.filter(p => p.name && p.name.toLowerCase().includes(term));
-      if (filtered.length) window.location.href = `description.html?id=${filtered[0].id}`;
+  if (searchInput) {
+    const newSearchInput = searchInput.cloneNode(true);
+    searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+    
+    newSearchInput.addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase().trim();
+      
+      const existingDropdown = document.querySelector('.search-suggestions-dropdown');
+      if (existingDropdown) existingDropdown.remove();
+      
+      if (term.length === 0) return;
+      
+      const products = window.allProducts || allProductsData || [];
+      const filtered = products.filter(p => {
+        const nameMatch = p.name && p.name.toLowerCase().includes(term);
+        const categoryMatch = (p.primaryCategory && p.primaryCategory.toLowerCase().includes(term)) ||
+                              (p.category && p.category.toLowerCase().includes(term));
+        return nameMatch || categoryMatch;
+      });
+      
+      if (filtered.length === 0) return;
+      
+      const dropdown = document.createElement('div');
+      dropdown.className = 'search-suggestions-dropdown';
+      
+      dropdown.innerHTML = filtered.slice(0, 8).map(product => `
+        <div class="search-suggestion-item" data-id="${product.id}">
+          <img class="search-suggestion-img" src="${product.image}" onerror="this.src='https://placehold.co/50'">
+          <div class="search-suggestion-info">
+            <div class="search-suggestion-name">${escapeHtml(product.name)}</div>
+            <div class="search-suggestion-category">${product.primaryCategory || product.category}</div>
+            <div class="search-suggestion-price">₹${product.price}</div>
+          </div>
+        </div>
+      `).join('');
+      
+      const searchContainer = newSearchInput.closest('.search-bar');
+      if (searchContainer) {
+        searchContainer.style.position = 'relative';
+        searchContainer.appendChild(dropdown);
+        
+        dropdown.querySelectorAll('.search-suggestion-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const productId = parseInt(item.dataset.id);
+            window.location.href = `description.html?id=${productId}`;
+          });
+        });
+      }
+    });
+    
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.search-bar')) {
+        const dropdown = document.querySelector('.search-suggestions-dropdown');
+        if (dropdown) dropdown.remove();
+      }
+    });
+  }
+  
+  // ========== LOCATION FUNCTIONALITY - Editable input with dropdown ==========
+  const locationSelector = document.querySelector('.location-selector');
+  if (locationSelector) {
+    console.log("Location selector found, converting to searchable input...");
+    
+    const savedLocation = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.LOCATION) || 'Delhi 110001';
+    
+    // Replace the location selector with an input-based search
+    locationSelector.innerHTML = `
+      <i class="fas fa-map-marker-alt"></i>
+      <input type="text" id="locationSearchInput" placeholder="Search location..." value="${savedLocation}" style="flex: 1; border: none; background: none; outline: none; font-size: 13px; font-weight: 500; color: var(--text-primary);">
+      <i class="fas fa-chevron-down" style="font-size: 10px; color: var(--text-muted);"></i>
+    `;
+    locationSelector.style.position = 'relative';
+    locationSelector.style.cursor = 'default';
+    
+    const locationInput = document.getElementById('locationSearchInput');
+    
+    // Create location dropdown
+    createIndexLocationSearchDropdown();
+    
+    // Input event - filter locations
+    if (locationInput) {
+      locationInput.addEventListener('input', (e) => {
+        const term = e.target.value;
+        showIndexLocationDropdown(term);
+      });
+      
+      // Click event - show dropdown
+      locationInput.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showIndexLocationDropdown(locationInput.value);
+      });
+      
+      // Handle enter key
+      locationInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          const newLocation = e.target.value;
+          if (newLocation.trim()) {
+            setIndexLocationFromSearch({ name: newLocation, address: newLocation });
+          }
+          closeIndexLocationSearchDropdown();
+        }
+      });
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.location-selector')) {
+        closeIndexLocationSearchDropdown();
+      }
     });
   }
 }
 
-function initLocationSelector() {
-  const locationSelect = document.getElementById('locationSelect');
-  if (locationSelect) {
-    locationSelect.addEventListener('change', (e) => showToast(`📍 Location changed to ${e.target.value}`));
+// Create location search dropdown
+function createIndexLocationSearchDropdown() {
+  if (document.getElementById('indexLocationSearchDropdown')) return;
+  
+  const dropdown = document.createElement('div');
+  dropdown.id = 'indexLocationSearchDropdown';
+  dropdown.className = 'location-search-dropdown';
+  dropdown.style.cssText = `
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    border: 1px solid var(--border-light);
+    z-index: 1001;
+    display: none;
+    margin-top: 8px;
+    max-height: 320px;
+    overflow-y: auto;
+  `;
+  
+  const locationSelector = document.querySelector('.location-selector');
+  if (locationSelector) {
+    locationSelector.appendChild(dropdown);
+  } else {
+    document.body.appendChild(dropdown);
   }
 }
+
+function showIndexLocationDropdown(searchTerm = '') {
+  const dropdown = document.getElementById('indexLocationSearchDropdown');
+  if (!dropdown) return;
+  
+  const locations = [
+    { name: "Delhi 110001", address: "Delhi, Noida, Gurgaon" },
+    { name: "Mumbai 400001", address: "Mumbai Suburban, Thane" },
+    { name: "Bangalore 560001", address: "Bengaluru Urban" },
+    { name: "Chennai 600001", address: "Chennai Metropolitan" },
+    { name: "Kolkata 700001", address: "Kolkata Metropolitan" },
+    { name: "Hyderabad 500001", address: "Hyderabad District" },
+    { name: "Pune 411001", address: "Pune Metropolitan" },
+    { name: "Ahmedabad 380001", address: "Ahmedabad District" },
+    { name: "Jaipur 302001", address: "Jaipur City" },
+    { name: "Lucknow 226001", address: "Lucknow District" },
+    { name: "Chandigarh 160001", address: "Chandigarh City" },
+    { name: "Bhopal 462001", address: "Bhopal District" }
+  ];
+  
+  let filtered = locations;
+  const term = searchTerm.toLowerCase().trim();
+  if (term) {
+    filtered = locations.filter(l => 
+      l.name.toLowerCase().includes(term) || 
+      l.address.toLowerCase().includes(term)
+    );
+  }
+  
+  const savedLocation = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.LOCATION) || 'Delhi 110001';
+  
+  dropdown.innerHTML = `
+    <div style="padding: 12px; border-bottom: 1px solid var(--border-light); background: var(--bg-primary);">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 6px 0;">
+        <i class="fas fa-location-dot" style="color: var(--orange-primary);"></i>
+        <span style="font-size: 12px; color: var(--text-muted);">Popular Locations</span>
+      </div>
+    </div>
+    ${filtered.map(loc => `
+      <div class="location-search-item" data-location='${JSON.stringify(loc)}' style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: background 0.2s;
+        border-bottom: 1px solid var(--border-light);
+        ${savedLocation === loc.name ? 'background: rgba(46,125,50,0.1);' : ''}
+      ">
+        <div style="width: 32px; height: 32px; background: var(--bg-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-map-pin" style="color: var(--orange-primary); font-size: 14px;"></i>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-weight: 600; font-size: 14px;">${loc.name}</div>
+          <div style="font-size: 11px; color: var(--text-muted);">${loc.address}</div>
+        </div>
+        ${savedLocation === loc.name ? '<i class="fas fa-check-circle" style="color: var(--green-primary);"></i>' : ''}
+      </div>
+    `).join('')}
+    <div id="useCurrentLocationSearch" style="
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      margin: 8px;
+      background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(46,125,50,0.1));
+      border-radius: 12px;
+      cursor: pointer;
+      border: 1px solid var(--border-light);
+    ">
+      <i class="fas fa-location-dot"></i>
+      <span style="flex: 1;">Use my current location</span>
+      <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
+    </div>
+  `;
+  
+  dropdown.style.display = 'block';
+  
+  // Add click handlers for location items
+  dropdown.querySelectorAll('.location-search-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const location = JSON.parse(item.dataset.location);
+      setIndexLocationFromSearch(location);
+    });
+  });
+  
+  // Add click handler for current location
+  const useCurrentBtn = document.getElementById('useCurrentLocationSearch');
+  if (useCurrentBtn) {
+    useCurrentBtn.addEventListener('click', () => {
+      getCurrentLocationForIndexSearch();
+    });
+  }
+}
+
+function setIndexLocationFromSearch(location) {
+  localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.LOCATION, location.name);
+  
+  // Update the input value
+  const locationInput = document.getElementById('locationSearchInput');
+  if (locationInput) {
+    locationInput.value = location.name;
+  }
+  
+  closeIndexLocationSearchDropdown();
+  showToast(`📍 Location changed to ${location.name}`);
+  
+  // Optional: Refresh page content based on location
+  // window.location.reload();
+}
+
+function getCurrentLocationForIndexSearch() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`);
+          const data = await response.json();
+          const city = data.address?.city || data.address?.town || data.address?.state || 'Delhi';
+          const pincode = data.address?.postcode || '110001';
+          setIndexLocationFromSearch({ name: `${city} ${pincode}`, address: data.display_name?.substring(0, 100) || city });
+        } catch (e) {
+          setIndexLocationFromSearch({ name: "Delhi 110001", address: "Delhi, Noida, Gurgaon" });
+        }
+      },
+      () => {
+        setIndexLocationFromSearch({ name: "Delhi 110001", address: "Delhi, Noida, Gurgaon" });
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+}
+
+function closeIndexLocationSearchDropdown() {
+  const dropdown = document.getElementById('indexLocationSearchDropdown');
+  if (dropdown) dropdown.style.display = 'none';
+}
+
+// Create location dropdown for index page
+function createIndexLocationDropdown() {
+  if (document.getElementById('indexLocationDropdown')) return;
+  
+  const dropdown = document.createElement('div');
+  dropdown.id = 'indexLocationDropdown';
+  dropdown.className = 'index-location-dropdown';
+  dropdown.style.cssText = `
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 300px;
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    border: 1px solid var(--border-light);
+    z-index: 1001;
+    display: none;
+    margin-top: 8px;
+  `;
+  dropdown.innerHTML = `
+    <div style="padding: 12px; border-bottom: 1px solid var(--border-light);">
+      <input type="text" id="indexLocationSearchInput" placeholder="Search for area, pincode..." style="width: 100%; padding: 10px 14px; border-radius: 30px; border: 1px solid var(--border-light); background: var(--bg-primary); color: var(--text-primary); outline: none;">
+    </div>
+    <div id="useCurrentLocationIndex" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin: 4px 8px; background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(46,125,50,0.1)); border-radius: 12px; cursor: pointer;">
+      <i class="fas fa-location-dot"></i>
+      <span>Use my current location</span>
+    </div>
+    <div id="indexLocationListContainer" style="max-height: 300px; overflow-y: auto;"></div>
+  `;
+  
+  // Position relative to location selector
+  const locationSelector = document.querySelector('.location-selector');
+  if (locationSelector) {
+    locationSelector.style.position = 'relative';
+    locationSelector.appendChild(dropdown);
+  } else {
+    document.body.appendChild(dropdown);
+  }
+  
+  // Bind events
+  const searchInput = document.getElementById('indexLocationSearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      renderIndexLocationDropdownList(e.target.value);
+    });
+  }
+  
+  const useCurrentBtn = document.getElementById('useCurrentLocationIndex');
+  if (useCurrentBtn) {
+    useCurrentBtn.addEventListener('click', () => getCurrentLocationForIndexDropdown());
+  }
+  
+  renderIndexLocationDropdownList();
+}
+
+function renderIndexLocationDropdownList(searchTerm = '') {
+  const locations = [
+    { name: "Delhi 110001", address: "Delhi, Noida, Gurgaon" },
+    { name: "Mumbai 400001", address: "Mumbai Suburban, Thane" },
+    { name: "Bangalore 560001", address: "Bengaluru Urban" },
+    { name: "Chennai 600001", address: "Chennai Metropolitan" },
+    { name: "Kolkata 700001", address: "Kolkata Metropolitan" },
+    { name: "Hyderabad 500001", address: "Hyderabad District" },
+    { name: "Pune 411001", address: "Pune Metropolitan" },
+    { name: "Ahmedabad 380001", address: "Ahmedabad District" }
+  ];
+  
+  let filtered = locations;
+  if (searchTerm) {
+    const term = searchTerm.toLowerCase();
+    filtered = locations.filter(l => 
+      l.name.toLowerCase().includes(term) || 
+      l.address.toLowerCase().includes(term)
+    );
+  }
+  
+  const container = document.getElementById('indexLocationListContainer');
+  if (!container) return;
+  
+  const savedLocation = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.LOCATION) || 'Delhi 110001';
+  
+  container.innerHTML = filtered.map(loc => `
+    <div class="index-location-item" data-location='${JSON.stringify(loc)}' style="
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid var(--border-light);
+      ${savedLocation === loc.name ? 'background: rgba(46,125,50,0.1);' : ''}
+    ">
+      <div style="width: 36px; height: 36px; background: var(--bg-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-map-pin" style="color: var(--orange-primary);"></i>
+      </div>
+      <div style="flex: 1;">
+        <div style="font-weight: 600; font-size: 14px;">${loc.name}</div>
+        <div style="font-size: 11px; color: var(--text-muted);">${loc.address}</div>
+      </div>
+      ${savedLocation === loc.name ? '<i class="fas fa-check-circle" style="color: var(--green-primary);"></i>' : ''}
+    </div>
+  `).join('');
+  
+  container.querySelectorAll('.index-location-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const location = JSON.parse(item.dataset.location);
+      setIndexLocationFromDropdown(location);
+    });
+  });
+}
+
+function setIndexLocationFromDropdown(location) {
+  localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.LOCATION, location.name);
+  
+  // Update the displayed location text
+  const locationSpan = document.getElementById('indexLocationText');
+  if (locationSpan) locationSpan.textContent = location.name;
+  
+  closeIndexLocationDropdown();
+  showToast(`📍 Location changed to ${location.name}`);
+  
+  // Optional: Update any location-dependent content
+  // window.location.reload();
+}
+
+function getCurrentLocationForIndexDropdown() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`);
+          const data = await response.json();
+          const city = data.address?.city || data.address?.town || data.address?.state || 'Delhi';
+          const pincode = data.address?.postcode || '110001';
+          setIndexLocationFromDropdown({ name: `${city} ${pincode}`, address: data.display_name?.substring(0, 100) || city });
+        } catch (e) {
+          setIndexLocationFromDropdown({ name: "Delhi 110001", address: "Delhi, Noida, Gurgaon" });
+        }
+      },
+      () => {
+        setIndexLocationFromDropdown({ name: "Delhi 110001", address: "Delhi, Noida, Gurgaon" });
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+}
+
+function toggleIndexLocationDropdown() {
+  const dropdown = document.getElementById('indexLocationDropdown');
+  if (dropdown) {
+    const isVisible = dropdown.style.display === 'block';
+    dropdown.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) {
+      renderIndexLocationDropdownList();
+      const searchInput = document.getElementById('indexLocationSearchInput');
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
+      }
+    }
+  }
+}
+
+function closeIndexLocationDropdown() {
+  const dropdown = document.getElementById('indexLocationDropdown');
+  if (dropdown) dropdown.style.display = 'none';
+}
+
+// Create location drawer for index page
+function createLocationDrawerForIndex() {
+  if (document.getElementById('indexLocationDrawer')) return;
+  
+  // Create overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'search-overlay';
+  overlay.id = 'indexLocationOverlay';
+  document.body.appendChild(overlay);
+  
+  // Create drawer
+  const drawer = document.createElement('div');
+  drawer.className = 'location-drawer';
+  drawer.id = 'indexLocationDrawer';
+  drawer.innerHTML = `
+    <div class="location-drawer-header">
+      <h3><i class="fas fa-map-marker-alt"></i> Select Location</h3>
+      <button class="close-search" id="closeIndexLocationDrawerBtn">&times;</button>
+    </div>
+    <div class="location-search">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="indexLocationSearchInput" placeholder="Search for area, pincode..." autocomplete="off">
+      </div>
+    </div>
+    <div class="use-current-location" id="indexUseCurrentLocationBtn">
+      <i class="fas fa-location-dot"></i>
+      <span>Use my current location</span>
+      <i class="fas fa-chevron-right" style="margin-left: auto;"></i>
+    </div>
+    <div class="location-list" id="indexLocationList"></div>
+  `;
+  document.body.appendChild(drawer);
+  
+  // Close button
+  const closeBtn = document.getElementById('closeIndexLocationDrawerBtn');
+  const overlayEl = document.getElementById('indexLocationOverlay');
+  
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => closeIndexLocationDrawer());
+  }
+  if (overlayEl) {
+    overlayEl.addEventListener('click', () => closeIndexLocationDrawer());
+  }
+  
+  // Use current location
+  const useCurrentBtn = document.getElementById('indexUseCurrentLocationBtn');
+  if (useCurrentBtn) {
+    useCurrentBtn.addEventListener('click', () => getCurrentLocationForIndex());
+  }
+  
+  // Location search
+  const locationSearch = document.getElementById('indexLocationSearchInput');
+  if (locationSearch) {
+    locationSearch.addEventListener('input', (e) => {
+      renderIndexLocationList(e.target.value);
+    });
+  }
+  
+  // Initial render
+  renderIndexLocationList();
+}
+
+function renderIndexLocationList(searchTerm = '') {
+  const locations = [
+    { name: "Delhi 110001", address: "Delhi, Noida, Gurgaon" },
+    { name: "Mumbai 400001", address: "Mumbai Suburban, Thane" },
+    { name: "Bangalore 560001", address: "Bengaluru Urban" },
+    { name: "Chennai 600001", address: "Chennai Metropolitan" },
+    { name: "Kolkata 700001", address: "Kolkata Metropolitan" },
+    { name: "Hyderabad 500001", address: "Hyderabad District" },
+    { name: "Pune 411001", address: "Pune Metropolitan" },
+    { name: "Ahmedabad 380001", address: "Ahmedabad District" }
+  ];
+  
+  let filtered = locations;
+  if (searchTerm) {
+    const term = searchTerm.toLowerCase();
+    filtered = locations.filter(l => 
+      l.name.toLowerCase().includes(term) || 
+      l.address.toLowerCase().includes(term)
+    );
+  }
+  
+  const container = document.getElementById('indexLocationList');
+  if (!container) return;
+  
+  const savedLocation = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.LOCATION) || 'Delhi 110001';
+  
+  container.innerHTML = filtered.map(loc => `
+    <div class="location-item ${savedLocation === loc.name ? 'selected' : ''}" data-location='${JSON.stringify(loc)}'>
+      <div class="location-icon"><i class="fas fa-map-pin"></i></div>
+      <div class="location-info">
+        <div class="location-name">${loc.name}</div>
+        <div class="location-address">${loc.address}</div>
+      </div>
+      ${savedLocation === loc.name ? '<i class="fas fa-check-circle" style="color: var(--green-primary);"></i>' : ''}
+    </div>
+  `).join('');
+  
+  container.querySelectorAll('.location-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const location = JSON.parse(item.dataset.location);
+      setIndexLocation(location);
+    });
+  });
+}
+
+function setIndexLocation(location) {
+  localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.LOCATION, location.name);
+  
+  // Update the displayed location text
+  const locationSpan = document.getElementById('indexLocationText');
+  if (locationSpan) locationSpan.textContent = location.name;
+  
+  closeIndexLocationDrawer();
+  showToast(`📍 Location changed to ${location.name}`);
+  
+  // Optional: Reload page to refresh content
+  // setTimeout(() => window.location.reload(), 500);
+}
+
+function getCurrentLocationForIndex() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`);
+          const data = await response.json();
+          const city = data.address?.city || data.address?.town || data.address?.state || 'Delhi';
+          const pincode = data.address?.postcode || '110001';
+          setIndexLocation({ name: `${city} ${pincode}`, address: data.display_name?.substring(0, 100) || city });
+        } catch (e) {
+          setIndexLocation({ name: "Delhi 110001", address: "Delhi, Noida, Gurgaon" });
+        }
+      },
+      () => {
+        setIndexLocation({ name: "Delhi 110001", address: "Delhi, Noida, Gurgaon" });
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+}
+
+function openLocationDrawerForIndex() {
+  const drawer = document.getElementById('indexLocationDrawer');
+  const overlay = document.getElementById('indexLocationOverlay');
+  if (drawer) drawer.classList.add('open');
+  if (overlay) overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  renderIndexLocationList();
+}
+
+function closeIndexLocationDrawer() {
+  const drawer = document.getElementById('indexLocationDrawer');
+  const overlay = document.getElementById('indexLocationOverlay');
+  if (drawer) drawer.classList.remove('open');
+  if (overlay) overlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// For OTHER PAGES - Compact header with icons and dropdowns
+function initCompactHeader() {
+  const headerPlaceholder = document.getElementById('simpleHeaderPlaceholder');
+  if (!headerPlaceholder) return;
+  
+  const savedLocation = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.LOCATION) || 'Delhi 110001';
+  
+  headerPlaceholder.innerHTML = `
+    <header class="header-compact">
+      <div class="container">
+        <div class="header-logo" onclick="window.location.href='index.html'">
+          <h1>Fresh<span>Kart</span></h1>
+          <p>Grocery Delivery</p>
+        </div>
+        <div class="header-actions">
+          <button class="header-icon-btn" id="compactSearchBtn">
+            <i class="fas fa-search"></i>
+          </button>
+          <div class="location-badge" id="compactLocationBtn">
+            <i class="fas fa-map-marker-alt"></i>
+            <span id="compactLocationText">${savedLocation}</span>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+          <div class="cart-badge-header">
+            <button class="header-icon-btn" id="compactCartBtn">
+              <i class="fas fa-shopping-cart"></i>
+            </button>
+            <span class="cart-count-badge" id="compactCartCount">0</span>
+          </div>
+        </div>
+      </div>
+    </header>
+  `;
+  
+  // Create search dropdown
+  createCompactSearchDropdown();
+  
+  // Create location dropdown
+  createCompactLocationDropdown();
+  
+  // Bind events
+  const searchBtn = document.getElementById('compactSearchBtn');
+  const locationBtn = document.getElementById('compactLocationBtn');
+  const cartBtn = document.getElementById('compactCartBtn');
+  
+  if (searchBtn) {
+    searchBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleCompactSearchDropdown();
+    });
+  }
+  
+  if (locationBtn) {
+    locationBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleCompactLocationDropdown();
+    });
+  }
+  
+  if (cartBtn) {
+    cartBtn.addEventListener('click', () => openCart());
+  }
+  
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#compactSearchBtn') && !e.target.closest('.compact-search-dropdown')) {
+      closeCompactSearchDropdown();
+    }
+    if (!e.target.closest('#compactLocationBtn') && !e.target.closest('.compact-location-dropdown')) {
+      closeCompactLocationDropdown();
+    }
+  });
+  
+  updateCompactCartCount();
+}
+
+function createCompactSearchDropdown() {
+  if (document.getElementById('compactSearchDropdown')) return;
+  
+  const dropdown = document.createElement('div');
+  dropdown.id = 'compactSearchDropdown';
+  dropdown.className = 'compact-search-dropdown';
+  dropdown.style.cssText = `
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    width: 320px;
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    border: 1px solid var(--border-light);
+    z-index: 1001;
+    display: none;
+  `;
+  dropdown.innerHTML = `
+    <div style="padding: 16px; border-bottom: 1px solid var(--border-light);">
+      <input type="text" id="compactSearchInput" placeholder="Search products..." style="width: 100%; padding: 10px 14px; border-radius: 30px; border: 1px solid var(--border-light); background: var(--bg-primary); color: var(--text-primary); outline: none;">
+    </div>
+    <div id="compactSearchResults" style="max-height: 350px; overflow-y: auto;"></div>
+  `;
+  document.body.appendChild(dropdown);
+  
+  const searchInput = document.getElementById('compactSearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      performCompactSearch(e.target.value);
+    });
+  }
+}
+
+function performCompactSearch(term) {
+  const resultsContainer = document.getElementById('compactSearchResults');
+  if (!resultsContainer) return;
+  
+  const searchTerm = term.toLowerCase().trim();
+  
+  if (searchTerm.length === 0) {
+    resultsContainer.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--text-muted);"><i class="fas fa-search"></i><p>Type to search products</p></div>';
+    return;
+  }
+  
+  const products = window.allProducts || allProductsData || [];
+  const filtered = products.filter(p => {
+    const nameMatch = p.name && p.name.toLowerCase().includes(searchTerm);
+    const categoryMatch = (p.primaryCategory && p.primaryCategory.toLowerCase().includes(searchTerm)) ||
+                          (p.category && p.category.toLowerCase().includes(searchTerm));
+    return nameMatch || categoryMatch;
+  });
+  
+  if (filtered.length === 0) {
+    resultsContainer.innerHTML = `<div style="padding: 30px; text-align: center; color: var(--text-muted);">No results found for "${searchTerm}"</div>`;
+    return;
+  }
+  
+  resultsContainer.innerHTML = filtered.slice(0, 8).map(product => `
+    <div class="compact-search-item" data-id="${product.id}" style="display: flex; gap: 12px; padding: 12px 16px; cursor: pointer; border-bottom: 1px solid var(--border-light); transition: background 0.2s;">
+      <img src="${product.image}" style="width: 48px; height: 48px; border-radius: 8px; object-fit: cover;" onerror="this.src='https://placehold.co/48'">
+      <div style="flex: 1;">
+        <div style="font-weight: 600; font-size: 14px;">${escapeHtml(product.name)}</div>
+        <div style="font-size: 11px; color: var(--text-muted);">${product.primaryCategory || product.category}</div>
+        <div style="font-weight: 700; color: var(--green-primary);">₹${product.price}</div>
+      </div>
+    </div>
+  `).join('');
+  
+  resultsContainer.querySelectorAll('.compact-search-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const productId = parseInt(item.dataset.id);
+      window.location.href = `description.html?id=${productId}`;
+    });
+  });
+}
+
+function toggleCompactSearchDropdown() {
+  const dropdown = document.getElementById('compactSearchDropdown');
+  const locationDropdown = document.getElementById('compactLocationDropdown');
+  if (locationDropdown) locationDropdown.style.display = 'none';
+  if (dropdown) {
+    const isVisible = dropdown.style.display === 'block';
+    dropdown.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) {
+      const input = document.getElementById('compactSearchInput');
+      if (input) {
+        input.value = '';
+        input.focus();
+        performCompactSearch('');
+      }
+    }
+  }
+}
+
+function closeCompactSearchDropdown() {
+  const dropdown = document.getElementById('compactSearchDropdown');
+  if (dropdown) dropdown.style.display = 'none';
+}
+
+function createCompactLocationDropdown() {
+  if (document.getElementById('compactLocationDropdown')) return;
+  
+  const dropdown = document.createElement('div');
+  dropdown.id = 'compactLocationDropdown';
+  dropdown.className = 'compact-location-dropdown';
+  dropdown.style.cssText = `
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    width: 300px;
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    border: 1px solid var(--border-light);
+    z-index: 1001;
+    display: none;
+  `;
+  dropdown.innerHTML = `
+    <div style="padding: 16px; border-bottom: 1px solid var(--border-light);">
+      <input type="text" id="compactLocationSearch" placeholder="Search for area, pincode..." style="width: 100%; padding: 10px 14px; border-radius: 30px; border: 1px solid var(--border-light); background: var(--bg-primary); color: var(--text-primary); outline: none;">
+    </div>
+    <div id="useCurrentLocationCompact" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin: 8px; background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(46,125,50,0.1)); border-radius: 12px; cursor: pointer;">
+      <i class="fas fa-location-dot"></i>
+      <span>Use my current location</span>
+    </div>
+    <div id="compactLocationList" style="max-height: 300px; overflow-y: auto;"></div>
+  `;
+  document.body.appendChild(dropdown);
+  
+  const searchInput = document.getElementById('compactLocationSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      renderCompactLocationList(e.target.value);
+    });
+  }
+  
+  const useCurrentBtn = document.getElementById('useCurrentLocationCompact');
+  if (useCurrentBtn) {
+    useCurrentBtn.addEventListener('click', () => getCurrentLocationCompact());
+  }
+  
+  renderCompactLocationList();
+}
+
+function renderCompactLocationList(searchTerm = '') {
+  const locations = [
+    { name: "Delhi 110001", address: "Delhi, Noida, Gurgaon" },
+    { name: "Mumbai 400001", address: "Mumbai Suburban, Thane" },
+    { name: "Bangalore 560001", address: "Bengaluru Urban" },
+    { name: "Chennai 600001", address: "Chennai Metropolitan" },
+    { name: "Kolkata 700001", address: "Kolkata Metropolitan" },
+    { name: "Hyderabad 500001", address: "Hyderabad District" },
+    { name: "Pune 411001", address: "Pune Metropolitan" },
+    { name: "Ahmedabad 380001", address: "Ahmedabad District" }
+  ];
+  
+  let filtered = locations;
+  if (searchTerm) {
+    const term = searchTerm.toLowerCase();
+    filtered = locations.filter(l => 
+      l.name.toLowerCase().includes(term) || 
+      l.address.toLowerCase().includes(term)
+    );
+  }
+  
+  const container = document.getElementById('compactLocationList');
+  if (!container) return;
+  
+  const savedLocation = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.LOCATION) || 'Delhi 110001';
+  
+  container.innerHTML = filtered.map(loc => `
+    <div class="compact-location-item" data-location='${JSON.stringify(loc)}' style="
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid var(--border-light);
+      ${savedLocation === loc.name ? 'background: rgba(46,125,50,0.1);' : ''}
+    ">
+      <div style="width: 36px; height: 36px; background: var(--bg-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-map-pin" style="color: var(--orange-primary);"></i>
+      </div>
+      <div style="flex: 1;">
+        <div style="font-weight: 600; font-size: 14px;">${loc.name}</div>
+        <div style="font-size: 11px; color: var(--text-muted);">${loc.address}</div>
+      </div>
+      ${savedLocation === loc.name ? '<i class="fas fa-check-circle" style="color: var(--green-primary);"></i>' : ''}
+    </div>
+  `).join('');
+  
+  container.querySelectorAll('.compact-location-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const location = JSON.parse(item.dataset.location);
+      setCompactLocation(location);
+    });
+  });
+}
+
+function setCompactLocation(location) {
+  localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.LOCATION, location.name);
+  const locationText = document.getElementById('compactLocationText');
+  if (locationText) locationText.textContent = location.name;
+  closeCompactLocationDropdown();
+  showToast(`📍 Location changed to ${location.name}`);
+}
+
+function getCurrentLocationCompact() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`);
+          const data = await response.json();
+          const city = data.address?.city || data.address?.town || data.address?.state || 'Delhi';
+          const pincode = data.address?.postcode || '110001';
+          setCompactLocation({ name: `${city} ${pincode}`, address: data.display_name?.substring(0, 100) || city });
+        } catch (e) {
+          setCompactLocation({ name: "Delhi 110001", address: "Delhi, Noida, Gurgaon" });
+        }
+      },
+      () => {
+        setCompactLocation({ name: "Delhi 110001", address: "Delhi, Noida, Gurgaon" });
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+}
+
+function toggleCompactLocationDropdown() {
+  const dropdown = document.getElementById('compactLocationDropdown');
+  const searchDropdown = document.getElementById('compactSearchDropdown');
+  if (searchDropdown) searchDropdown.style.display = 'none';
+  if (dropdown) {
+    const isVisible = dropdown.style.display === 'block';
+    dropdown.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) {
+      renderCompactLocationList();
+      const input = document.getElementById('compactLocationSearch');
+      if (input) input.value = '';
+    }
+  }
+}
+
+function closeCompactLocationDropdown() {
+  const dropdown = document.getElementById('compactLocationDropdown');
+  if (dropdown) dropdown.style.display = 'none';
+}
+
+function updateCompactCartCount() {
+  const cartCount = document.getElementById('compactCartCount');
+  if (cartCount) {
+    const totalItems = cart.reduce((s, i) => s + (i.qty || 0), 0);
+    cartCount.innerText = totalItems;
+  }
+}
+
+function createLocationDrawer() {
+  // Check if drawer already exists
+  if (document.getElementById('globalLocationDrawer')) return;
+  
+  // Create overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'search-overlay';
+  overlay.id = 'locationOverlay';
+  document.body.appendChild(overlay);
+  
+  // Create drawer
+  const drawer = document.createElement('div');
+  drawer.className = 'location-drawer';
+  drawer.id = 'globalLocationDrawer';
+  drawer.innerHTML = `
+    <div class="location-drawer-header">
+      <h3><i class="fas fa-map-marker-alt"></i> Select Location</h3>
+      <button class="close-search" id="closeLocationDrawerBtn">&times;</button>
+    </div>
+    <div class="location-search">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="locationSearchInput" placeholder="Search for area, pincode..." autocomplete="off">
+      </div>
+    </div>
+    <div class="use-current-location" id="useCurrentLocationBtn">
+      <i class="fas fa-location-dot"></i>
+      <span>Use my current location</span>
+      <i class="fas fa-chevron-right" style="margin-left: auto;"></i>
+    </div>
+    <div class="location-list" id="globalLocationList"></div>
+  `;
+  document.body.appendChild(drawer);
+  
+  // Close button
+  const closeBtn = document.getElementById('closeLocationDrawerBtn');
+  const locationOverlay = document.getElementById('locationOverlay');
+  
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => closeLocationDrawer());
+  }
+  if (locationOverlay) {
+    locationOverlay.addEventListener('click', () => closeLocationDrawer());
+  }
+  
+  // Use current location
+  const useCurrentBtn = document.getElementById('useCurrentLocationBtn');
+  if (useCurrentBtn) {
+    useCurrentBtn.addEventListener('click', () => getCurrentLocation());
+  }
+  
+  // Location search
+  const locationSearch = document.getElementById('locationSearchInput');
+  if (locationSearch) {
+    locationSearch.addEventListener('input', (e) => {
+      renderLocationList(e.target.value);
+    });
+  }
+  
+  // Initial render
+  renderLocationList();
+}
+
+function renderLocationList(searchTerm = '') {
+  const locations = [
+    { name: "Delhi NCR", address: "Delhi, Noida, Gurgaon", pincode: "110001" },
+    { name: "Mumbai", address: "Mumbai Suburban, Thane", pincode: "400001" },
+    { name: "Bangalore", address: "Bengaluru Urban", pincode: "560001" },
+    { name: "Chennai", address: "Chennai Metropolitan", pincode: "600001" },
+    { name: "Kolkata", address: "Kolkata Metropolitan", pincode: "700001" },
+    { name: "Hyderabad", address: "Hyderabad District", pincode: "500001" },
+    { name: "Pune", address: "Pune Metropolitan", pincode: "411001" },
+    { name: "Ahmedabad", address: "Ahmedabad District", pincode: "380001" }
+  ];
+  
+  let filtered = locations;
+  if (searchTerm) {
+    const term = searchTerm.toLowerCase();
+    filtered = locations.filter(l => 
+      l.name.toLowerCase().includes(term) || 
+      l.address.toLowerCase().includes(term) ||
+      l.pincode.includes(term)
+    );
+  }
+  
+  const container = document.getElementById('globalLocationList');
+  if (!container) return;
+  
+  const savedLocation = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.LOCATION) || 'Delhi NCR';
+  
+  container.innerHTML = filtered.map(loc => `
+    <div class="location-item ${savedLocation === loc.name ? 'selected' : ''}" data-location='${JSON.stringify(loc)}'>
+      <div class="location-icon"><i class="fas fa-map-pin"></i></div>
+      <div class="location-info">
+        <div class="location-name">${loc.name}</div>
+        <div class="location-address">${loc.address} - ${loc.pincode}</div>
+      </div>
+      ${savedLocation === loc.name ? '<i class="fas fa-check-circle" style="color: var(--green-primary);"></i>' : ''}
+    </div>
+  `).join('');
+  
+  container.querySelectorAll('.location-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const location = JSON.parse(item.dataset.location);
+      setLocation(location);
+    });
+  });
+}
+
+function setLocation(location) {
+  localStorage.setItem(SITE_CONFIG.STORAGE_KEYS.LOCATION, location.name);
+  // Update the select dropdown value if it exists
+  const locationSelect = document.getElementById('locationSelect');
+  if (locationSelect) {
+    for (let i = 0; i < locationSelect.options.length; i++) {
+      const optValue = locationSelect.options[i].textContent.replace('📍 ', '');
+      if (optValue === location.name) {
+        locationSelect.value = locationSelect.options[i].value;
+        break;
+      }
+    }
+  }
+  closeLocationDrawer();
+  showToast(`📍 Location changed to ${location.name}`);
+}
+
+function getCurrentLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`);
+          const data = await response.json();
+          const city = data.address?.city || data.address?.town || data.address?.state || 'Delhi NCR';
+          setLocation({ name: city, address: data.display_name?.substring(0, 100) || city, pincode: data.address?.postcode || '110001' });
+        } catch (e) {
+          setLocation({ name: "Delhi NCR", address: "Delhi, Noida, Gurgaon", pincode: "110001" });
+        }
+      },
+      () => {
+        setLocation({ name: "Delhi NCR", address: "Delhi, Noida, Gurgaon", pincode: "110001" });
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+}
+
+function openLocationDrawer() {
+  const drawer = document.getElementById('globalLocationDrawer');
+  const overlay = document.getElementById('locationOverlay');
+  if (drawer) drawer.classList.add('open');
+  if (overlay) overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  renderLocationList();
+}
+
+function closeLocationDrawer() {
+  const drawer = document.getElementById('globalLocationDrawer');
+  const overlay = document.getElementById('locationOverlay');
+  if (drawer) drawer.classList.remove('open');
+  if (overlay) overlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Load saved location on page load
+function loadSavedLocation() {
+  const savedLocation = localStorage.getItem(SITE_CONFIG.STORAGE_KEYS.LOCATION);
+  if (savedLocation) {
+    const locationSelect = document.getElementById('locationSelect');
+    if (locationSelect) {
+      for (let i = 0; i < locationSelect.options.length; i++) {
+        const optValue = locationSelect.options[i].textContent.replace('📍 ', '');
+        if (optValue === savedLocation) {
+          locationSelect.value = locationSelect.options[i].value;
+          break;
+        }
+      }
+    }
+  }
+}
+
+
 
 // ==================== SECTION 13: MAIN INITIALIZATION ====================
 async function initCommon(customInitCallback) {
@@ -1191,11 +2322,22 @@ async function initCommon(customInitCallback) {
   initDarkMode();
   updateCartUI();
   bindCartEvents();
-  initGlobalSearch();
-  initLocationSelector();
+  
+  // Detect which page we're on and initialize appropriate header
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  
+  if (currentPage === 'index.html' || currentPage === '') {
+    // Index page - use full header with search bar
+    console.log("Initializing FULL header for index page");
+    initFullHeader();
+  } else {
+    // Other pages - use compact header with icons
+    console.log("Initializing COMPACT header for", currentPage);
+    initCompactHeader();
+  }
+  
   if (customInitCallback) customInitCallback();
 }
-
 
 // ==================== SECTION 14: HELPER FUNCTIONS ====================
 function escapeHtml(str) {
@@ -1256,18 +2398,34 @@ function renderCategoryPills(containerId, activeCategory, onCategoryClick) {
 }
 
 // Render category cards (grid view)
-function renderCategoryCards(containerId, activeCategory, onCategoryClick) {
+function renderCategoryCards(containerId, activeId, onClick, categoryType = 'product', limit = null) {
   const container = document.getElementById(containerId);
   if (!container) return false;
   
+  let categories = categoryType === 'subscription' 
+    ? MASTER_CATEGORIES.subscriptionCategories 
+    : MASTER_CATEGORIES.productCategories;
+  
+  if (limit && limit !== 'all') {
+    categories = categories.slice(0, limit);
+  }
+  
+  container.style.display = 'flex';
+  container.style.flexWrap = 'wrap';
+  container.style.justifyContent = 'center';
+  container.style.gap = '14px';
+  container.style.margin = '20px 0';
+  
   let html = '';
-  for (let i = 0; i < COMMON_CATEGORIES.length; i++) {
-    const cat = COMMON_CATEGORIES[i];
-    const activeClass = (activeCategory === cat.cat) ? 'active' : '';
-    html += `<div class="category-card ${activeClass}" data-category="${cat.cat}">
-      <div class="category-card-icon">${cat.emoji}</div>
-      <span>${cat.name}</span>
-    </div>`;
+  for (let i = 0; i < categories.length; i++) {
+    const cat = categories[i];
+    const activeClass = (activeId === cat.id) ? 'active' : '';
+    html += `
+      <div class="category-card ${activeClass}" data-category-id="${cat.id}" data-category-type="${categoryType}">
+        <div class="category-card-icon">${cat.emoji}</div>
+        <span>${cat.name}</span>
+      </div>
+    `;
   }
   container.innerHTML = html;
   
@@ -1275,9 +2433,18 @@ function renderCategoryCards(containerId, activeCategory, onCategoryClick) {
   const cards = container.querySelectorAll('.category-card');
   for (let i = 0; i < cards.length; i++) {
     cards[i].addEventListener('click', function() {
-      const category = this.getAttribute('data-category');
-      if (onCategoryClick && typeof onCategoryClick === 'function') {
-        onCategoryClick(category);
+      const categoryId = this.getAttribute('data-category-id');
+      
+      // Special handling for 'shop' category
+      if (categoryId === 'shop') {
+        window.location.href = 'nearshop.html';
+        return;
+      }
+      
+      if (onClick && typeof onClick === 'function') {
+        onClick(categoryId);
+      } else {
+        window.location.href = `categories.html?cat=${categoryId}`;
       }
     });
   }
@@ -1347,10 +2514,6 @@ function updateCartUIClickable() {
   }
   updatePriceBreakdown();
 }
-
-// Override the original updateCartUI with the clickable version
-const originalUpdateCartUI = updateCartUI;
-window.updateCartUI = updateCartUIClickable;
 
 // ==================== SECTION 17: SUBSCRIPTION CATEGORY FUNCTIONS ====================
 const SUBSCRIPTION_CATEGORIES = [
@@ -1473,17 +2636,17 @@ const MASTER_CATEGORIES = {
   // Main product categories (used across all pages)
   productCategories: [
     { id: "all", name: "All", icon: "fa-th-large", emoji: "📦", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 0 },
-    { id: "fruits", name: "Fruits", icon: "fa-apple", emoji: "🍎", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 1 },
-    { id: "vegetables", name: "Vegetables", icon: "fa-carrot", emoji: "🥬", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 2 },
-    { id: "beverages", name: "Beverages", icon: "fa-mug-saucer", emoji: "🥤", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 3 },
-    { id: "cakes", name: "Cakes", icon: "fa-cake-candles", emoji: "🎂", type: "product", showInNav: true, showInHome: false, showInOrders: true, order: 4 },
-    { id: "icecream", name: "Ice Cream", icon: "fa-ice-cream", emoji: "🍦", type: "product", showInNav: true, showInHome: false, showInOrders: true, order: 5 },
-    { id: "snacks", name: "Snacks", icon: "fa-bowl-food", emoji: "🍿", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 6 },
-    { id: "meals", name: "Meals", icon: "fa-utensils", emoji: "🍛", type: "product", showInNav: true, showInHome: false, showInOrders: true, order: 7 },
-    { id: "meats", name: "Meats", icon: "fa-drumstick-bite", emoji: "🍗", type: "product", showInNav: true, showInHome: false, showInOrders: true, order: 8 },
-    { id: "dairy", name: "Dairy", icon: "fa-cheese", emoji: "🥛", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 9 },
-    { id: "bakery", name: "Bakery", icon: "fa-bread-slice", emoji: "🥖", type: "product", showInNav: true, showInHome: false, showInOrders: true, order: 10 },
-    { id: "staples", name: "Staples", icon: "fa-box", emoji: "🍚", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 11 },
+    { id: "shop", name: "Shops", icon: "fa-box", emoji: "🛒", type: "shop", showInNav: true, showInHome: true, showInOrders: true, order: 1 },
+    { id: "fruits", name: "Fruits", icon: "fa-apple", emoji: "🍎", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 2 },
+    { id: "vegetables", name: "Vegetables", icon: "fa-carrot", emoji: "🥬", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 3 },
+    { id: "beverages", name: "Beverages", icon: "fa-mug-saucer", emoji: "🥤", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 4 },
+    { id: "cakes", name: "Cakes", icon: "fa-cake-candles", emoji: "🎂", type: "product", showInNav: true, showInHome: false, showInOrders: true, order: 5 },
+    { id: "icecream", name: "Ice Cream", icon: "fa-ice-cream", emoji: "🍦", type: "product", showInNav: true, showInHome: false, showInOrders: true, order: 6 },
+    { id: "snacks", name: "Snacks", icon: "fa-bowl-food", emoji: "🍿", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 7 },
+    { id: "meals", name: "Meals", icon: "fa-utensils", emoji: "🍛", type: "product", showInNav: true, showInHome: false, showInOrders: true, order: 8 },
+    { id: "meats", name: "Meats", icon: "fa-drumstick-bite", emoji: "🍗", type: "product", showInNav: true, showInHome: false, showInOrders: true, order: 9 },
+    { id: "dairy", name: "Dairy", icon: "fa-cheese", emoji: "🥛", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 10 },
+    { id: "bakery", name: "Bakery", icon: "fa-bread-slice", emoji: "🥖", type: "product", showInNav: true, showInHome: false, showInOrders: true, order: 11 },
     { id: "groceries", name: "Grocery", icon: "fa-basket-shopping", emoji: "🛒", type: "product", showInNav: true, showInHome: true, showInOrders: true, order: 12 }
   ],
   
@@ -1542,7 +2705,7 @@ function renderCategoryPills(containerId, activeId, onClick, categoryType = 'pro
   let categories = categoryType === 'subscription' 
     ? MASTER_CATEGORIES.subscriptionCategories 
     : MASTER_CATEGORIES.productCategories;
-  
+    
   // Apply limit if specified
   if (limit && limit !== 'all') {
     categories = categories.slice(0, limit);
@@ -1565,12 +2728,41 @@ function renderCategoryPills(containerId, activeId, onClick, categoryType = 'pro
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].addEventListener('click', function() {
       const categoryId = this.getAttribute('data-category-id');
+      
+      // Special handling for 'shop' category
+      if (categoryId === 'shop') {
+        window.location.href = 'nearshop.html';
+        return;
+      }
+      
       if (onClick && typeof onClick === 'function') {
         onClick(categoryId);
       }
     });
   }
   return true;
+}
+
+// ==================== SHOP CATEGORY LINKING ====================
+function openNearShop() {
+    // Check if nearShopManager exists and has been initialized
+    if (window.nearShopManager && window.nearShopManager.isActive) {
+        // If already on near shop page, refresh the content
+        window.location.href = 'nearshop.html';
+    } else {
+        // Navigate to near shop page
+        window.location.href = 'nearshop.html';
+    }
+}
+
+// Function to handle shop card clicks from categories
+function handleShopCategoryClick(categoryId) {
+    if (categoryId === 'shop' || categoryId === 'groceries' || categoryId === 'shop-near') {
+        openNearShop();
+    } else {
+        // Regular category navigation
+        window.location.href = `categories.html?cat=${categoryId}`;
+    }
 }
 
 /**
@@ -2051,8 +3243,183 @@ function updatePriceBreakdown() {
   return priceData;
 }
 
+// ==================== HORIZONTAL BRAND SWITCHER ====================
+
+function initBrandSwitcher() {
+  const brandButtons = document.querySelectorAll('.brand-switch-btn');
+  
+  if (brandButtons.length === 0) return;
+  
+  // Add ripple effect to buttons
+  brandButtons.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      // Create ripple effect
+      const ripple = document.createElement('span');
+      ripple.classList.add('ripple');
+      this.appendChild(ripple);
+      
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = e.clientX - rect.left - size / 2;
+      const y = e.clientY - rect.top - size / 2;
+      
+      ripple.style.width = ripple.style.height = `${size}px`;
+      ripple.style.left = `${x}px`;
+      ripple.style.top = `${y}px`;
+      
+      setTimeout(() => {
+        ripple.remove();
+      }, 600);
+      
+      // Handle navigation
+      const targetUrl = this.getAttribute('data-url');
+      const brand = this.getAttribute('data-brand');
+      
+      if (targetUrl && !this.classList.contains('active')) {
+        // Store selected brand
+        localStorage.setItem('freshkart_selected_brand', brand);
+        
+        // Add animation class for transition
+        document.body.style.opacity = '0';
+        document.body.style.transition = 'opacity 0.2s ease';
+        
+        setTimeout(() => {
+          window.location.href = targetUrl;
+        }, 150);
+      }
+    });
+    
+    // Hover animation
+    btn.addEventListener('mouseenter', function() {
+      const icon = this.querySelector('i');
+      if (icon) {
+        icon.style.transform = 'scale(1.1)';
+        icon.style.transition = 'transform 0.2s ease';
+      }
+    });
+    
+    btn.addEventListener('mouseleave', function() {
+      const icon = this.querySelector('i');
+      if (icon) {
+        icon.style.transform = 'scale(1)';
+      }
+    });
+  });
+}
+
+// Auto-detect and set active brand based on current page
+function setActiveBrandFromURL() {
+  const currentPath = window.location.pathname;
+  let activeBrand = 'hyperlocal';
+  
+  if (currentPath.includes('subscription.html')) {
+    activeBrand = 'subscribe';
+  } else if (currentPath.includes('ride.html')) {
+    activeBrand = 'ride';
+  } else if (currentPath.includes('index.html') || currentPath === '/' || currentPath === '') {
+    activeBrand = 'hyperlocal';
+  }
+  
+  // Also check localStorage for saved preference
+  const savedBrand = localStorage.getItem('freshkart_selected_brand');
+  if (savedBrand && (
+    (savedBrand === 'hyperlocal' && (currentPath.includes('index.html') || currentPath === '/' || currentPath === '')) ||
+    (savedBrand === 'subscribe' && currentPath.includes('subscription.html')) ||
+    (savedBrand === 'ride' && currentPath.includes('ride.html'))
+  )) {
+    activeBrand = savedBrand;
+  }
+  
+  // Update active class on buttons
+  const buttons = document.querySelectorAll('.brand-switch-btn');
+  buttons.forEach(btn => {
+    const brand = btn.getAttribute('data-brand');
+    if (brand === activeBrand) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+}
+
+// Call this after page loads
+document.addEventListener('DOMContentLoaded', function() {
+  initBrandSwitcher();
+  setActiveBrandFromURL();
+});
+
+// Also call on page load for dynamic content
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    initBrandSwitcher();
+    setActiveBrandFromURL();
+  });
+} else {
+  initBrandSwitcher();
+  setActiveBrandFromURL();
+}
+
+// ==================== SUBSCRIPTION MANAGEMENT FUNCTIONS ====================
+
+// Add subscription to user's subscriptions after purchase
+function addUserSubscription(subscriptionData) {
+  let subscriptions = JSON.parse(localStorage.getItem('freshkart_subscriptions') || '[]');
+  
+  const newSubscription = {
+    id: `SUB-${Date.now()}`,
+    name: subscriptionData.name,
+    productId: subscriptionData.productId,
+    type: subscriptionData.subscriptionType || 'daily',
+    status: 'active',
+    startDate: new Date().toISOString().split('T')[0],
+    nextDelivery: getNextDeliveryDate(subscriptionData.subscriptionType),
+    endDate: subscriptionData.endDate || getEndDate(subscriptionData.subscriptionType),
+    price: subscriptionData.price,
+    discount: subscriptionData.discount || 0,
+    totalPaid: subscriptionData.price,
+    totalSavings: subscriptionData.discount || 0,
+    deliverySchedule: subscriptionData.deliverySchedule,
+    deliveryAddress: subscriptionData.deliveryAddress || getDefaultAddressString(),
+    deliveryDays: subscriptionData.deliveryDays || ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    autoRenew: true
+  };
+  
+  subscriptions.push(newSubscription);
+  localStorage.setItem('freshkart_subscriptions', JSON.stringify(subscriptions));
+  
+  return newSubscription;
+}
+
+function getNextDeliveryDate(type) {
+  const date = new Date();
+  if (type === 'daily') {
+    date.setDate(date.getDate() + 1);
+  } else if (type === 'weekly') {
+    date.setDate(date.getDate() + 7);
+  } else {
+    date.setMonth(date.getMonth() + 1);
+  }
+  return date.toISOString().split('T')[0];
+}
+
+function getEndDate(type) {
+  const date = new Date();
+  if (type === 'daily') {
+    date.setDate(date.getDate() + 28);
+  } else if (type === 'weekly') {
+    date.setDate(date.getDate() + 28);
+  } else {
+    date.setMonth(date.getMonth() + 1);
+  }
+  return date.toISOString().split('T')[0];
+}
 
 
+// Add storage key for location
+if (!SITE_CONFIG.STORAGE_KEYS.LOCATION) {
+  SITE_CONFIG.STORAGE_KEYS.LOCATION = 'freshkart_location';
+  SITE_CONFIG.STORAGE_KEYS.LOCATION_DATA = 'freshkart_location_data';
+}
 
 
 // ==================== SECTION 15: EXPOSE GLOBALS ====================
@@ -2086,4 +3453,6 @@ window.viewProductFromCart = viewProductFromCart;
 window.renderCategoryPills = renderCategoryPills;
 window.renderCategoryCards = renderCategoryCards;
 window.COMMON_CATEGORIES = COMMON_CATEGORIES;
-
+// Export shop-related functions
+window.openNearShop = openNearShop;
+window.handleShopCategoryClick = handleShopCategoryClick;

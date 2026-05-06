@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FreshKart – Manage Subscriptions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* Subscription Management Styles */
+    .page-header {
+      margin: 20px 0;
+    }
+    
+    .page-header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    
+    .page-header p {
+      color: var(--text-muted);
+    }
+    
+    .back-button-container {
+      margin-bottom: 20px;
+    }
+    
+    .back-button {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      padding: 8px 20px;
+      border-radius: 40px;
+      cursor: pointer;
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    
+    .back-button:hover {
+      background: var(--orange-primary);
+      color: white;
+      border-color: var(--orange-primary);
+    }
+    
+    .subscription-dashboard {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+      margin: 30px 0;
+    }
+    
+    @media (max-width: 1000px) {
+      .subscription-dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Active Subscriptions Section */
+    .active-subscriptions {
+      background: var(--surface);
+      border-radius: 24px;
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+    }
+    
+    .section-header-card {
+      padding: 20px 24px;
+      background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(46,125,50,0.05));
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .section-header-card h2 {
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .subscriptions-list-container {
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    
+    .subscription-card {
+      border-bottom: 1px solid var(--border-light);
+      padding: 20px 24px;
+      transition: all 0.3s;
+    }
+    
+    .subscription-card:hover {
+      background: var(--bg-primary);
+    }
+    
+    .subscription-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .subscription-name {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .subscription-badge {
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    
+    .badge-active { background: #e8f5e9; color: #2e7d32; }
+    .badge-paused { background: #fff3e0; color: #f97316; }
+    .badge-cancelled { background: #ffebee; color: #c62828; }
+    
+    .subscription-price {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--green-primary);
+    }
+    
+    .subscription-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+    
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+    }
+    
+    .detail-item i {
+      width: 18px;
+      color: var(--orange-primary);
+    }
+    
+    .next-delivery {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    /* Subscription Stats Sidebar */
+    .subscription-stats {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+    
+    .stats-card {
+      background: linear-gradient(135deg, var(--surface), var(--bg-primary));
+      border-radius: 24px;
+      padding: 20px;
+      border: 1px solid var(--border-light);
+      margin-bottom: 20px;
+    }
+    
+    .stats-card h3 {
+      font-size: 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .stat-number-large {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--orange-primary);
+    }
+    
+    .savings-badge {
+      background: var(--green-primary);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+    
+    /* Action Buttons */
+    .subscription-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .action-btn {
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    
+    .action-pause { background: var(--orange-primary); color: white; }
+    .action-resume { background: var(--green-primary); color: white; }
+    .action-skip { background: var(--blue-primary); color: white; }
+    .action-cancel { background: var(--red-primary); color: white; }
+    .action-edit { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-light); }
+    .action-track { background: linear-gradient(135deg, var(--orange-primary), var(--green-primary)); color: white; }
+    
+    .action-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+    
+    /* Delivery Schedule */
+    .delivery-schedule {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-light);
+    }
+    
+    .schedule-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--border-light);
+    }
+    
+    /* Modal Styles */
+    .subscription-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 2100;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-container {
+      background: var(--surface);
+      border-radius: 28px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 28px;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px;
+      color: var(--text-muted);
+    }
+    
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    
+    hr {
+      margin: 16px 0;
+      border-color: var(--border-light);
+    }
+    
+    @media (max-width: 768px) {
+      .subscription-card { padding: 16px; }
+      .subscription-name { font-size: 16px; }
+      .stat-number-large { font-size: 36px; }
+      .subscription-actions { gap: 8px; }
+      .action-btn { padding: 6px 14px; font-size: 11px; }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
+
+  <!-- Brand Switcher -->
+  <div class="brand-bar">
+    <div class="brand-container">
+      <button class="brand-switch-btn" data-brand="hyperlocal" data-url="index.html"><i class="fas fa-store"></i> Hyper Local</button>
+      <button class="brand-switch-btn active" data-brand="subscribe" data-url="subscription.html"><i class="fas fa-calendar-check"></i> Subscribe</button>
+      <button class="brand-switch-btn" data-brand="ride" data-url="ride.html"><i class="fas fa-motorcycle"></i> Ride</button>
+    </div>
+  </div>
+
+  <div id="simpleHeaderPlaceholder"></div>
+
+  <main class="container">
+    <div class="page-header">
+      <h1><i class="fas fa-calendar-check"></i> My Subscriptions</h1>
+      <p>Manage all your active and past subscriptions in one place</p>
+    </div>
+    
+    <div class="back-button-container">
+      <button onclick="goBackToSubscriptions()" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Subscription Plans
+      </button>
+    </div>
+
+    <div class="subscription-dashboard">
+      <!-- Left Panel - Active Subscriptions -->
+      <div class="active-subscriptions">
+        <div class="section-header-card">
+          <h2><i class="fas fa-bolt"></i> Active Subscriptions</h2>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">You have <span id="activeCount">0</span> active subscriptions</p>
+        </div>
+        <div class="subscriptions-list-container" id="subscriptionsList"></div>
+      </div>
+
+      <!-- Right Panel - Stats & Quick Actions -->
+      <div class="subscription-stats">
+        <div class="stats-card">
+          <h3><i class="fas fa-chart-line"></i> Subscription Stats</h3>
+          <div class="stat-number-large" id="totalSavings">₹0</div>
+          <p>Total savings on subscriptions</p>
+          <hr>
+          <div><i class="fas fa-box"></i> Total Active: <strong id="statActive">0</strong></div>
+          <div><i class="fas fa-pause"></i> Paused: <strong id="statPaused">0</strong></div>
+          <div><i class="fas fa-calendar-week"></i> Deliveries this month: <strong id="statDeliveries">0</strong></div>
+        </div>
+
+        <div class="stats-card">
+          <h3><i class="fas fa-clock"></i> Upcoming Deliveries</h3>
+          <div id="upcomingDeliveries"></div>
+        </div>
+
+        <div class="stats-card">
+          <div class="savings-badge">
+            <i class="fas fa-tags"></i> Refer & Earn ₹100
+          </div>
+          <p style="font-size: 12px; margin-top: 12px;">Share your referral code: <strong id="referralCode">FRESH2024</strong></p>
+          <button class="action-btn action-edit" onclick="copyReferralCode()" style="width: 100%; margin-top: 10px;"><i class="fas fa-copy"></i> Copy Code</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Subscription Action Modal -->
+  <div id="subscriptionModal" class="subscription-modal">
+    <div class="modal-container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 id="modalTitle">Manage Subscription</h3>
+        <button onclick="closeSubscriptionModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-primary);">&times;</button>
+      </div>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav - Matching subscription page -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="subscription.html" class="nav-item">
+      <i class="fas fa-calendar-check"></i>
+      <span>Plans</span>
+    </a>
+    <a href="subscription-manager.html" class="nav-item active">
+      <i class="fas fa-list-alt"></i>
+      <span>Manage</span>
+    </a>
+    <a href="account.html" class="nav-item">
+      <i class="fas fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header"><h3>My Cart</h3><button class="close-cart" id="closeCartBtn">&times;</button></div>
+    <div class="cart-items" id="cartItemsList"></div>
+    <div class="cart-footer"><div id="priceBreakdownBox"></div><button class="checkout-btn" id="checkoutBtn">Place Order</button></div>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="common.js"></script>
+  <script>
+    // ==================== SUBSCRIPTION MANAGEMENT SYSTEM ====================
+    
+    let userSubscriptions = [];
+    
+    // Load subscriptions from localStorage
+    function loadSubscriptions() {
+      const saved = localStorage.getItem('freshkart_subscriptions');
+      if (saved) {
+        userSubscriptions = JSON.parse(saved);
+      } else {
+        // Sample subscription data
+        userSubscriptions = [
+          {
+            id: "SUB-2024-001",
+            name: "Hostel Mess Plan - Vegetarian",
+            productId: 501,
+            type: "daily",
+            status: "active",
+            startDate: "2024-03-01",
+            nextDelivery: getNextDeliveryDateFormatted(1),
+            endDate: "2024-03-28",
+            price: 2999,
+            discount: 1000,
+            totalPaid: 2999,
+            totalSavings: 1000,
+            deliverySchedule: "Daily (8 AM, 1 PM, 8 PM)",
+            deliveryAddress: "123, Green Park, New Delhi - 110001",
+            mealsDelivered: 15,
+            totalMeals: 28,
+            deliveryDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            pausedUntil: null,
+            cancelledReason: null,
+            autoRenew: true
+          },
+          {
+            id: "SUB-2024-002",
+            name: "Daily Milk Subscription",
+            productId: 507,
+            type: "daily",
+            status: "active",
+            startDate: "2024-03-05",
+            nextDelivery: getNextDeliveryDateFormatted(0),
+            endDate: "2024-04-03",
+            price: 899,
+            discount: 400,
+            totalPaid: 899,
+            totalSavings: 400,
+            deliverySchedule: "Every morning between 6-8 AM",
+            deliveryAddress: "123, Green Park, New Delhi - 110001",
+            mealsDelivered: 11,
+            totalMeals: 30,
+            deliveryDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            pausedUntil: null,
+            cancelledReason: null,
+            autoRenew: true
+          }
+        ];
+        saveSubscriptions();
+      }
+      updateSubscriptionStats();
+    }
+    
+    // Ensure Subscribe brand is active on page load
+function setActiveBrand() {
+  const currentPath = window.location.pathname;
+  let activeBrand = 'subscribe'; // Set to subscribe for this page
+  
+  const buttons = document.querySelectorAll('.brand-switch-btn');
+  buttons.forEach(btn => {
+    const brand = btn.getAttribute('data-brand');
+    if (brand === activeBrand) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+}
+
+// Call this after DOM loads
+document.addEventListener('DOMContentLoaded', function() {
+  setActiveBrand();
+});
+
+    function getNextDeliveryDateFormatted(daysToAdd = 1) {
+      const date = new Date();
+      date.setDate(date.getDate() + daysToAdd);
+      return date.toISOString().split('T')[0];
+    }
+    
+    function saveSubscriptions() {
+      localStorage.setItem('freshkart_subscriptions', JSON.stringify(userSubscriptions));
+    }
+    
+    function updateSubscriptionStats() {
+      const active = userSubscriptions.filter(s => s.status === 'active');
+      const paused = userSubscriptions.filter(s => s.status === 'paused');
+      const totalSavings = userSubscriptions.reduce((sum, s) => sum + (s.totalSavings || 0), 0);
+      const totalDeliveries = active.reduce((sum, s) => {
+        if (s.type === 'daily') return sum + Math.ceil((new Date(s.endDate) - new Date(s.startDate)) / (1000 * 60 * 60 * 24));
+        if (s.type === 'weekly') return sum + 4;
+        return sum + 1;
+      }, 0);
+      
+      const activeCountElem = document.getElementById('activeCount');
+      const statActiveElem = document.getElementById('statActive');
+      const statPausedElem = document.getElementById('statPaused');
+      const statDeliveriesElem = document.getElementById('statDeliveries');
+      const totalSavingsElem = document.getElementById('totalSavings');
+      
+      if (activeCountElem) activeCountElem.innerText = active.length;
+      if (statActiveElem) statActiveElem.innerText = active.length;
+      if (statPausedElem) statPausedElem.innerText = paused.length;
+      if (statDeliveriesElem) statDeliveriesElem.innerHTML = totalDeliveries;
+      if (totalSavingsElem) totalSavingsElem.innerHTML = `₹${totalSavings.toLocaleString()}`;
+      
+      renderSubscriptionsList();
+      renderUpcomingDeliveries();
+    }
+    
+    function goBackToSubscriptions() {
+      localStorage.setItem('returnToSubscriptionPage', 'true');
+      window.location.href = 'subscription.html';
+    }
+    
+    function renderSubscriptionsList() {
+      const container = document.getElementById('subscriptionsList');
+      if (!container) return;
+      
+      const activeSubs = userSubscriptions.filter(s => s.status !== 'cancelled');
+      
+      if (activeSubs.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-box-open"></i>
+            <h3>No Active Subscriptions</h3>
+            <p>You haven't subscribed to any plans yet.</p>
+            <button onclick="location.href='subscription.html'" style="background: var(--orange-primary); color: white; border: none; padding: 10px 24px; border-radius: 30px; margin-top: 16px; cursor: pointer;">Browse Plans →</button>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = activeSubs.map(sub => `
+        <div class="subscription-card">
+          <div class="subscription-header">
+            <div class="subscription-name">
+              ${escapeHtml(sub.name)}
+              <span class="subscription-badge badge-${sub.status}">${sub.status.toUpperCase()}</span>
+            </div>
+            <div class="subscription-price">₹${sub.price.toLocaleString()}</div>
+          </div>
+          <div class="subscription-details">
+            <div class="detail-item"><i class="fas fa-calendar"></i> Started: ${sub.startDate}</div>
+            <div class="detail-item"><i class="fas fa-calendar-check"></i> ${sub.type === 'daily' ? 'Daily' : sub.type === 'weekly' ? 'Weekly' : 'Monthly'}</div>
+            <div class="detail-item"><i class="fas fa-tag"></i> Saved ₹${sub.totalSavings}</div>
+          </div>
+          ${sub.status === 'active' && sub.nextDelivery ? `
+            <div class="next-delivery">
+              <span><i class="fas fa-truck"></i> Next: ${sub.nextDelivery}</span>
+              <span><i class="fas fa-clock"></i> ${sub.deliverySchedule.split(',')[0]}</span>
+            </div>
+          ` : sub.status === 'paused' && sub.pausedUntil ? `
+            <div class="next-delivery" style="background: rgba(249,115,22,0.1);">
+              <span><i class="fas fa-pause-circle"></i> Paused until ${sub.pausedUntil}</span>
+              <button class="action-btn action-resume" style="padding: 6px 16px;" onclick="resumeSubscription('${sub.id}')">Resume</button>
+            </div>
+          ` : ''}
+          <div class="subscription-actions">
+            <button class="action-btn action-track" onclick="trackSubscription('${sub.id}')"><i class="fas fa-location-dot"></i> Track</button>
+            <button class="action-btn action-edit" onclick="editSubscription('${sub.id}')"><i class="fas fa-edit"></i> Edit</button>
+            ${sub.status === 'active' ? `<button class="action-btn action-pause" onclick="pauseSubscription('${sub.id}')"><i class="fas fa-pause"></i> Pause</button>` : ''}
+            ${sub.status !== 'cancelled' ? `<button class="action-btn action-cancel" onclick="cancelSubscription('${sub.id}')"><i class="fas fa-trash"></i> Cancel</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function renderUpcomingDeliveries() {
+      const container = document.getElementById('upcomingDeliveries');
+      if (!container) return;
+      
+      const activeSubs = userSubscriptions.filter(s => s.status === 'active' && s.nextDelivery);
+      
+      if (activeSubs.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">No upcoming deliveries</p>';
+        return;
+      }
+      
+      const sorted = [...activeSubs].sort((a, b) => new Date(a.nextDelivery) - new Date(b.nextDelivery));
+      container.innerHTML = sorted.slice(0, 5).map(sub => `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-light);">
+          <div>
+            <div style="font-weight: 600; font-size: 13px;">${escapeHtml(sub.name)}</div>
+            <div style="font-size: 11px; color: var(--text-muted);">${sub.nextDelivery}</div>
+          </div>
+          <button class="action-btn action-edit" style="padding: 6px 12px; font-size: 11px;" onclick="trackSubscription('${sub.id}')">Track →</button>
+        </div>
+      `).join('');
+    }
+    
+    function pauseSubscription(id) {
+      const sub = userSubscriptions.find(s => s.id === id);
+      if (sub && sub.status === 'active') {
+        const pauseUntil = prompt("Pause until (YYYY-MM-DD):", getNextDeliveryDateFormatted(7));
+        if (pauseUntil && pauseUntil.trim()) {
+          sub.status = 'paused';
+          sub.pausedUntil = pauseUntil;
+          sub.nextDelivery = null;
+          saveSubscriptions();
+          updateSubscriptionStats();
+          showToast(`✅ "${sub.name}" paused until ${pauseUntil}`);
+        }
+      }
+    }
+    
+    function resumeSubscription(id) {
+      const sub = userSubscriptions.find(s => s.id === id);
+      if (sub && sub.status === 'paused') {
+        sub.status = 'active';
+        sub.pausedUntil = null;
+        sub.nextDelivery = getNextDeliveryDateFormatted(1);
+        saveSubscriptions();
+        updateSubscriptionStats();
+        showToast(`✅ "${sub.name}" resumed!`);
+      }
+    }
+    
+    function cancelSubscription(id) {
+      const sub = userSubscriptions.find(s => s.id === id);
+      if (sub && confirm(`⚠️ Are you sure you want to cancel "${sub.name}"?\n\nYou will lose access to all remaining benefits.`)) {
+        sub.status = 'cancelled';
+        sub.cancelledReason = prompt("Reason for cancellation (optional):") || "User requested";
+        saveSubscriptions();
+        updateSubscriptionStats();
+        showToast(`❌ "${sub.name}" cancelled`);
+      }
+    }
+    
+    function trackSubscription(id) {
+      window.location.href = `order-tracking.html?subscription=${id}&brand=subscribe`;
+    }
+    
+    function editSubscription(id) {
+      const sub = userSubscriptions.find(s => s.id === id);
+      if (sub) {
+        document.getElementById('modalTitle').innerHTML = `✏️ Edit ${escapeHtml(sub.name)}`;
+        document.getElementById('modalContent').innerHTML = `
+          <form id="editSubscriptionForm">
+            <div class="form-group">
+              <label>📦 Delivery Address</label>
+              <textarea id="editAddress" rows="2">${escapeHtml(sub.deliveryAddress)}</textarea>
+            </div>
+            <div class="form-group">
+              <label>🔄 Auto-Renew</label>
+              <select id="editAutoRenew">
+                <option value="true" ${sub.autoRenew ? 'selected' : ''}>Yes, auto-renew</option>
+                <option value="false" ${!sub.autoRenew ? 'selected' : ''}>No, notify me before renewal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>📅 Delivery Days</label>
+              <div id="deliveryDaysCheckbox" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px;">
+                ${['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(day => `
+                  <label style="display: flex; align-items: center; gap: 5px; font-size: 12px;">
+                    <input type="checkbox" value="${day}" ${sub.deliveryDays?.includes(day) ? 'checked' : ''}> ${day}
+                  </label>
+                `).join('')}
+              </div>
+            </div>
+            <div class="modal-buttons">
+              <button type="button" class="action-btn action-cancel" onclick="closeSubscriptionModal()">Cancel</button>
+              <button type="submit" class="action-btn action-resume">Save Changes</button>
+            </div>
+          </form>
+        `;
+        document.getElementById('subscriptionModal').style.display = 'flex';
+        
+        document.getElementById('editSubscriptionForm').onsubmit = (e) => {
+          e.preventDefault();
+          sub.deliveryAddress = document.getElementById('editAddress').value;
+          sub.autoRenew = document.getElementById('editAutoRenew').value === 'true';
+          sub.deliveryDays = Array.from(document.querySelectorAll('#deliveryDaysCheckbox input:checked')).map(cb => cb.value);
+          saveSubscriptions();
+          updateSubscriptionStats();
+          closeSubscriptionModal();
+          showToast(`✅ "${sub.name}" updated successfully!`);
+        };
+      }
+    }
+    
+    function closeSubscriptionModal() {
+      document.getElementById('subscriptionModal').style.display = 'none';
+    }
+    
+    function copyReferralCode() {
+      const code = document.getElementById('referralCode').innerText;
+      navigator.clipboard.writeText(code);
+      showToast("📋 Referral code copied!");
+    }
+    
+    function showToast(msg) {
+      let toast = document.querySelector('.sub-manager-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'sub-manager-toast';
+        toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green-primary);color:white;padding:12px 24px;border-radius:50px;z-index:9999;font-size:14px;box-shadow:0 4px 15px rgba(0,0,0,0.2);';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+    }
+    
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+    }
+    
+    // Initialize page
+    async function initSubscriptionManager() {
+      await initCommon(() => {});
+      loadSubscriptions();
+      updateCartUI();
+      
+      // Brand switcher
+      document.querySelectorAll('.brand-switch-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          window.location.href = btn.dataset.url;
+        });
+      });
+    }
+    
+    // Make functions global
+    window.pauseSubscription = pauseSubscription;
+    window.resumeSubscription = resumeSubscription;
+    window.cancelSubscription = cancelSubscription;
+    window.editSubscription = editSubscription;
+    window.trackSubscription = trackSubscription;
+    window.closeSubscriptionModal = closeSubscriptionModal;
+    window.copyReferralCode = copyReferralCode;
+    window.goBackToSubscriptions = goBackToSubscriptions;
+    
+    initSubscriptionManager();
+  </script>
+</body>
+</html>

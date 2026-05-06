@@ -195,23 +195,116 @@
         grid-template-columns: 1fr;
       }
     }
+    .serloc{
+  display: flex;
+  justify-content: space-between;
+    gap: 12px;
+    }
+
+    /* Add this to your existing styles */
+    .cat-link[data-category="shop"] .cat-icon {
+        background: linear-gradient(135deg, var(--orange-primary), var(--green-primary));
+        color: white;
+    }
+    
+    .cat-link[data-category="shop"]:hover .cat-icon {
+        transform: scale(1.1);
+        box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+    }
+    .shops-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+    }
+    
+    .shop-preview-card {
+        background: var(--surface);
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid var(--border-light);
+        transition: transform 0.2s;
+        cursor: pointer;
+    }
+    
+    .shop-preview-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .shop-preview-card .shop-image {
+        height: 140px;
+        overflow: hidden;
+    }
+    
+    .shop-preview-card .shop-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+    }
+    
+    .shop-preview-card:hover .shop-image img {
+        transform: scale(1.05);
+    }
+    
+    .shop-preview-card .shop-info {
+        padding: 12px;
+    }
+    
+    .shop-preview-card .shop-name {
+        font-weight: 700;
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+    
+    .shop-preview-card .shop-location {
+        font-size: 12px;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .shop-preview-card .shop-rating {
+        font-size: 12px;
+        color: #fbbf24;
+        margin-top: 6px;
+    }
+
   </style>
 </head>
 
-<body data-theme="dark">
-  <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
+<!-- <body data-theme="dark">
+  <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button> -->
 
   <!-- Top Bar -->
-  <div class="top-bar">
+  <!-- <div class="top-bar">
     <div class="container">
       <div class="top-left"><span><i class="fas fa-truck"></i> Free delivery > ₹499</span><span><i
             class="fas fa-leaf"></i> 100% Fresh</span></div>
       <div class="top-right"><span><i class="fas fa-headset"></i> 24/7 Support</span><span><i
             class="fas fa-download"></i> App</span></div>
     </div>
-  </div>
+  </div> -->
+<body data-theme="dark">
+  <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()"><i class="fas fa-sun"></i></button>
 
-  <!-- Header -->
+  <!-- Horizontal Brand Switcher -->
+  <div class="brand-bar">
+    <div class="brand-container">
+      <button class="brand-switch-btn active" data-brand="hyperlocal" data-url="index.html">
+        <i class="fas fa-store"></i> Hyper Local
+      </button>
+      <button class="brand-switch-btn" data-brand="subscribe" data-url="subscription.html">
+        <i class="fas fa-calendar-check"></i> Subscribe
+      </button>
+      <button class="brand-switch-btn" data-brand="ride" data-url="ride.html">
+        <i class="fas fa-motorcycle"></i> Ride
+      </button>
+    </div>
+  </div>
+  <!-- -- Header -->
   <header class="main-header">
     <div class="container">
       <div class="logo-row">
@@ -219,23 +312,20 @@
           <h1>Fresh<span>Kart</span></h1>
           <p style="font-size:10px;">Grocery Delivery</p>
         </div>
-        <div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span
+        <!-- <div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span
+            id="mobileCartCount">0</span></div> -->
+      </div>
+      <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch" placeholder="Search fruits, veggies, juices..."></div>
+      <div class="serloc">
+<div class="location-selector" style="cursor: default;">
+  <i class="fas fa-map-marker-alt"></i></div>
+  <!-- <input type="text" id="locationSearchInput" placeholder="Search location..." value="Delhi 110001" style="flex: 1; border: none; background: none; outline: none; font-size: 13px; font-weight: 500; color: var(--text-primary);">
+  <i class="fas fa-chevron-down" style="font-size: 10px; color: var(--text-muted);"></i> -->
+      <div class="mobile-cart-icon" id="mobileCartIcon"><i class="fas fa-shopping-cart"></i> <span
             id="mobileCartCount">0</span></div>
-      </div>
-      <div class="search-location">
-        <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="globalSearch"
-            placeholder="Search fruits, veggies, juices..."></div>
-        <div class="location-selector"><i class="fas fa-map-marker-alt"></i><select id="locationSelect">
-            <option>📍 Delhi 110001</option>
-            <option>📍 Mumbai 400001</option>
-            <option>📍 Bangalore 560001</option>
-            <option>📍 Chennai 600001</option>
-            <option>📍 Kolkata 700001</option>
-          </select></div>
-      </div>
       <div class="desktop-cart"><button class="cart-btn" id="cartBtn"><i
             class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count" id="cartCount">0</span></button>
-      </div>
+      </div></div>
     </div>
   </header>
 
@@ -312,6 +402,18 @@
       </div>
     </div>
   </section>
+  <section class="nearby-shops-section">
+    <div class="container">
+        <div class="section-header">
+            <h2><i class="fas fa-store"></i> Shops Near You</h2>
+            <a href="nearshop.html" class="view-all-link">View All Shops <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="shops-preview-grid" id="nearbyShopsPreview">
+            <!-- Shops will be loaded here dynamically -->
+        </div>
+    </div>
+</section>
+
 
   <!-- Customer Reviews -->
   <section class="customer-feedback">
@@ -646,6 +748,43 @@
       showHeroSkeleton();
       showCategoriesSkeleton();
       showProductsSkeleton('offeringsGrid', 12);
+    }
+
+    // Add this to your index page script to load nearby shops preview
+    async function loadNearbyShopsPreview() {
+        const container = document.getElementById('nearbyShopsPreview');
+        if (!container) return;
+        
+        try {
+            // Fetch shops data (you can move this to a JSON file)
+            const shops = [
+                { id: 1, name: "FreshMart Grocery", image: "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400", location: "Sector 18, Noida", rating: 4.5, distance: "1.2 km" },
+                { id: 2, name: "GreenFields Organic", image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=400", location: "Kalkaji, New Delhi", rating: 4.8, distance: "2.5 km" },
+                { id: 3, name: "The Daily Bread Bakery", image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400", location: "Connaught Place, Delhi", rating: 4.7, distance: "3.1 km" }
+            ];
+            
+            container.innerHTML = shops.map(shop => `
+                <div class="shop-preview-card" onclick="window.location.href='nearshop.html'">
+                    <div class="shop-image">
+                        <img src="${shop.image}" alt="${shop.name}">
+                    </div>
+                    <div class="shop-info">
+                        <div class="shop-name">${shop.name}</div>
+                        <div class="shop-location"><i class="fas fa-map-marker-alt"></i> ${shop.location}</div>
+                        <div class="shop-rating"><i class="fas fa-star"></i> ${shop.rating} (${shop.distance} away)</div>
+                    </div>
+                </div>
+            `).join('');
+        } catch(e) {
+            console.error('Error loading shops:', e);
+        }
+    }
+    
+    // Call this after page loads
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadNearbyShopsPreview);
+    } else {
+        loadNearbyShopsPreview();
     }
 
     // ==================== RENDER SUBSCRIPTION SECTION ON HOME PAGE ====================
